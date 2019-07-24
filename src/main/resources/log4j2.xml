@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+openrqm-server
+Log4J configuration for the OpenRQM server
+SPDX-License-Identifier: GPL-2.0-only
+Copyright (C) 2019 Marcel Jaehn
+-->
 <Configuration strict="true">
     <Properties>
         <Property name="filename">logs/openrqm-server.log</Property>

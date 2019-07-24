@@ -1,0 +1,28 @@
+/*
+openrqm-grpc
+Protocol Buffers File with gRPC service specification according to https://developers.google.com/protocol-buffers/docs/proto3
+SPDX-License-Identifier: GPL-2.0-only
+Copyright (C) 2019 Benjamin Schilling
+*/
+
+syntax = "proto3";
+
+option java_package = "com.openrqm.grpc";
+option java_outer_classname = "OpenRQMGrpc";
+
+package com.openrqm.grpc;
+
+message Object {
+    int32 val1 = 1;
+    string val2 = 2;
+}
+
+message Empty {
+
+}
+
+
+service OpenRQMService {
+    rpc CallOne (Object) returns (Empty);
+    rpc CallTwo (Empty) returns (Object);
+}
