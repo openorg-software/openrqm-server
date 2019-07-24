@@ -18,3 +18,8 @@ buildNumber.properties
 .classpath
 .project
 .vscode/
+
+#
+# OpenRQM server logs
+#
+logs/
