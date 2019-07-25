@@ -8,9 +8,12 @@ Copyright (C) 2019 Marcel Jaehn
 package org.openrqm.server;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,8 +29,9 @@ public final class OpenRQMServer {
      * @param args The commandline arguments
      */
     public static void main(String[] args) {
-        logger.info("Starting the OpenRQM server");
-        Server server = ServerBuilder.forPort(8090).addService(new OpenRQMServiceImpl()).build();
+        logger.info("Starting the OpenRQM server at localhost:8090");
+        Server server = NettyServerBuilder.forAddress(new InetSocketAddress("localhost", 8090))
+                .addService(new OpenRQMServiceImpl()).build();
         try {
             server.start();
             server.awaitTermination();
