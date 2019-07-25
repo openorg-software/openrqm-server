@@ -7,10 +7,10 @@ Copyright (C) 2019 Benjamin Schilling
 
 syntax = "proto3";
 
-option java_package = "com.openrqm.grpc";
+option java_package = "org.openrqm.grpc";
 option java_outer_classname = "OpenRQMGrpc";
 
-package com.openrqm.grpc;
+package org.openrqm.grpc;
 
 message Object {
     int32 val1 = 1;

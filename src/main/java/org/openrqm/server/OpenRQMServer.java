@@ -5,11 +5,11 @@ SPDX-License-Identifier: GPL-2.0-only
 Copyright (C) 2019 Marcel Jaehn
 */
 
-package com.openrqm.server;
+package org.openrqm.server;
 
 import java.io.IOException;
 
-import com.openrqm.grpc.OpenRQMServiceGrpc;
+import org.openrqm.grpc.OpenRQMServiceGrpc;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,15 +44,15 @@ public final class OpenRQMServer {
     private static class OpenRQMService extends OpenRQMServiceGrpc.OpenRQMServiceImplBase {
         /**
         */
-        public void callOne(com.openrqm.grpc.OpenRQMGrpc.Object request,
-                io.grpc.stub.StreamObserver<com.openrqm.grpc.OpenRQMGrpc.Empty> responseObserver) {
+        public void callOne(org.openrqm.grpc.OpenRQMGrpc.Object request,
+                io.grpc.stub.StreamObserver<org.openrqm.grpc.OpenRQMGrpc.Empty> responseObserver) {
             logger.info("callTwo");
         }
 
         /**
          */
-        public void callTwo(com.openrqm.grpc.OpenRQMGrpc.Empty request,
-                io.grpc.stub.StreamObserver<com.openrqm.grpc.OpenRQMGrpc.Object> responseObserver) {
+        public void callTwo(org.openrqm.grpc.OpenRQMGrpc.Empty request,
+                io.grpc.stub.StreamObserver<org.openrqm.grpc.OpenRQMGrpc.Object> responseObserver) {
             logger.info("callTwo");
         }
     }
