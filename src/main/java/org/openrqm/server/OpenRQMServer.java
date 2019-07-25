@@ -9,12 +9,10 @@ package org.openrqm.server;
 
 import java.io.IOException;
 
-import org.openrqm.grpc.OpenRQMServiceGrpc;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The OpenRQM server for requirements managing.
@@ -29,31 +27,15 @@ public final class OpenRQMServer {
      */
     public static void main(String[] args) {
         logger.info("Starting the OpenRQM server");
-        Server server = ServerBuilder.forPort(8090).addService(new OpenRQMService()).build();
+        Server server = ServerBuilder.forPort(8090).addService(new OpenRQMServiceImpl()).build();
         try {
             server.start();
             server.awaitTermination();
         } catch (IOException e) {
-			logger.error("Something bad happened");
-		} catch (InterruptedException e) {
+            logger.error("Something bad happened");
+        } catch (InterruptedException e) {
             logger.error("Interrupted server");
         }
         logger.info("Stopping the OpenRQM server");
-    }
-
-    private static class OpenRQMService extends OpenRQMServiceGrpc.OpenRQMServiceImplBase {
-        /**
-        */
-        public void callOne(org.openrqm.grpc.OpenRQMGrpc.Object request,
-                io.grpc.stub.StreamObserver<org.openrqm.grpc.OpenRQMGrpc.Empty> responseObserver) {
-            logger.info("callTwo");
-        }
-
-        /**
-         */
-        public void callTwo(org.openrqm.grpc.OpenRQMGrpc.Empty request,
-                io.grpc.stub.StreamObserver<org.openrqm.grpc.OpenRQMGrpc.Object> responseObserver) {
-            logger.info("callTwo");
-        }
     }
 }

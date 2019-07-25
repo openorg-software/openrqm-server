@@ -12,17 +12,10 @@ option java_outer_classname = "OpenRQMGrpc";
 
 package org.openrqm.grpc;
 
-message Object {
-    int32 val1 = 1;
-    string val2 = 2;
+message Message {
+    string content = 1;
 }
-
-message Empty {
-
-}
-
 
 service OpenRQMService {
-    rpc CallOne (Object) returns (Empty);
-    rpc CallTwo (Empty) returns (Object);
+    rpc echo(Message) returns (Message);
 }
