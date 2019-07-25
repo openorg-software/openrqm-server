@@ -22,10 +22,12 @@ Copyright (C) 2019 Marcel Jaehn
     </Appenders>
 
     <Loggers>
-
-        <Root level="trace">
-            <AppenderRef ref="stdout" level="trace"/>
+        <Logger name="org.openrqm" level="trace" additivity="false">
+            <AppenderRef ref="stdout"/>
             <AppenderRef ref="file" level="debug"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="stdout"/>
         </Root>
     </Loggers>
 
