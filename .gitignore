@@ -1,6 +1,4 @@
-#
-# Standard Maven .gitignore
-#
+
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -10,16 +8,11 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+.factorypath
 
-#
-# Visual Studio Code
-#
 .settings/
 .classpath
 .project
 .vscode/
 
-#
-# OpenRQM server logs
-#
 logs/
