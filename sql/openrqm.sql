@@ -6,6 +6,7 @@
 -- Erstellungszeit: 26. Jul 2019 um 22:59
 -- Server-Version: 10.3.16-MariaDB
 -- PHP-Version: 7.3.7
+-- SPDX-License-Identifier: GPL-2.0-only
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
