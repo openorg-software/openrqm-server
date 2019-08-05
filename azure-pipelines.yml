@@ -33,4 +33,4 @@ steps:
     assetUploadMode: replace
     assets: |
          $(Build.Repository.LocalPath)/target/openrqm-server-0.1-jar-with-dependencies.jar
-         $(Build.Repository.LocalPath)/README.txt
+         $(Build.Repository.LocalPath)/README.md
