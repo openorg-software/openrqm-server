@@ -25,7 +25,7 @@ steps:
 - task: GithubRelease@0 
   displayName: 'Create GitHub Release'      
   inputs:
-    gitHubConnection: openrqm
+    gitHubConnection: benjaminSchilling33
     repositoryName: openrqm/openrqm-server
     tagSource: manual
     tag: $(Build.SourceBranch)      
