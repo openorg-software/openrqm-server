@@ -30,5 +30,5 @@ steps:
     tagSource: manual
     tag: $(Build.SourceBranch)      
     assets: |
-         $(Build.ArtifactStagingDirectory)/*.exe
+         $(Build.ArtifactStagingDirectory)/target/openrqm-server-0.1-jar-with-dependencies.jar
          $(Build.ArtifactStagingDirectory)/README.txt
