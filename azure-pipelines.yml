@@ -5,6 +5,7 @@
 
 trigger:
 - master
+- development
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -20,3 +21,14 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
+
+- task: GithubRelease@0 
+  displayName: 'Create GitHub Release'      
+  inputs:
+    gitHubConnection: benjaminschilling33
+    repositoryName: openrqm/openrqm-server
+    tagSource: manual
+    tag: $(Build.SourceBranch)      
+    assets: |
+         $(Build.ArtifactStagingDirectory)/*.exe
+         $(Build.ArtifactStagingDirectory)/README.txt
