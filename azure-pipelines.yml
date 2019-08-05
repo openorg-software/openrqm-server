@@ -27,10 +27,10 @@ steps:
   inputs:
     gitHubConnection: benjaminSchilling33
     repositoryName: openrqm/openrqm-server
+    action: edit
     tagSource: manual
     tag: $(Build.SourceBranchName)  
     assetUploadMode: replace
-    isDraft: true
     assets: |
          $(Build.Repository.LocalPath)/target/openrqm-server-0.1-jar-with-dependencies.jar
          $(Build.Repository.LocalPath)/README.txt
