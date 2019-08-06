@@ -1,7 +1,7 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+# openrqm-server
+# Azure DevOps Pipeline for building the openrqm-server project
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright (C) 2019 Benjamin Schilling
 
 trigger:
 - master
