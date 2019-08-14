@@ -23,7 +23,7 @@ steps:
     goals: 'package'
 
 - task: GithubRelease@0 
-  condition: or(contains($(Build.SourceBranchName), "master"), contains($(Build.SourceBranchName), "development"))
+  condition: or(contains( $(Build.SourceBranchName), 'master'), contains( $(Build.SourceBranchName) , 'development'))
   displayName: 'Create GitHub Release'      
   inputs:
     gitHubConnection: benjaminSchilling33
