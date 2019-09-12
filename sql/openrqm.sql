@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 26. Jul 2019 um 22:59
--- Server-Version: 10.3.16-MariaDB
--- PHP-Version: 7.3.7
+-- Erstellungszeit: 03. Sep 2019 um 21:35
+-- Server-Version: 10.4.6-MariaDB
+-- PHP-Version: 7.3.9
 -- SPDX-License-Identifier: GPL-2.0-only
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -22,6 +22,8 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `openrqm`
 --
+CREATE DATABASE IF NOT EXISTS `openrqm` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `openrqm`;
 
 -- --------------------------------------------------------
 
@@ -57,6 +59,7 @@ CREATE TABLE `document` (
   `internal_identifier` int(10) UNSIGNED NOT NULL,
   `external_identifier` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'NULL',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `short_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `confidentiality` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'NULL',
   `author_id` int(10) UNSIGNED NOT NULL,
