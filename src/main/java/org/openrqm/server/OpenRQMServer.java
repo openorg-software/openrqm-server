@@ -14,8 +14,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 public class OpenRQMServer {
-    final static Logger logger = LogManager.getLogger(OpenRQMServer.class);
+    // final static Logger logger = LogManager.getLogger(OpenRQMServer.class);
 
     private static Connection connection = null;
 
@@ -36,29 +36,24 @@ public class OpenRQMServer {
      * 
      * @param args The commandline arguments
      */
-    public static void main(String[] args) {
-        SpringApplication.run(OpenRQMServer.class, args);
-
-        logger.info("Starting the OpenRQM server");
-
-        try {
-            connection = DriverManager.getConnection("jdbc:mariadb://localhost/openrqm?user=openrqm");
-        } catch (SQLException e) {
-            logger.fatal("Could not connect to database: " + e.getMessage());
-            return;
-        }
-
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from user");
-            while (resultSet.next()) {
-                System.out.println("id: " + resultSet.getInt("id") + ", " + "email: " + resultSet.getString("email")
-                        + ", " + "name: " + resultSet.getString("name") + " " + resultSet.getString("surname"));
-            }
-        } catch (SQLException e) {
-            logger.error("A SQL exception occured: " + e.getMessage());
-        }
-
-        logger.info("Stopping the OpenRQM server");
-    }
+    /*
+     * public static void main(String[] args) {
+     * SpringApplication.run(OpenRQMServer.class, args);
+     * 
+     * logger.info("Starting the OpenRQM server");
+     * 
+     * try { connection =
+     * DriverManager.getConnection("jdbc:mariadb://localhost/openrqm?user=openrqm");
+     * } catch (SQLException e) { logger.fatal("Could not connect to database: " +
+     * e.getMessage()); return; }
+     * 
+     * try { Statement statement = connection.createStatement(); ResultSet resultSet
+     * = statement.executeQuery("select * from user"); while (resultSet.next()) {
+     * System.out.println("id: " + resultSet.getInt("id") + ", " + "email: " +
+     * resultSet.getString("email") + ", " + "name: " + resultSet.getString("name")
+     * + " " + resultSet.getString("surname")); } } catch (SQLException e) {
+     * logger.error("A SQL exception occured: " + e.getMessage()); }
+     * 
+     * logger.info("Stopping the OpenRQM server"); }
+     */
 }
