@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
