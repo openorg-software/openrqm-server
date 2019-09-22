@@ -1,7 +1,6 @@
 package org.openrqm.model;
 
 import java.util.Objects;
-import org.openrqm.model.RQMWorkspace;
 import java.util.ArrayList;
 import org.springframework.validation.annotation.Validated;
 
