@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Home redirection to swagger api documentation
  */
-@CrossOrigin
 @Controller
 public class HomeController {
     @RequestMapping(value = "/")

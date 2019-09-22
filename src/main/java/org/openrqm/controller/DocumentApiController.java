@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-09-12T19:15:09.451Z")
 
-@CrossOrigin
 @Controller
 public class DocumentApiController implements DocumentApi {
 
