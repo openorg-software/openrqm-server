@@ -3,7 +3,6 @@ package org.openrqm.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openrqm.api.WorkspacesApi;
@@ -44,6 +43,7 @@ public class WorkspacesApiController implements WorkspacesApi {
             workspaces.addAll(workspacesList); //TODO: improve this, we are touching elements twice here
             return new ResponseEntity<>(workspaces, HttpStatus.OK);
         } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

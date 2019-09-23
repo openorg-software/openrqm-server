@@ -35,7 +35,7 @@ public class DocumentRowMapper implements RowMapper<RQMDocument> {
         document.setBaselineMajor(rs.getLong("baseline_major"));
         document.setBaselineMinor(rs.getLong("baseline_minor"));
         document.setBaselineReview(rs.getLong("baseline_review"));
-        document.setPreviousBaselineId(rs.getLong("prvious_baseline_id"));
+        document.setPreviousBaselineId(rs.getLong("previous_baseline_id"));
         return document;
     }
     

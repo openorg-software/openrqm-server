@@ -41,6 +41,7 @@ public class WorkspaceApiController implements WorkspaceApi {
             RQMWorkspace workspace = jdbcTemplate.queryForObject("SELECT * FROM workspace WHERE id = ?", new Object[] { id } , new WorkspaceRowMapper());
             return new ResponseEntity<>(workspace, HttpStatus.OK);
         } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

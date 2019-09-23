@@ -12,7 +12,15 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
+import org.openrqm.mapper.DocumentRowMapper;
+import org.openrqm.mapper.ElementRowMapper;
+import org.openrqm.model.RQMDocument;
+import org.openrqm.model.RQMElement;
+import org.openrqm.model.RQMElements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-09-12T19:15:09.451Z")
 
@@ -21,30 +29,27 @@ public class DocumentsApiController implements DocumentsApi {
 
     private static final Logger logger = LoggerFactory.getLogger(DocumentsApiController.class);
 
-    private final ObjectMapper objectMapper;
-
     private final HttpServletRequest request;
+    
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @Autowired
     public DocumentsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
-        this.objectMapper = objectMapper;
         this.request = request;
     }
 
     @Override
     public ResponseEntity<RQMDocuments> documentsGet() {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<>(objectMapper.readValue("\"\"", RQMDocuments.class),
-                        HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                logger.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            List<RQMDocument> documentsList = jdbcTemplate.query("SELECT * FROM document", new DocumentRowMapper());
+            RQMDocuments documents = new RQMDocuments();
+            documents.addAll(documentsList); //TODO: improve this, we are touching elements twice here
+            return new ResponseEntity<>(documents, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }
