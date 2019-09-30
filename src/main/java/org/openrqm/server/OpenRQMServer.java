@@ -22,7 +22,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @SpringBootApplication
 @EnableSwagger2
-@ComponentScan(basePackages = { "org.openrqm.server", "org.openrqm.controller", "org.openrqm.util", "org.openrqm.api", "org.openrqm.config", })
+@ComponentScan(basePackages = { "org.openrqm.server", "org.openrqm.controller", "org.openrqm.api", "org.openrqm.config", })
 public class OpenRQMServer implements CommandLineRunner {
     private final static Logger logger = LoggerFactory.getLogger(OpenRQMServer.class);
 

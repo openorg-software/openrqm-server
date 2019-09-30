@@ -10,24 +10,31 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-09-12T19:15:09.451Z")
 
 @Configuration
 public class SwaggerDocumentationConfig {
 
     ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("OpenRQM").description(
-                "This is the OpenRQM API specification. [OpenRQM Docs - Github](https://github.com/openrqm/openrqm-docs) ")
-                .license("Apache 2.0").licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
-                .termsOfServiceUrl("").version("1.0.0").contact(new Contact("", "", "")).build();
+        return new ApiInfoBuilder()
+            .title("OpenRQM")
+            .description("This is the OpenRQM API specification. [OpenRQM Docs - Github](https://github.com/openrqm/openrqm-docs) ")
+            .license("LGPL-2.0-only")
+            .licenseUrl("https://spdx.org/licenses/LGPL-2.0-only.html#licenseText")
+            .termsOfServiceUrl("")
+            .version("1.0.0")
+            .contact(new Contact("","", ""))
+            .build();
     }
 
     @Bean
-    public Docket customImplementation() {
-        return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors.basePackage("org.openrqm.controller")).build()
-                .directModelSubstitute(org.threeten.bp.LocalDate.class, java.sql.Date.class)
-                .directModelSubstitute(org.threeten.bp.OffsetDateTime.class, java.util.Date.class).apiInfo(apiInfo());
+    public Docket customImplementation(){
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                    .apis(RequestHandlerSelectors.basePackage("org.openrqm.api"))
+                    .build()
+                .directModelSubstitute(java.time.LocalDate.class, java.sql.Date.class)
+                .directModelSubstitute(java.time.OffsetDateTime.class, java.util.Date.class)
+                .apiInfo(apiInfo());
     }
 
 }

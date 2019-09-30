@@ -1,10 +1,11 @@
-package org.openrqm.util;
+package org.openrqm.server;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 
 import java.text.FieldPosition;
 import java.util.Date;
+
 
 public class RFC3339DateFormat extends ISO8601DateFormat {
 

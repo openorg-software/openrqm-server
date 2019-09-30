@@ -2,8 +2,6 @@ package org.openrqm.api;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-09-12T19:15:09.451Z")
-
 @javax.xml.bind.annotation.XmlRootElement
 public class ApiResponseMessage {
     public static final int ERROR = 1;
@@ -16,12 +14,11 @@ public class ApiResponseMessage {
     String type;
     String message;
 
-    public ApiResponseMessage() {
-    }
+    public ApiResponseMessage(){}
 
-    public ApiResponseMessage(int code, String message) {
+    public ApiResponseMessage(int code, String message){
         this.code = code;
-        switch (code) {
+        switch(code){
         case ERROR:
             setType("error");
             break;

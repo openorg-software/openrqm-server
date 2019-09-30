@@ -1,21 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <!-- SPDX-License-Identifier: GPL-2.0-only -->
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.openrqm.server</groupId>
+    <groupId>org.openrqm</groupId>
     <artifactId>openrqm-server</artifactId>
-    <version>0.1</version>
     <packaging>jar</packaging>
+    <name>openrqm-server</name>
+    <version>1.0.0</version>
     <properties>
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <springfox-version>2.9.2</springfox-version>
+        <springfox-version>2.7.0</springfox-version>
     </properties>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.7.RELEASE</version>
+        <version>1.5.9.RELEASE</version>
     </parent>
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -32,6 +32,36 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- swagger codegen -->
+            <plugin>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>2.3.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/api/swagger.json</inputSpec>
+                            <language>spring</language>
+                            <configOptions>
+                                <sourceFolder>.</sourceFolder>
+                                <sortParamsByRequiredFlag>true</sortParamsByRequiredFlag>
+                                <ensureUniqueParams>true</ensureUniqueParams>
+                                <modelPackage>org.openrqm.model</modelPackage>
+                                <apiPackage>org.openrqm.api</apiPackage>
+                                <serializableModel>false</serializableModel>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <dateLibrary>java8</dateLibrary>
+                                <java8>true</java8>
+                                <interfaceOnly>true</interfaceOnly>
+                                <library>spring-boot</library>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -44,47 +74,34 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
         </dependency>
-        <!-- spring mvc -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <!-- spring jdbc -->
-        <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
-        <!-- SpringFox -->
+        <!--SpringFox dependencies -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox-version}</version>
+            <!-- workaround for numberFormatException bug>
             <exclusions>
-                <!-- workaround for numberFormatException bug -->
                 <exclusion>
                     <groupId>io.swagger</groupId>
                     <artifactId>swagger-models</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions-->
         </dependency>
+        <!-- workaround for numberFormatException bug>
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-models</artifactId>
             <version>1.5.21</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox-version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.joschi.jackson</groupId>
-            <artifactId>jackson-datatype-threetenbp</artifactId>
-            <version>2.6.4</version>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.9.9</version>
         </dependency>
         <!-- Bean Validation API support -->
         <dependency>
@@ -95,6 +112,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!-- spring jdbc -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <!-- database - jdbc mariadb connector -->
         <dependency>

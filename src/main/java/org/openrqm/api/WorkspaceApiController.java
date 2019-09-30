@@ -1,29 +1,24 @@
-package org.openrqm.controller;
+package org.openrqm.api;
 
-import org.openrqm.model.RQMWorkspace;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openrqm.api.WorkspaceApi;
-
+import org.springframework.stereotype.Controller;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
+import org.openrqm.mapper.WorkspaceRowMapper;
+import org.openrqm.model.RQMWorkspace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.openrqm.mapper.WorkspaceRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-09-12T19:15:09.451Z")
 
 @Controller
 public class WorkspaceApiController implements WorkspaceApi {
-
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceApiController.class);
 
+    private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
     
     @Autowired
@@ -31,7 +26,18 @@ public class WorkspaceApiController implements WorkspaceApi {
 
     @Autowired
     public WorkspaceApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+        this.objectMapper = objectMapper;
         this.request = request;
+    }
+
+    @Override
+    public Optional<ObjectMapper> getObjectMapper() {
+        return Optional.ofNullable(objectMapper);
+    }
+
+    @Override
+    public Optional<HttpServletRequest> getRequest() {
+        return Optional.ofNullable(request);
     }
 
     @Override
@@ -45,5 +51,4 @@ public class WorkspaceApiController implements WorkspaceApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

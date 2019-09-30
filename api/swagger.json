@@ -1,0 +1,347 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This is the OpenRQM API specification.\n[OpenRQM Docs - Github](https://github.com/openrqm/openrqm-docs)\n",
+    "version" : "1.0.0",
+    "title" : "OpenRQM",
+    "license" : {
+      "name" : "LGPL-2.0-only",
+      "url" : "https://spdx.org/licenses/LGPL-2.0-only.html#licenseText"
+    }
+  },
+  "externalDocs" : {
+    "description" : "Find out more about OpenRQM",
+    "url" : "https://github.com/openrqm/openrqm-docs"
+  },
+  "tags" : [ {
+    "name" : "workspaces",
+    "description" : "Operations for multiple workspaces"
+  }, {
+    "name" : "workspace",
+    "description" : "Everything about single requirements"
+  }, {
+    "name" : "documents",
+    "description" : "Operations about multiple documents"
+  }, {
+    "name" : "document",
+    "description" : "Operations about single documents"
+  }, {
+    "name" : "elements",
+    "description" : "Everything about multiple requirements"
+  }, {
+    "name" : "element",
+    "description" : "Everything about single requirements"
+  } ],
+  "paths" : {
+    "/workspaces" : {
+      "get" : {
+        "tags" : [ "workspaces" ],
+        "summary" : "Get all workspaces",
+        "operationId" : "getWorkspaces",
+        "responses" : {
+          "200" : {
+            "description" : "All workspaces were fetched sucessfully",
+            "schema" : {
+              "$ref" : "#/definitions/RQMWorkspaces"
+            }
+          }
+        }
+      }
+    },
+    "/workspace" : {
+      "get" : {
+        "tags" : [ "workspace" ],
+        "summary" : "Get a workspace",
+        "operationId" : "getWorkspace",
+        "responses" : {
+          "200" : {
+            "description" : "The workspace was fetched successfully",
+            "schema" : {
+              "$ref" : "#/definitions/RQMWorkspace"
+            }
+          }
+        }
+      }
+    },
+    "/documents" : {
+      "get" : {
+        "tags" : [ "documents" ],
+        "summary" : "Get all documents",
+        "operationId" : "getDocuments",
+        "responses" : {
+          "200" : {
+            "description" : "Documents sucessfully fetche",
+            "schema" : {
+              "$ref" : "#/definitions/RQMDocuments"
+            }
+          }
+        }
+      }
+    },
+    "/document" : {
+      "get" : {
+        "tags" : [ "document" ],
+        "summary" : "Get a document",
+        "operationId" : "getDocument",
+        "responses" : {
+          "200" : {
+            "description" : "Document successfully fetched",
+            "schema" : {
+              "$ref" : "#/definitions/RQMDocument"
+            }
+          }
+        }
+      }
+    },
+    "/elements" : {
+      "get" : {
+        "tags" : [ "elements" ],
+        "summary" : "Get all elements",
+        "operationId" : "getElements",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "documentid",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The document id for which the elements are fetched"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Elements successfully fetched",
+            "schema" : {
+              "$ref" : "#/definitions/RQMElements"
+            }
+          }
+        }
+      }
+    },
+    "/element" : {
+      "post" : {
+        "tags" : [ "element" ],
+        "summary" : "Add an element",
+        "operationId" : "postElement",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "element",
+          "description" : "The element to create",
+          "schema" : {
+            "$ref" : "#/definitions/RQMElement"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The element created by the backend",
+            "schema" : {
+              "$ref" : "#/definitions/RQMElement"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "element" ],
+        "summary" : "Update an element",
+        "operationId" : "putElement",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "element",
+          "description" : "The element to update",
+          "schema" : {
+            "$ref" : "#/definitions/RQMElement"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Updating element successfull"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "element" ],
+        "summary" : "Update an element",
+        "operationId" : "patchElement",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "element",
+          "description" : "The element to update",
+          "schema" : {
+            "$ref" : "#/definitions/RQMElement"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Updating element successfull"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "element" ],
+        "summary" : "Delete an element",
+        "operationId" : "deleteElement",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "element",
+          "description" : "The element to update",
+          "schema" : {
+            "$ref" : "#/definitions/RQMElement"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Deleting element successfull"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "RQMWorkspaces" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/RQMWorkspace"
+      }
+    },
+    "RQMWorkspace" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "workspaceId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "workspaces" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RQMWorkspace"
+          }
+        },
+        "documents" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RQMDocument"
+          }
+        }
+      }
+    },
+    "RQMDocuments" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/RQMDocument"
+      }
+    },
+    "RQMDocument" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "workspaceId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "internalIdentifier" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "externalIdentifier" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "shortName" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "confidentiality" : {
+          "type" : "string"
+        },
+        "authorId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "languageId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "approverId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "reviewerText" : {
+          "type" : "string"
+        },
+        "lastModifiedById" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "lastModifiedOn" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "baselineMajor" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "baselineMinor" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "baselineReview" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "previousBaselineId" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      }
+    },
+    "RQMElement" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "When creating an element the id is ignored by the backend because it generates one, when updating the element it has to be set"
+        },
+        "documentId" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "When creating an element the documentId has to be set to assign the requirement to the correct document, it can not be updated."
+        },
+        "elementTypeId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "content" : {
+          "type" : "string"
+        },
+        "rank" : {
+          "type" : "string"
+        },
+        "parentElementId" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      }
+    },
+    "RQMElements" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/definitions/RQMElement"
+      }
+    }
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "schemes" : [ "https" ],
+  "basePath" : "/benjaminSchilling33/OpenRQM/1.0.0"
+}

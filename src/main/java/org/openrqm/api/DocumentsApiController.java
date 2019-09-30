@@ -1,34 +1,26 @@
-package org.openrqm.controller;
+package org.openrqm.api;
 
-import org.openrqm.model.RQMDocuments;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openrqm.api.DocumentsApi;
-
+import java.util.List;
+import org.springframework.stereotype.Controller;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
+import org.openrqm.mapper.DocumentRowMapper;
+import org.openrqm.model.RQMDocument;
+import org.openrqm.model.RQMDocuments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.List;
-import org.openrqm.mapper.DocumentRowMapper;
-import org.openrqm.mapper.ElementRowMapper;
-import org.openrqm.model.RQMDocument;
-import org.openrqm.model.RQMElement;
-import org.openrqm.model.RQMElements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2019-09-12T19:15:09.451Z")
 
 @Controller
 public class DocumentsApiController implements DocumentsApi {
-
     private static final Logger logger = LoggerFactory.getLogger(DocumentsApiController.class);
 
+    private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
     
     @Autowired
@@ -36,11 +28,22 @@ public class DocumentsApiController implements DocumentsApi {
 
     @Autowired
     public DocumentsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+        this.objectMapper = objectMapper;
         this.request = request;
     }
 
     @Override
-    public ResponseEntity<RQMDocuments> documentsGet() {
+    public Optional<ObjectMapper> getObjectMapper() {
+        return Optional.ofNullable(objectMapper);
+    }
+
+    @Override
+    public Optional<HttpServletRequest> getRequest() {
+        return Optional.ofNullable(request);
+    }
+
+    @Override
+    public ResponseEntity<RQMDocuments> getDocuments() {
         try {
             List<RQMDocument> documentsList = jdbcTemplate.query("SELECT * FROM document", new DocumentRowMapper());
             RQMDocuments documents = new RQMDocuments();
@@ -51,5 +54,4 @@ public class DocumentsApiController implements DocumentsApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
