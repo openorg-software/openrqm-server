@@ -44,7 +44,13 @@ public class ElementApiController implements ElementApi {
     
     @Override
     public ResponseEntity<Void> deleteElement(@ApiParam(value = "The element to update") @Valid @RequestBody RQMElement element) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            jdbcTemplate.update("DELETE FROM element WHERE id = ?", element.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
