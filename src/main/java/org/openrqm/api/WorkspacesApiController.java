@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.mapper.WorkspaceRowMapper;
+import org.openrqm.model.RQMDocument;
 import org.openrqm.model.RQMWorkspace;
 import org.openrqm.model.RQMWorkspaces;
 import org.slf4j.Logger;
@@ -46,7 +48,10 @@ public class WorkspacesApiController implements WorkspacesApi {
     public ResponseEntity<RQMWorkspaces> getWorkspaces() {
         try {
             List<RQMWorkspace> workspacesList = jdbcTemplate.query("SELECT * FROM workspace", new WorkspaceRowMapper());
-            RQMWorkspaces workspaces = new RQMWorkspaces();
+            //add first document to workspace 1
+            RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?", new DocumentRowMapper(), new Long(1));
+            workspacesList.get(0).addDocumentsItem(document);
+            RQMWorkspaces workspaces = new RQMWorkspaces(); 
             workspaces.addAll(workspacesList); //TODO: improve this, we are touching elements twice here
             return new ResponseEntity<>(workspaces, HttpStatus.OK);
         } catch (DataAccessException ex) {

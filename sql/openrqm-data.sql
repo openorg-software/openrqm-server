@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 23. Sep 2019 um 21:13
+-- Erstellungszeit: 01. Okt 2019 um 19:30
 -- Server-Version: 10.4.6-MariaDB
 -- PHP-Version: 7.3.9
 
@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 --
 
 INSERT INTO `document` (`id`, `workspace_id`, `internal_identifier`, `external_identifier`, `name`, `short_name`, `description`, `confidentiality`, `author_id`, `language_id`, `approver_id`, `reviewer_text`, `last_modified_by_id`, `last_modified_on`, `baseline_major`, `baseline_minor`, `baseline_review`, `previous_baseline_id`) VALUES
-(1, 2, 1, '123456789', 'Requirements for OpenRQM', 'OpenRQM_Req', 'The Requirements for the OpenRQM project.', 'Public', 1, 1, NULL, NULL, 1, '2019-09-23 19:00:00', 0, 0, 0, NULL);
+(1, 1, 1, '123456789', 'Requirements for OpenRQM', 'OpenRQM_Req', 'The Requirements for the OpenRQM project.', 'Public', 1, 1, NULL, NULL, 1, '2019-09-23 19:00:00', 0, 0, 0, NULL);
 
 --
 -- Daten für Tabelle `element`
