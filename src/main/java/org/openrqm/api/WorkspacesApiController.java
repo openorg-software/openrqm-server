@@ -48,22 +48,23 @@ public class WorkspacesApiController implements WorkspacesApi {
     public ResponseEntity<RQMWorkspaces> getWorkspaces() {
         try {
             List<RQMWorkspace> workspacesList = jdbcTemplate.query("SELECT * FROM workspace WHERE workspace_id IS NULL;", new WorkspaceRowMapper());
-            for (RQMWorkspace workspace : workspacesList) {
-                Long workspaceId = workspace.getWorkspaceId();
-                List<RQMWorkspace> childWorkspacesList = jdbcTemplate.query("SELECT * FROM workspace WHERE workspace_id = ?;", new Object[] { workspaceId }, new WorkspaceRowMapper());
-                workspace.setWorkspaces(childWorkspacesList);
-            }
-            
-            //add first document to workspace 1
-            //RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?", new DocumentRowMapper(), new Long(0));
-            //workspacesList.get(0).addDocumentsItem(document);
-            
-            RQMWorkspaces workspaces = new RQMWorkspaces(); 
+            getWorkspacesRecursive(workspacesList); //TODO: this is a really bad way of doing this, used only for testing
+            RQMWorkspaces workspaces = new RQMWorkspaces();
             workspaces.addAll(workspacesList); //TODO: improve this, we are touching elements twice here
             return new ResponseEntity<>(workspaces, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    private void getWorkspacesRecursive(List<RQMWorkspace> workspacesList) {
+        for (RQMWorkspace workspace : workspacesList) {
+            List<RQMDocument> documentsList = jdbcTemplate.query("SELECT * FROM document WHERE workspace_id = ?;", new DocumentRowMapper(), workspace.getId());
+            workspace.setDocuments(documentsList);
+            List<RQMWorkspace> childWorkspacesList = jdbcTemplate.query("SELECT * FROM workspace WHERE workspace_id = ?;", new WorkspaceRowMapper(), workspace.getId());
+            getWorkspacesRecursive(childWorkspacesList);
+            workspace.setWorkspaces(childWorkspacesList);
         }
     }
 }

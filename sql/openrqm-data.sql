@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 01. Okt 2019 um 19:30
+-- Erstellungszeit: 01. Okt 2019 um 20:34
 -- Server-Version: 10.4.6-MariaDB
 -- PHP-Version: 7.3.9
 
@@ -81,7 +81,11 @@ INSERT INTO `workspace` (`id`, `name`, `workspace_id`) VALUES
 (4, 'Workspace 2', NULL),
 (5, 'Subworkspace 2.1', 4),
 (6, 'Subworkspace 2.2', 4),
-(7, 'Subworkspace 2.3', 4);
+(7, 'Subworkspace 2.3', 4),
+(8, 'Subworkspace 2.2.1', 6),
+(9, 'Subworkspace 2.2.2', 6),
+(10, 'Subworkspace 2.2.1.1', 8),
+(11, 'Subworkspace 2.2.1.2', 8);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
