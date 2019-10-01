@@ -45,7 +45,7 @@ public class DocumentsApiController implements DocumentsApi {
     @Override
     public ResponseEntity<RQMDocuments> getDocuments() {
         try {
-            List<RQMDocument> documentsList = jdbcTemplate.query("SELECT * FROM document", new DocumentRowMapper());
+            List<RQMDocument> documentsList = jdbcTemplate.query("SELECT * FROM document;", new DocumentRowMapper());
             RQMDocuments documents = new RQMDocuments();
             documents.addAll(documentsList); //TODO: improve this, we are touching elements twice here
             return new ResponseEntity<>(documents, HttpStatus.OK);

@@ -44,7 +44,7 @@ public class WorkspaceApiController implements WorkspaceApi {
     public ResponseEntity<RQMWorkspace> getWorkspace() {
         try {
             Long id = new Long(1);
-            RQMWorkspace workspace = jdbcTemplate.queryForObject("SELECT * FROM workspace WHERE id = ?", new Object[] { id } , new WorkspaceRowMapper());
+            RQMWorkspace workspace = jdbcTemplate.queryForObject("SELECT * FROM workspace WHERE id = ?;", new Object[] { id } , new WorkspaceRowMapper());
             return new ResponseEntity<>(workspace, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

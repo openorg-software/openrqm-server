@@ -44,7 +44,7 @@ public class DocumentApiController implements DocumentApi {
     public ResponseEntity<RQMDocument> getDocument() {
         try {
             Long id = new Long(1);
-            RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?", new Object[] { id } , new DocumentRowMapper());
+            RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?;", new Object[] { id } , new DocumentRowMapper());
             return new ResponseEntity<>(document, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

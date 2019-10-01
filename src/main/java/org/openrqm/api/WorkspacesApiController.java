@@ -47,10 +47,17 @@ public class WorkspacesApiController implements WorkspacesApi {
     @Override
     public ResponseEntity<RQMWorkspaces> getWorkspaces() {
         try {
-            List<RQMWorkspace> workspacesList = jdbcTemplate.query("SELECT * FROM workspace", new WorkspaceRowMapper());
+            List<RQMWorkspace> workspacesList = jdbcTemplate.query("SELECT * FROM workspace WHERE workspace_id IS NULL;", new WorkspaceRowMapper());
+            for (RQMWorkspace workspace : workspacesList) {
+                Long workspaceId = workspace.getWorkspaceId();
+                List<RQMWorkspace> childWorkspacesList = jdbcTemplate.query("SELECT * FROM workspace WHERE workspace_id = ?;", new Object[] { workspaceId }, new WorkspaceRowMapper());
+                workspace.setWorkspaces(childWorkspacesList);
+            }
+            
             //add first document to workspace 1
-            RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?", new DocumentRowMapper(), new Long(1));
-            workspacesList.get(0).addDocumentsItem(document);
+            //RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?", new DocumentRowMapper(), new Long(0));
+            //workspacesList.get(0).addDocumentsItem(document);
+            
             RQMWorkspaces workspaces = new RQMWorkspaces(); 
             workspaces.addAll(workspacesList); //TODO: improve this, we are touching elements twice here
             return new ResponseEntity<>(workspaces, HttpStatus.OK);
