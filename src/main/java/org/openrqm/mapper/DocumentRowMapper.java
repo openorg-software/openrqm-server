@@ -3,6 +3,9 @@ package org.openrqm.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import org.openrqm.model.RQMDocument;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -25,8 +28,7 @@ public class DocumentRowMapper implements RowMapper<RQMDocument> {
         document.setReviewerText(rs.getString("reviewer_text"));
         document.setLastModifiedById(rs.getLong("last_modified_by_id"));
         Timestamp timestamp = rs.getTimestamp("last_modified_on");
-        //LocalDateTime localDateTime = DateTimeUtils.toLocalDateTime(timestamp);
-        //document.setLastModifiedOn(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
+        document.setLastModifiedOn(OffsetDateTime.ofInstant(timestamp.toInstant(), ZoneOffset.UTC));
         document.setBaselineMajor(rs.getLong("baseline_major"));
         document.setBaselineMinor(rs.getLong("baseline_minor"));
         document.setBaselineReview(rs.getLong("baseline_review"));
