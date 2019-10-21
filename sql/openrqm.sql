@@ -3,10 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 03. Sep 2019 um 21:35
+-- Erstellungszeit: 24. Sep 2019 um 20:47
 -- Server-Version: 10.4.6-MariaDB
 -- PHP-Version: 7.3.9
--- SPDX-License-Identifier: GPL-2.0-only
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -33,7 +32,7 @@ USE `openrqm`;
 
 CREATE TABLE `accessgroup` (
   `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -67,7 +66,7 @@ CREATE TABLE `document` (
   `approver_id` int(10) UNSIGNED DEFAULT NULL,
   `reviewer_text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `last_modified_by_id` int(10) UNSIGNED NOT NULL,
-  `last_modified_on` date NOT NULL,
+  `last_modified_on` datetime NOT NULL,
   `baseline_major` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `baseline_minor` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `baseline_review` int(10) UNSIGNED NOT NULL DEFAULT 0,
