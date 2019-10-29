@@ -5,14 +5,11 @@
  */
 package org.openrqm.export;
 
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +23,7 @@ public class PdfExporter {
 
     public static void export() throws Exception {
         fillTheme();
-        try (OutputStream os = new FileOutputStream("res/out.pdf")) {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.useFastMode();
-            builder.withFile(new File("res/out.html"));
-            builder.toStream(os);
-            builder.run();
-        }
+        
     }
 
     private static void fillTheme() {
