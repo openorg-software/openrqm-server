@@ -1,12 +1,12 @@
 /*
  * openrqm-server
- * Entry point of the OpenRQM server implementation
  * SPDX-License-Identifier: GPL-2.0-only
  * Copyright (C) 2019 Marcel Jaehn
  */
 
 package org.openrqm.server;
 
+import org.openrqm.export.PdfExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -31,8 +31,13 @@ public class OpenRQMServer implements CommandLineRunner {
      * 
      * @param args The commandline arguments
      */
-    public static void main(String[] args) throws Exception {
-        new SpringApplication(OpenRQMServer.class).run(args);
+    public static void main(String[] args) {
+        try {
+            PdfExporter.export();
+            //new SpringApplication(OpenRQMServer.class).run(args);
+        } catch (Exception ex) {
+            logger.error("An internal error occured: " + ex.getMessage());
+        }
     }
 
     @Override

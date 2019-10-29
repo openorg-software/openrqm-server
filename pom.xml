@@ -74,7 +74,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
         </dependency>
-        <!--SpringFox dependencies -->
+        <!-- springfox dependencies -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -90,7 +90,7 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.9.9</version>
         </dependency>
-        <!-- Bean Validation API support -->
+        <!-- bean validation api support -->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -118,6 +118,23 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
+        </dependency>
+        <!-- html to pdf -->
+        <dependency>
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-slf4j</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- chunk - templating engine -->
+        <dependency>
+            <groupId>com.x5dev</groupId>
+            <artifactId>chunk-templates</artifactId>
+            <version>3.4.0</version>
         </dependency>
     </dependencies>
 </project>
