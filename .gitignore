@@ -9,6 +9,7 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 .factorypath
+nb-configuration.xml
 
 .settings/
 .classpath
