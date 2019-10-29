@@ -33,8 +33,7 @@ public class OpenRQMServer implements CommandLineRunner {
      */
     public static void main(String[] args) {
         try {
-            PdfExporter.export();
-            //new SpringApplication(OpenRQMServer.class).run(args);
+            new SpringApplication(OpenRQMServer.class).run(args);
         } catch (Exception ex) {
             logger.error("An internal error occured: " + ex.getMessage());
         }

@@ -119,22 +119,5 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
         </dependency>
-        <!-- html to pdf -->
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-pdfbox</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-slf4j</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <!-- chunk - templating engine -->
-        <dependency>
-            <groupId>com.x5dev</groupId>
-            <artifactId>chunk-templates</artifactId>
-            <version>3.4.0</version>
-        </dependency>
     </dependencies>
 </project>
