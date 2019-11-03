@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class DocumentApiController implements DocumentApi {
-
     private static final Logger logger = LoggerFactory.getLogger(DocumentApiController.class);
 
     private final ObjectMapper objectMapper;
