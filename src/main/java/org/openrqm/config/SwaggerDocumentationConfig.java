@@ -1,3 +1,9 @@
+/*
+ * openrqm-server
+ * SPDX-License-Identifier: GPL-2.0-only
+ * Copyright (C) 2019 Marcel Jaehn
+ */
+
 package org.openrqm.config;
 
 import org.springframework.context.annotation.Bean;
