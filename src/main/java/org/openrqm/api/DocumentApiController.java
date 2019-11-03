@@ -8,6 +8,9 @@ package org.openrqm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -65,13 +68,19 @@ public class DocumentApiController implements DocumentApi {
     @Override
     public ResponseEntity<RQMDocument> postDocument(@ApiParam(value = "The document to create") @Valid @RequestBody RQMDocument document) {
         try {
+            //TODO: check that the time is set server-side in UTC; Timestamp.from() might make problems for 2k38
+            Instant currentInstant = Instant.now();
+            //TODO: load author and last_modified_by_id from session
+            long author_id = 1;
+            //TODO: set internal identifier in the server, with persistent incremented id
+            long internal_identifier = 123;
             jdbcTemplate.update("INSERT INTO document(id, workspace_id, internal_identifier, external_identifier, name, short_name, description, "
                     + "confidentiality, author_id, language_id, approver_id, reviewer_text, last_modified_by_id, last_modified_on, baseline_major, "
                     + "baseline_minor, baseline_review, previous_baseline_id) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                    0, document.getWorkspaceId(), document.getInternalIdentifier(), document.getExternalIdentifier(), document.getName(),
-                    document.getShortName(), document.getDescription(), document.getConfidentiality(), document.getAuthorId(), document.getLanguageId(),
-                    document.getApproverId(), document.getReviewerText(), document.getLastModifiedById(), document.getLastModifiedOn(),
+                    0, document.getWorkspaceId(), internal_identifier, document.getExternalIdentifier(), document.getName(),
+                    document.getShortName(), document.getDescription(), document.getConfidentiality(), author_id, document.getLanguageId(),
+                    document.getApproverId(), document.getReviewerText(), author_id, Timestamp.from(currentInstant),
                     document.getBaselineMajor(), document.getBaselineMinor(), document.getBaselineReview(), document.getPreviousBaselineId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
