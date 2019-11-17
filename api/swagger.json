@@ -79,7 +79,63 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "The workspace created by the backend",
+            "description" : "The workspace was created by the backend",
+            "schema" : {
+              "$ref" : "#/definitions/RQMWorkspace"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "workspace" ],
+        "summary" : "Update a workspace",
+        "operationId" : "putWorkspace",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "workspace",
+          "description" : "The workspace to update",
+          "schema" : {
+            "$ref" : "#/definitions/RQMWorkspace"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Updating workspace successfull"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "workspace" ],
+        "summary" : "Update a workspace",
+        "operationId" : "patchWorkspace",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "workspace",
+          "description" : "The workspace to update",
+          "schema" : {
+            "$ref" : "#/definitions/RQMWorkspace"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Updating workspace successfull"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "workspace" ],
+        "summary" : "Delete a workspace",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "workspace",
+          "description" : "The workspace to delete",
+          "schema" : {
+            "$ref" : "#/definitions/RQMWorkspace"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The workspace was deleted successfully",
             "schema" : {
               "$ref" : "#/definitions/RQMWorkspace"
             }
@@ -107,6 +163,13 @@
         "tags" : [ "document" ],
         "summary" : "Get a document",
         "operationId" : "getDocument",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "documentId",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The element above"
+        } ],
         "responses" : {
           "200" : {
             "description" : "Document successfully fetched",
@@ -131,6 +194,62 @@
         "responses" : {
           "200" : {
             "description" : "The document created by the backend",
+            "schema" : {
+              "$ref" : "#/definitions/RQMDocument"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "document" ],
+        "summary" : "Update a document",
+        "operationId" : "putDocument",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "document",
+          "description" : "The document to update",
+          "schema" : {
+            "$ref" : "#/definitions/RQMDocument"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Updating document successfull"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "document" ],
+        "summary" : "Update a document",
+        "operationId" : "patchDocument",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "document",
+          "description" : "The document to update",
+          "schema" : {
+            "$ref" : "#/definitions/RQMDocument"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Updating document successfull"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "document" ],
+        "summary" : "Delete a document",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "document",
+          "description" : "The document to delete",
+          "schema" : {
+            "$ref" : "#/definitions/RQMDocument"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The document was deleted successfully",
             "schema" : {
               "$ref" : "#/definitions/RQMDocument"
             }
@@ -172,6 +291,18 @@
           "schema" : {
             "$ref" : "#/definitions/RQMElement"
           }
+        }, {
+          "in" : "query",
+          "name" : "aboveId",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The element above"
+        }, {
+          "in" : "query",
+          "name" : "belowId",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The element below"
         } ],
         "responses" : {
           "200" : {

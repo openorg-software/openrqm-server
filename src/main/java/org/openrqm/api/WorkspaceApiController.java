@@ -8,12 +8,10 @@ package org.openrqm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
-import java.io.IOException;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
-import static org.openrqm.api.WorkspaceApi.log;
 import org.openrqm.mapper.WorkspaceRowMapper;
 import org.openrqm.model.RQMWorkspace;
 import org.slf4j.Logger;
@@ -73,5 +71,22 @@ public class WorkspaceApiController implements WorkspaceApi {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    @Override
+    public ResponseEntity<Void> patchWorkspace(@ApiParam(value = "The workspace to update") @Valid @RequestBody RQMWorkspace workspace) {
+        try {
+            jdbcTemplate.update("UPDATE workspace SET name = ?, workspace_id = ? WHERE id = ?;",
+                    workspace.getName(), workspace.getWorkspaceId(), workspace.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<Void> putWorkspace(@ApiParam(value = "The workspace to update") @Valid @RequestBody RQMWorkspace workspace) {
+        return patchWorkspace(workspace);
     }
 }
