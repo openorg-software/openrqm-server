@@ -48,6 +48,17 @@ public class WorkspaceApiController implements WorkspaceApi {
     public Optional<HttpServletRequest> getRequest() {
         return Optional.ofNullable(request);
     }
+    
+    @Override
+    public ResponseEntity<Void> deleteWorkspace(@ApiParam(value = "The workspace to delete") @Valid @RequestBody RQMWorkspace workspace) {
+        try {
+            jdbcTemplate.update("DELETE FROM workspace WHERE id = ?;", workspace.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @Override
     public ResponseEntity<RQMWorkspace> getWorkspace() {
@@ -62,7 +73,7 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
     
     @Override
-    public ResponseEntity<RQMWorkspace> postWorkspace(@ApiParam(value = "The workspace to create") @Valid @RequestBody RQMWorkspace workspace) {
+    public ResponseEntity<Void> postWorkspace(@ApiParam(value = "The workspace to create") @Valid @RequestBody RQMWorkspace workspace) {
         try {
             jdbcTemplate.update("INSERT INTO workspace(id, name, workspace_id) VALUES (?, ?, ?);",
                     0, workspace.getName(), workspace.getWorkspaceId());

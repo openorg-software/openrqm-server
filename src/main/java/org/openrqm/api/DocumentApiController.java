@@ -51,6 +51,17 @@ public class DocumentApiController implements DocumentApi {
     public Optional<HttpServletRequest> getRequest() {
         return Optional.ofNullable(request);
     }
+    
+    @Override
+    public ResponseEntity<Void> deleteDocument(@ApiParam(value = "The document to delete") @Valid @RequestBody RQMDocument document) {
+        try {
+            jdbcTemplate.update("DELETE FROM document WHERE id = ?;", document.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @Override
     public ResponseEntity<RQMDocument> getDocument(@ApiParam(value = "The element above") @Valid @RequestParam(value = "documentId", required = false) Long documentId) {
@@ -64,7 +75,7 @@ public class DocumentApiController implements DocumentApi {
     }
 
     @Override
-    public ResponseEntity<RQMDocument> postDocument(@ApiParam(value = "The document to create") @Valid @RequestBody RQMDocument document) {
+    public ResponseEntity<Void> postDocument(@ApiParam(value = "The document to create") @Valid @RequestBody RQMDocument document) {
         try {
             //TODO: check that the time is set server-side in UTC; Timestamp.from() might make problems for 2k38
             Instant currentInstant = Instant.now();

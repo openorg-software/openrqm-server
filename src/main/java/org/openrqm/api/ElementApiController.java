@@ -64,7 +64,7 @@ public class ElementApiController implements ElementApi {
     }
 
     @Override
-    public ResponseEntity<RQMElement> postElement(@ApiParam(value = "The element to create") @Valid @RequestBody RQMElement element, @ApiParam(value = "The element above") @Valid @RequestParam(value = "aboveId", required = false) Long aboveId, @ApiParam(value = "The element below") @Valid @RequestParam(value = "belowId", required = false) Long belowId) {
+    public ResponseEntity<Void> postElement(@ApiParam(value = "The element to create") @Valid @RequestBody RQMElement element, @ApiParam(value = "The element above") @Valid @RequestParam(value = "aboveId", required = false) Long aboveId, @ApiParam(value = "The element below") @Valid @RequestParam(value = "belowId", required = false) Long belowId) {
         //TODO: maybe transfer the rank directly, even if it could be misused
         //-> the rank could also be tampered with
 
