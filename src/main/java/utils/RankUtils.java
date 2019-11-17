@@ -14,6 +14,9 @@ import java.math.BigInteger;
  * @author Marcel Jaehn <marcel.jaehn@online.de>
  */
 public class RankUtils {
+    public static final BigInteger NEW_ELEMENTS = new BigInteger("19928148895209409152"); //26^20 : 10^9
+    public static final BigInteger MAX_ELEMENTS = new BigInteger("19928148895209409152340197376"); //26^20
+    public static final int MAX_LENGTH = 29;
     
     //lookup table 'a'-'z' maps to '0'-'p'
     private static final char[] BASE26 = new char[123]; //97 to 122 ('a' to 'z') as inputs
