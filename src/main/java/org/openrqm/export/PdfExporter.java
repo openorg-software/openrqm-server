@@ -5,11 +5,16 @@
  */
 package org.openrqm.export;
 
-import com.x5.template.Chunk;
-import com.x5.template.Theme;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.openrqm.model.RQMDocument;
+import org.openrqm.model.RQMElements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,21 +26,23 @@ public class PdfExporter {
 
     private final static Logger logger = LoggerFactory.getLogger(PdfExporter.class);
 
-    public static void export() throws Exception {
-        fillTheme();
+    public static void export(RQMDocument document, RQMElements elements) throws Exception {
+        MustacheFactory mf = new DefaultMustacheFactory();
+        Mustache m = mf.compile("templates/template.tex");
         
-    }
+        Map<String, Object> context = new HashMap<>();
+        context.put("rqmelements", elements);
 
-    private static void fillTheme() {
-        Theme theme = new Theme("res", "");
-        Chunk c = theme.makeChunk("theme", "html");
+        FileWriter writer = new FileWriter("export/export.tex");
+        m.execute(writer, context).flush();
 
-        c.set("title", "OpenRQM PDF Export Demo");
-
-        try (FileWriter fw = new FileWriter(new File("res/out.html"))) {
-            c.render(fw);
-        } catch (IOException ex) {
-            logger.error("Exception during html creation", ex);
+        ProcessBuilder pb = new ProcessBuilder("pdflatex", "-shell-escape -synctex=1 -interaction=nonstopmode", "export.tex");
+        pb.directory(new File("export"));
+        try {
+            Process p = pb.start();
+            p.waitFor();
+        } catch (IOException | InterruptedException ex) {
+            ex.printStackTrace();
         }
     }
 }

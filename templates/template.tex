@@ -1,0 +1,368 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[ascii]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[xcdraw]{xcolor}
+\usepackage[normalem]{ulem}
+\usepackage{fancyhdr}
+\usepackage[top=0.951cm,bottom=3cm,left=2cm,right=1.5cm,includehead,headsep=10pt,includefoot,footskip=0.5cm]{geometry}
+\usepackage{array}
+\usepackage{supertabular}
+\usepackage{hhline}
+\usepackage{colortbl}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=blue, filecolor=blue, urlcolor=blue}
+
+% footnotes configuration
+\makeatletter
+\renewcommand\thefootnote{\arabic{footnote}}
+\renewcommand\@makefnmark{\mbox{\textstyleFootnoteanchor{\@thefnmark}}}
+\makeatother
+
+% Text styles
+\newcommand\textstyleWWviiiNumviiiz[1]{#1}
+\newcommand\textstyleWWviiiNumviiizi[1]{#1}
+\newcommand\textstyleWWviiiNumviiizii[1]{#1}
+\newcommand\textstyleWWviiiNumviiiziii[1]{#1}
+\newcommand\textstyleInternetlink[1]{\textcolor{blue}{\uline{#1}}}
+\newcommand\textstyleFootnoteanchor[1]{\textsuperscript{#1}}
+\newcommand\textstyleWWviiiNumiiiz[1]{#1}
+\definecolor{tabgrey}{RGB}{230,230,230}
+
+% Headings and outline numbering
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{0.0cm}{0cm}{0.282cm}{\clearpage\normalfont\normalsize\normalcolor\fontsize{13pt}{15.6pt}\selectfont\sffamily\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{0.0cm}{0.423cm}{0.282cm}{\normalfont\normalsize\normalcolor\fontsize{13pt}{15.6pt}\selectfont\sffamily\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{0.0cm}{0.423cm}{0.282cm}{\normalfont\normalsize\normalcolor\fontsize{11pt}{13.2pt}\selectfont\sffamily\bfseries}}
+\renewcommand\@seccntformat[1]{\csname @textstyle#1\endcsname{\csname the#1\endcsname}\csname @distance#1\endcsname}
+\setcounter{secnumdepth}{3}
+\newcommand\@distancesection{\hspace{0.76cm}}
+\newcommand\@textstylesection[1]{\protect\makebox[0cm][l]{\textstyleWWviiiNumiiiz{#1}}}
+\renewcommand\thesection{\arabic{section}}
+\newcommand\@distancesubsection{\hspace{1.02cm}}
+\newcommand\@textstylesubsection[1]{\protect\makebox[0cm][l]{\textstyleWWviiiNumiiiz{#1}}}
+\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
+\newcommand\@distancesubsubsection{\hspace{1.27cm}}
+\newcommand\@textstylesubsubsection[1]{\protect\makebox[0cm][l]{\textstyleWWviiiNumiiiz{#1}}}
+\renewcommand\thesubsubsection{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
+\makeatother
+\makeatletter
+\newcommand\arraybslash{\let\\\@arraycr}
+\makeatother
+\raggedbottom
+
+% Paragraph styles
+\renewcommand\familydefault{\rmdefault}
+
+\newenvironment{stylePxxi}{\renewcommand\baselinestretch{1.0}\setlength\leftskip{0cm}\setlength\rightskip{0cm}\setlength\parindent{0cm}\setlength\parfillskip{0pt plus 1fil}\setlength\parskip{0.106cm plus 0.0106cm}\writerlistparindent\writerlistleftskip\leavevmode\normalfont\normalsize\normalcolor\fontsize{8pt}{9.6pt}\selectfont\sffamily\itshape\writerlistlabel\ignorespaces}{\unskip\vspace{0.282cm plus 0.028200002cm}\par}
+
+\newenvironment{styleHeading}{\renewcommand\baselinestretch{1.0}\setlength\leftskip{0cm}\setlength\rightskip{0cm}\setlength\parindent{0cm}\setlength\parfillskip{0pt plus 1fil}\setlength\parskip{0.141cm plus 0.014100001cm}\writerlistparindent\writerlistleftskip\leavevmode\normalfont\normalsize\normalcolor\fontsize{11pt}{13.2pt}\selectfont\sffamily\bfseries\writerlistlabel\ignorespaces}{\unskip\vspace{0.212cm plus 0.0212cm}\par}
+
+\newenvironment{styleStandard}{\renewcommand\baselinestretch{1.0}\setlength\leftskip{0cm}\setlength\rightskip{0cm}\setlength\parindent{0cm}\setlength\parfillskip{0pt plus 1fil}\setlength\parskip{0cm plus 1pt}\writerlistparindent\writerlistleftskip\leavevmode\normalfont\normalsize\normalcolor\fontsize{11pt}{13.2pt}\selectfont\sffamily\writerlistlabel\ignorespaces}{\unskip\vspace{0.423cm plus 0.0423cm}\par}
+
+% Footnote rule
+\setlength{\skip\footins}{0.119cm}
+\renewcommand\footnoterule{\vspace*{-0.018cm}\setlength\leftskip{0pt}\setlength\rightskip{0pt plus 1fil}\noindent\textcolor{black}{\rule{0.25\columnwidth}{0.018cm}}\vspace*{0.101cm}}
+
+% Pages styles
+\fancypagestyle{Standard}{\fancyhf{}
+	\fancyhead[L]{\includegraphics[width=4cm]{logo.png}}
+	\fancyfoot[C]{%
+		\begin{tabular}{|m{7.0cm}|m{4.0cm}|m{3.5cm}|m{1.5cm}|}
+			\hline
+			{\fontsize{9pt}{10.8pt}\selectfont\sffamily Document Name in Process} & {\fontsize{9pt}{10.8pt}\selectfont\sffamily Issuer: {}-{}-{}-} & {\fontsize{9pt}{10.8pt}\selectfont\sffamily Restricted} & \centering{\fontsize{9pt}{10.8pt}\selectfont\sffamily \thepage} \tabularnewline
+			{\fontsize{9pt}{10.8pt}\selectfont\sffamily Release Subsystem Component Module} & {\fontsize{9pt}{10.8pt}\selectfont\sffamily Released: {}-{}-{}-} & {\fontsize{9pt}{10.8pt}\selectfont\sffamily Language: {}-{}-{}-} & \centering{\fontsize{9pt}{10.8pt}\selectfont\sffamily of} \tabularnewline
+			{\fontsize{9pt}{10.8pt}\selectfont\sffamily Project: {}-{}-{}-} & {\fontsize{9pt}{10.8pt}\selectfont\sffamily State: {}-{}-{}-} & {\fontsize{9pt}{10.8pt}\selectfont\sffamily Memo:} & \centering{\fontsize{9pt}{10.8pt}\selectfont\sffamily \pageref{LastPage}} \tabularnewline
+			\hline
+		\end{tabular}%
+		\vspace*{1pt}
+		\linebreak
+		\begin{styleStandard}
+			\fontsize{7pt}{8.4pt}\selectfont{\textcopyright}~Siemens~Mobility GmbH,~2019\hfill All rights reserved\\
+			SYS SEC basic template: 2018-03-20; Content template: 2013-12-06\hfill SYS\_SEC\_Template\_empty.doc
+		\end{styleStandard}%
+		%\fontsize{7pt}{8.4pt}\selectfont 
+	}
+	\renewcommand\headrulewidth{0pt}
+	\renewcommand\footrulewidth{0pt}
+	\renewcommand\thepage{\arabic{page}}
+}
+\pagestyle{Standard}
+\setlength\tabcolsep{1mm}
+\renewcommand\arraystretch{1.3}
+
+
+% List styles
+\newcommand\writerlistleftskip{}
+\newcommand\writerlistparindent{}
+\newcommand\writerlistlabel{}
+\newcommand\writerlistremovelabel{\aftergroup\let\aftergroup\writerlistparindent\aftergroup\relax\aftergroup\let\aftergroup\writerlistlabel\aftergroup\relax}
+\newcounter{listWWviiiNumviiileveli}
+\newcounter{listWWviiiNumviiilevelii}[listWWviiiNumviiileveli]
+\newcounter{listWWviiiNumviiileveliii}[listWWviiiNumviiilevelii]
+\newcounter{listWWviiiNumviiileveliv}[listWWviiiNumviiileveliii]
+\renewcommand\thelistWWviiiNumviiileveli{\arabic{listWWviiiNumviiileveli}}
+\renewcommand\thelistWWviiiNumviiilevelii{\alph{listWWviiiNumviiilevelii}}
+\renewcommand\thelistWWviiiNumviiileveliii{\roman{listWWviiiNumviiileveliii}}
+\renewcommand\thelistWWviiiNumviiileveliv{\arabic{listWWviiiNumviiileveliv}}
+\newcommand\labellistWWviiiNumviiileveli{\textstyleWWviiiNumviiiz{Table~\thelistWWviiiNumviiileveli:}}
+\newcommand\labellistWWviiiNumviiilevelii{\textstyleWWviiiNumviiizi{\thelistWWviiiNumviiilevelii.}}
+\newcommand\labellistWWviiiNumviiileveliii{\textstyleWWviiiNumviiizii{\thelistWWviiiNumviiileveliii.}}
+\newcommand\labellistWWviiiNumviiileveliv{\textstyleWWviiiNumviiiziii{\thelistWWviiiNumviiileveliv.}}
+\newenvironment{listWWviiiNumviiileveli}{\def\writerlistleftskip{\setlength\leftskip{3cm}}\def\writerlistparindent{}\def\writerlistlabel{}\def\item{\def\writerlistparindent{\setlength\parindent{-0.499cm}}\def\writerlistlabel{\stepcounter{listWWviiiNumviiileveli}\makebox[0cm][r]{\labellistWWviiiNumviiileveli}\hspace{0.49900007cm}\writerlistremovelabel}}}{}
+\newenvironment{listWWviiiNumviiilevelii}{\def\writerlistleftskip{\setlength\leftskip{2.54cm}}\def\writerlistparindent{}\def\writerlistlabel{}\def\item{\def\writerlistparindent{\setlength\parindent{-0.635cm}}\def\writerlistlabel{\stepcounter{listWWviiiNumviiilevelii}\makebox[0cm][l]{\labellistWWviiiNumviiilevelii}\hspace{0.635cm}\writerlistremovelabel}}}{}
+\newenvironment{listWWviiiNumviiileveliii}{\def\writerlistleftskip{\setlength\leftskip{3.81cm}}\def\writerlistparindent{}\def\writerlistlabel{}\def\item{\def\writerlistparindent{\setlength\parindent{-0.318cm}}\def\writerlistlabel{\stepcounter{listWWviiiNumviiileveliii}\makebox[0cm][r]{\labellistWWviiiNumviiileveliii}\hspace{0.31800008cm}\writerlistremovelabel}}}{}
+\newenvironment{listWWviiiNumviiileveliv}{\def\writerlistleftskip{\setlength\leftskip{5.08cm}}\def\writerlistparindent{}\def\writerlistlabel{}\def\item{\def\writerlistparindent{\setlength\parindent{-0.635cm}}\def\writerlistlabel{\stepcounter{listWWviiiNumviiileveliv}\makebox[0cm][l]{\labellistWWviiiNumviiileveliv}\hspace{0.6350002cm}\writerlistremovelabel}}}{}
+
+
+\title{Document title}
+\begin{document}
+	\vspace*{0pt}
+
+	\begin{flushleft}
+		\begin{supertabular}{|m{2.8cm}|m{8.987cm}|m{0.119cm}m{4.822cm}}
+			\hhline{--~-}
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Document Type} & {\fontsize{10pt}{12.0pt}\selectfont\sffamily Document Type} & \multicolumn{1}{m{0.119cm}|}{~} & \multicolumn{1}{m{4.822cm}|}{{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries Protection Class}} \\
+			\hhline{--~-}
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Title} & {\fontsize{10pt}{12.0pt}\selectfont\sffamily Document Name in Process} & \multicolumn{1}{m{0.119cm}|}{~} & \multicolumn{1}{m{4.822cm}|}{{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries Restricted}} \\
+			~ & {\fontsize{10pt}{12.0pt}\selectfont\sffamily Release Subsystem Komponente Modul} & \multicolumn{1}{m{0.119cm}|}{~} & \multicolumn{1}{m{4.822cm}|}{~} \\
+			~ & ~ & \multicolumn{1}{m{0.119cm}|}{~} & \multicolumn{1}{m{4.822cm}|}{~} \\
+			\hhline{--~~}
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Product Name} & {\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-} & \multicolumn{1}{m{0.119cm}|}{~} & \multicolumn{1}{m{4.822cm}|}{~} \\
+			\hhline{--~~}
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Project} & {\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-} & \multicolumn{1}{m{0.119cm}|}{~} & \multicolumn{1}{m{4.822cm}|}{~} \\
+			~ & ~ &\multicolumn{1}{m{0.119cm}|}{~} & \multicolumn{1}{m{4.822cm}|}{~} \\
+			\hhline{--~~}
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Reference-ID} & {\fontsize{10pt}{12.0pt}\selectfont\sffamily Reference ID} & \multicolumn{1}{m{0.119cm}|}{~} & \multicolumn{1}{m{4.822cm}|}{~} \\
+			\hhline{--~-}
+		\end{supertabular}
+	\end{flushleft}
+	
+	\bigskip
+	\bigskip
+	
+	\begin{flushleft}
+		\begin{supertabular}{|m{2.0509999cm}|m{5.801cm}|m{2.0509999cm}|m{6.827cm}|}
+			\hhline{~---}
+			\multicolumn{1}{m{2.0509999cm}|}{~
+			} &
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily Name}
+			
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily Organizational Unit} &
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily Date} &
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily Sgd. (electronic signature in EDM)}
+			
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily Space for Original Signature}\\\hline
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Approved by} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-}
+			
+			{\fontsize{9pt}{10.8pt}\selectfont\sffamily {}-{}-{}-} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily Sgd. {}-{}-{}-}\\\hline
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Verified by{\fontsize{7pt}{8.4pt}\selectfont \textmd{\textit{\textsuperscript{(*)}}}}} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-}
+			
+			{\fontsize{9pt}{10.8pt}\selectfont\sffamily {}-{}-{}-} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily Sgd. {}-{}-{}-}\\\hline
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Verified by{\fontsize{7pt}{8.4pt}\selectfont \textmd{\textit{\textsuperscript{(*)}}}}} &
+			\multicolumn{3}{m{15.0789995cm}|}{{\fontsize{9pt}{10.8pt}\selectfont\sffamily See review documentation: /REVIEW/}}\\\hline
+			{\fontsize{8pt}{9.6pt}\selectfont\sffamily\bfseries Prepared by} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-}
+			
+			{\fontsize{9pt}{10.8pt}\selectfont\sffamily {}-{}-{}-} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily Sgd. {}-{}-{}-}\\\hline
+		\end{supertabular}
+	\end{flushleft}
+
+	\begin{stylePxxi}
+		(*) Name etc. or reference to review minutes
+	\end{stylePxxi}
+	
+	\begin{styleHeading}
+		Validity and Purpose
+	\end{styleHeading}
+	
+	\begin{styleHeading}
+		Scope
+	\end{styleHeading}
+	
+	\begin{styleStandard}
+		This template is valid for new guide templates.
+	\end{styleStandard}
+	
+	\begin{styleHeading}
+		Purpose
+	\end{styleHeading}
+	
+	\begin{styleStandard}
+		This template is an empty template for creating a new guide template
+	\end{styleStandard}
+
+	\setcounter{tocdepth}{3}
+	\renewcommand\contentsname{Contents}
+	\tableofcontents
+	
+	\bigskip
+	
+	\setcounter{tocdepth}{1}
+	\renewcommand\contentsname{List of Figures}
+	\begingroup
+	\let\clearpage\relax
+	\listoffigures
+	\endgroup
+	
+	\bigskip
+
+	\setcounter{tocdepth}{1}
+	\renewcommand\contentsname{List of Tables}
+	\begingroup
+	\let\clearpage\relax
+	\listoftables
+	\endgroup
+
+	\section{First Real Chapter}
+	
+	\subsection{Second Level}
+	
+	{{#rqmelements}}
+		\begin{styleStandard}
+			{{content}}
+		\end{styleStandard}
+	{{/rqmelements}}
+	
+	\section{About This Document}
+	
+	\subsection{References}
+	
+	\subsubsection{Referenced Documents}
+	
+	\begin{styleStandard}
+		If the identifier or version of a referenced document is not specified, the specifications in the document survey referenced here apply.
+	\end{styleStandard}
+	
+	\setcounter{footnote}{-1}
+	\begin{flushleft}
+		\vspace*{-20pt}
+		\tablefirsthead{
+			\hline
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Reference ID} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Document with title and unique identifier} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Document type \footnotemark} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Version}\\
+		}
+		\bottomcaption{Referenced Documents}
+		\label{tab:references}
+		\begin{supertabular}{|m{2.8cm}|m{9.302cm}|m{3.0509999cm}|m{2.075cm}|}
+			\hline
+			~ & ~ & ~ & ~ \\
+			\hline
+		\end{supertabular}
+	\end{flushleft}
+
+	\footnotetext{\ i~=~input document; a~=~appendices and associated documents; o~=~other document}
+
+	\subsubsection{Other References}
+
+	\begin{styleStandard}
+		If the identifier or version of a referenced document is not specified, the specifications in the document survey referenced here apply.
+	\end{styleStandard}
+	
+	\begin{flushleft}
+		\vspace*{-20pt}
+		\tablefirsthead{
+			\hline
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Reference ID} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Reference with unique identifier}\\
+		}
+		\bottomcaption{Other References}
+		\label{tab:otherreferences}
+		\begin{supertabular}{|m{2.8cm}|m{14.828cm}|}
+			\hline
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily\color{blue} \label{bkm:ureview}/REVIEW/} &
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily A6Zxxxxx/PM2/000/-}\\\hline
+		\end{supertabular}
+	\end{flushleft}
+	
+	\subsection{Terms and Abbreviations}
+
+	\begin{styleStandard}
+		Generally valid terms are explained in this document: \href{http://google.de}{\textstyleInternetlink{A6Z00042048570}}.
+	\end{styleStandard}
+	
+	\begin{styleStandard}
+		In addition, the following terms are used here:
+	\end{styleStandard}
+
+	\begin{flushleft}
+		\vspace*{-20pt}
+		\tablefirsthead{
+			\hline
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Term} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Explanation}\\
+		}
+		\bottomcaption{Terms}
+		\label{tab:terms}
+		\begin{supertabular}{|m{4.301cm}|m{13.327001cm}|}
+			\hline
+			~ & ~ \\
+			\hline
+			~ & ~ \\
+			\hline
+		\end{supertabular}
+	\end{flushleft}
+
+	\begin{styleStandard}
+		Generally valid abbreviations are explained in this document: \href{http://google.de}{\textstyleInternetlink{A6Z00042048570}}.
+	\end{styleStandard}
+
+	\begin{styleStandard}
+		In addition, the following abbreviations are used here:
+	\end{styleStandard}
+	
+	\begin{flushleft}
+		\vspace*{-20pt}
+		\tablefirsthead{
+			\hline
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Abbreviation} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Term}\\
+		}
+		\bottomcaption{Abbreviations}
+		\label{tab:abbreviations}
+		\begin{supertabular}{|m{2.8cm}|m{14.828cm}|}
+			\hline
+			~ & ~ \\
+			\hline
+			~ & ~ \\
+			\hline
+		\end{supertabular}
+	\end{flushleft}
+	
+	\newpage
+	\subsection{Document History}
+
+	\begin{flushleft}
+		%\setlength\arrayrulewidth{0.6pt}
+		\tablefirsthead{
+			\hline
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Version} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Date} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Author} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Sections changed} &
+			\cellcolor{tabgrey}{\fontsize{10pt}{12.0pt}\selectfont\sffamily\bfseries\color{black} Reason for change}\\
+		}
+		\bottomcaption{Document History}
+		\label{tab:history}
+		\begin{supertabular}{|m{1.5519999cm}|m{2.049cm}|m{3.552cm}|m{3.049cm}|m{6.827cm}|}
+			\hline
+			{\fontsize{10pt}{12.0pt}\selectfont\sffamily {}-{}-{}-} & {\fontsize{10pt}{12.0pt}\selectfont\sffamily 2019-11-23} & {\fontsize{10pt}{12.0pt}\selectfont\sffamily Marcel Jaehn} & ~ & ~ \\
+			\hline
+		\end{supertabular}
+	\end{flushleft}
+	
+\end{document}

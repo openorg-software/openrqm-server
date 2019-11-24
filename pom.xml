@@ -119,11 +119,11 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
         </dependency>
-        <!-- chunk - templating engine -->
+        <!-- templating engine -->
         <dependency>
-            <groupId>com.x5dev</groupId>
-            <artifactId>chunk-templates</artifactId>
-            <version>3.4.0</version>
+            <groupId>com.github.spullara.mustache.java</groupId>
+            <artifactId>compiler</artifactId>
+            <version>0.9.6</version>
         </dependency>
     </dependencies>
 </project>
