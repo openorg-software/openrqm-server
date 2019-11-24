@@ -53,9 +53,9 @@ public class DocumentApiController implements DocumentApi {
     }
     
     @Override
-    public ResponseEntity<Void> deleteDocument(@ApiParam(value = "The document to delete") @Valid @RequestBody RQMDocument document) {
+    public ResponseEntity<Void> deleteDocument(@ApiParam(value = "The document to delete") @Valid @RequestParam(value = "documentId", required = false) Long documentId) {
         try {
-            jdbcTemplate.update("DELETE FROM document WHERE id = ?;", document.getId());
+            jdbcTemplate.update("DELETE FROM document WHERE id = ?;", documentId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

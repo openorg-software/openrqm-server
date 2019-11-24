@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class WorkspaceApiController implements WorkspaceApi {
@@ -50,9 +51,9 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
     
     @Override
-    public ResponseEntity<Void> deleteWorkspace(@ApiParam(value = "The workspace to delete") @Valid @RequestBody RQMWorkspace workspace) {
+    public ResponseEntity<Void> deleteWorkspace(@ApiParam(value = "The workspace to delete") @Valid @RequestParam(value = "workspaceId", required = false) Long workspaceId) {
         try {
-            jdbcTemplate.update("DELETE FROM workspace WHERE id = ?;", workspace.getId());
+            jdbcTemplate.update("DELETE FROM workspace WHERE id = ?;", workspaceId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

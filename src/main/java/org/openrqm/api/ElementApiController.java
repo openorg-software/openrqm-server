@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
-import org.openrqm.mapper.ElementRowMapper;
 import org.openrqm.model.RQMElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +52,9 @@ public class ElementApiController implements ElementApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteElement(@ApiParam(value = "The element to update") @Valid @RequestBody RQMElement element) {
+    public ResponseEntity<Void> deleteElement(@ApiParam(value = "The element to delete") @Valid @RequestParam(value = "elementId", required = false) Long elementId) {
         try {
-            jdbcTemplate.update("DELETE FROM element WHERE id = ?;", element.getId());
+            jdbcTemplate.update("DELETE FROM element WHERE id = ?;", elementId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -64,22 +63,8 @@ public class ElementApiController implements ElementApi {
     }
 
     @Override
-    public ResponseEntity<Void> postElement(@ApiParam(value = "The element to create") @Valid @RequestBody RQMElement element, @ApiParam(value = "The element above") @Valid @RequestParam(value = "aboveId", required = false) Long aboveId, @ApiParam(value = "The element below") @Valid @RequestParam(value = "belowId", required = false) Long belowId) {
-        //TODO: maybe transfer the rank directly, even if it could be misused
-        //-> the rank could also be tampered with
-
-        //get rank of aboveId and belowId
-        RQMElement aboveElement = jdbcTemplate.queryForObject("SELECT * FROM element WHERE id = ?;", new Object[]{aboveId}, new ElementRowMapper());
-        if (aboveElement == null) {
-            logger.error("Could not get element with aboveId");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        RQMElement belowElement = jdbcTemplate.queryForObject("SELECT * FROM element WHERE id = ?;", new Object[]{belowId}, new ElementRowMapper());
-        if (belowElement == null) {
-            logger.error("Could not get element with belowId");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        String newRank = rankUtils.calculateMiddleRank(aboveElement.getRank(), belowElement.getRank(), RankUtils.MAX_LENGTH);
+    public ResponseEntity<Void> postElement(@ApiParam(value = "The element to create") @Valid @RequestBody RQMElement element, @ApiParam(value = "The rank of the element above") @Valid @RequestParam(value = "aboveRank", required = false) String aboveRank, @ApiParam(value = "The rank of the element below") @Valid @RequestParam(value = "belowRank", required = false) String belowRank) {
+        String newRank = rankUtils.calculateMiddleRank(aboveRank, belowRank, RankUtils.MAX_LENGTH);
         if (newRank == null) {
             //TODO: trigger re-rank
             logger.error("Maximal length of rank reached");
@@ -94,7 +79,7 @@ public class ElementApiController implements ElementApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @Override
     public ResponseEntity<Void> patchElement(@ApiParam(value = "The element to update") @Valid @RequestBody RQMElement element) {
         try {
