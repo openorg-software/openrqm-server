@@ -52,7 +52,7 @@ public class ElementsApiController implements ElementsApi {
     }
 
     @Override
-    public ResponseEntity<RQMElements> getElements(@ApiParam(value = "The document id for which the elements are fetched") @Valid @RequestParam(value = "documentid", required = false) Long documentid) {
+    public ResponseEntity<RQMElements> getElements(@ApiParam(value = "The document id for which the elements are fetched") @Valid @RequestParam(value = "documentId", required = false) Long documentid) {
         try {
             List<RQMElement> elementsList = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentid } , new ElementRowMapper());
             RQMElements elements = new RQMElements();
