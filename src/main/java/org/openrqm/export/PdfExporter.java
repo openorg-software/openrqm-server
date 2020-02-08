@@ -25,18 +25,22 @@ public class PdfExporter {
 
     private final static Logger logger = LoggerFactory.getLogger(PdfExporter.class);
 
-    public static void export(RQMDocument document, RQMElements elements) throws Exception {
+    public static void export(RQMDocument document, RQMElements elements, String templatePath, String exportPath) throws Exception {
         logger.info("Load template");
         MustacheFactory mf = new DefaultMustacheFactory();
-        Mustache m = mf.compile("templates/template.tex");
+        Mustache m = mf.compile(templatePath);
         logger.info("Template loaded");
         
         Map<String, Object> context = new HashMap<>();
         context.put("rqmelements", elements);
 
         logger.info("Filling template");
-        File exportFile = new File("export/export.tex");
+        File exportFile = new File(exportPath);
         exportFile.getParentFile().mkdirs();
+        try (FileWriter writer = new FileWriter(exportFile)) {
+            m.execute(writer, context).flush();
+        }
+        // do again, so the table of contents is created
         try (FileWriter writer = new FileWriter(exportFile)) {
             m.execute(writer, context).flush();
         }
