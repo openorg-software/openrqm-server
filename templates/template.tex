@@ -15,7 +15,9 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{lastpage}
+\usepackage{caption}
 \hypersetup{colorlinks=true, linkcolor=black, citecolor=blue, filecolor=blue, urlcolor=blue}
+
 
 
 \title{Document title}
@@ -43,13 +45,17 @@
 	\listoftables
 	\endgroup
 
-	\section{First Real Chapter}
-	
-	\subsection{Second Level}
-	
-	{{#rqmelements}}
-    \textbf{\hspace{0mm}{{id}}$\colon$} {{content}}\newline
-	{{/rqmelements}}
+    \newpage
+    
+    % sections start new pages
+    \let\stdsection\section
+    \renewcommand\section{\newpage\stdsection}
+
+%%%%% BEGIN GENERATED %%%%%
+{{#rqmelements}}
+{{{content}}}
+{{/rqmelements}}
+%%%%%% END GENERATED %%%%%%
 	
 	\section{About This Document}
 	

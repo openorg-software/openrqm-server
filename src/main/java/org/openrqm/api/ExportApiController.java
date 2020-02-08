@@ -70,17 +70,20 @@ public class ExportApiController implements ExportApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         logger.info("Retrieved elements from database");
+        
         logger.info("Starting export");
+        Resource pdfExportResource;
         try {
-            PdfExporter.export(null, elements, "templates/template.tex", "export/export.tex");
+            PdfExporter pdfExporter = new PdfExporter();
+            pdfExportResource = pdfExporter.export(null, elements, "template", "export");
             logger.info("Finished export successful");
         } catch (Exception ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        Resource pdfResource = new FileSystemResource("export/export.pdf");
-        if (pdfResource.exists()) {
-            return new ResponseEntity<>(pdfResource, HttpStatus.OK);
+
+        if (pdfExportResource != null && pdfExportResource.exists()) {
+            return new ResponseEntity<>(pdfExportResource, HttpStatus.OK);
         } else {
             logger.error("No exported document can be returned");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
