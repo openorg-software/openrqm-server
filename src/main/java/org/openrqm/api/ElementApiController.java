@@ -64,11 +64,20 @@ public class ElementApiController implements ElementApi {
 
     @Override
     public ResponseEntity<Void> postElement(@ApiParam(value = "The element to create") @Valid @RequestBody RQMElement element, @ApiParam(value = "The rank of the element above") @Valid @RequestParam(value = "aboveRank", required = false) String aboveRank, @ApiParam(value = "The rank of the element below") @Valid @RequestParam(value = "belowRank", required = false) String belowRank) {
-        String newRank = rankUtils.calculateMiddleRank(aboveRank, belowRank, RankUtils.MAX_LENGTH);
-        if (newRank == null) {
-            //TODO: trigger re-rank
-            logger.error("Maximal length of rank reached");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        String newRank;
+        if (belowRank.isEmpty()) {
+            newRank = rankUtils.calculateNewRank(aboveRank, RankUtils.NEW_ELEMENTS, RankUtils.MAX_ELEMENTS);
+            if (newRank == null) {
+                logger.error("Maximal rank reached, no more elements can be inserted.");
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            newRank = rankUtils.calculateMiddleRank(aboveRank, belowRank, RankUtils.MAX_LENGTH);
+            if (newRank == null) {
+                //TODO: trigger re-rank
+                logger.error("Maximal length of rank reached");
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
         try {
             jdbcTemplate.update("INSERT INTO element(id, document_id, element_type_id, content, rank, parent_element_id) VALUES (?, ?, ?, ?, ?, ?);",
