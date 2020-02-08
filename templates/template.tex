@@ -1,0 +1,64 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[ascii]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts,textcomp}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[xcdraw]{xcolor}
+\usepackage[normalem]{ulem}
+\usepackage{fancyhdr}
+\usepackage[top=0.951cm,bottom=3cm,left=2cm,right=1.5cm,includehead,headsep=10pt,includefoot,footskip=0.5cm]{geometry}
+\usepackage{array}
+\usepackage{supertabular}
+\usepackage{hhline}
+\usepackage{colortbl}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{caption}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=blue, filecolor=blue, urlcolor=blue}
+
+
+
+\title{Document title}
+\begin{document}
+
+	\setcounter{tocdepth}{3}
+	\renewcommand\contentsname{Contents}
+	\tableofcontents
+	
+	\bigskip
+	
+	\setcounter{tocdepth}{1}
+	\renewcommand\contentsname{List of Figures}
+	\begingroup
+	\let\clearpage\relax
+	\listoffigures
+	\endgroup
+	
+	\bigskip
+
+	\setcounter{tocdepth}{1}
+	\renewcommand\contentsname{List of Tables}
+	\begingroup
+	\let\clearpage\relax
+	\listoftables
+	\endgroup
+
+    \newpage
+    
+    % sections start new pages
+    \let\stdsection\section
+    \renewcommand\section{\newpage\stdsection}
+
+%%%%% BEGIN GENERATED %%%%%
+{{#rqmelements}}
+{{{content}}}
+{{/rqmelements}}
+%%%%%% END GENERATED %%%%%%
+	
+	\section{About This Document}
+	
+	\subsection{References}
+	
+\end{document}

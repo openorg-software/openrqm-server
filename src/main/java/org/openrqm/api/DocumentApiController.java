@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -25,9 +24,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class DocumentApiController implements DocumentApi {
+
     private static final Logger logger = LoggerFactory.getLogger(DocumentApiController.class);
 
     private final ObjectMapper objectMapper;
@@ -51,12 +52,22 @@ public class DocumentApiController implements DocumentApi {
     public Optional<HttpServletRequest> getRequest() {
         return Optional.ofNullable(request);
     }
+    
+    @Override
+    public ResponseEntity<Void> deleteDocument(@ApiParam(value = "The document to delete") @Valid @RequestParam(value = "documentId", required = false) Long documentId) {
+        try {
+            jdbcTemplate.update("DELETE FROM document WHERE id = ?;", documentId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @Override
-    public ResponseEntity<RQMDocument> getDocument() {
+    public ResponseEntity<RQMDocument> getDocument(@ApiParam(value = "The element above") @Valid @RequestParam(value = "documentId", required = false) Long documentId) {
         try {
-            Long id = new Long(1);
-            RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?;", new Object[]{id}, new DocumentRowMapper());
+            RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?;", new Object[]{documentId}, new DocumentRowMapper());
             return new ResponseEntity<>(document, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -65,7 +76,7 @@ public class DocumentApiController implements DocumentApi {
     }
 
     @Override
-    public ResponseEntity<RQMDocument> postDocument(@ApiParam(value = "The document to create") @Valid @RequestBody RQMDocument document) {
+    public ResponseEntity<Void> postDocument(@ApiParam(value = "The document to create") @Valid @RequestBody RQMDocument document) {
         try {
             //TODO: check that the time is set server-side in UTC; Timestamp.from() might make problems for 2k38
             Instant currentInstant = Instant.now();
@@ -86,5 +97,33 @@ public class DocumentApiController implements DocumentApi {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public ResponseEntity<Void> patchDocument(@ApiParam(value = "The document to update") @Valid @RequestBody RQMDocument document) {
+        //TODO: check that the time is set server-side in UTC; Timestamp.from() might make problems for 2k38
+        Instant currentInstant = Instant.now();
+        //TODO: set last_modified_by_id from session
+        long author_id = 1;
+        try {
+            jdbcTemplate.update("UPDATE element SET workspace_id = ?, external_identifier = ?, name = ?, short_name = ?, "
+                    + "description = ?, confidentiality = ?, author_id = ?, language_id = ?, approver_id = ?, reviewer_text = ?, "
+                    + "last_modified_by_id = ?, last_modified_on = ?, baseline_major = ?, baseline_minor = ?, baseline_review = ?, "
+                    + "previous_baseline_id = ? WHERE id = ?;",
+                    document.getWorkspaceId(), document.getExternalIdentifier(), document.getName(),
+                    document.getShortName(), document.getDescription(), document.getConfidentiality(), author_id, document.getLanguageId(),
+                    document.getApproverId(), document.getReviewerText(), author_id, Timestamp.from(currentInstant),
+                    document.getBaselineMajor(), document.getBaselineMinor(), document.getBaselineReview(), document.getPreviousBaselineId(),
+                    document.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> putDocument(@ApiParam(value = "The document to update") @Valid @RequestBody RQMDocument document) {
+        return patchDocument(document);
     }
 }

@@ -34,16 +34,16 @@ INSERT INTO `document` (`id`, `workspace_id`, `internal_identifier`, `external_i
 --
 
 INSERT INTO `element` (`id`, `document_id`, `element_type_id`, `content`, `rank`, `parent_element_id`) VALUES
-(1, 1, 2, 'This is chapter 1', 'aaaaaaaaaaaaaaaaaaaa', NULL),
-(2, 1, 2, 'The next sentence is a requirement:', 'aaaaaaaaabaaaaaaaaaa', 1),
-(3, 1, 1, 'This shall be a requirement.', 'aaaaaaaaacaaaaaaaaaa', 1),
-(4, 1, 2, 'This is chapter 2', 'aaaaaaaaadaaaaaaaaaa', NULL),
-(5, 1, 1, 'This shall be the second requirement', 'aaaaaaaaaeaaaaaaaaaa', 4),
-(6, 1, 2, 'This is chapter 2.1', 'aaaaaaaaafaaaaaaaaaa', 4),
-(7, 1, 1, 'This shall be the third requirement.', 'aaaaaaaaagaaaaaaaaaa', 6),
-(8, 1, 2, 'This is only a prose.', 'aaaaaaaaahaaaaaaaaaa', 6),
-(9, 1, 2, 'This is chapter 2.2', 'aaaaaaaaaiaaaaaaaaaa', 4),
-(10, 1, 2, 'Yet another prose.', 'aaaaaaaaajaaaaaaaaaa', 9);
+(1, 1, 2, 'This is chapter 1', 'aaaaaaaaabaaaaaaaaaa', NULL),
+(2, 1, 2, 'The next sentence is a requirement:', 'aaaaaaaaacaaaaaaaaaa', 1),
+(3, 1, 1, 'This shall be a requirement.', 'aaaaaaaaadaaaaaaaaaa', 1),
+(4, 1, 2, 'This is chapter 2', 'aaaaaaaaaeaaaaaaaaaa', NULL),
+(5, 1, 1, 'This shall be the second requirement', 'aaaaaaaaafaaaaaaaaaa', 4),
+(6, 1, 2, 'This is chapter 2.1', 'aaaaaaaaagaaaaaaaaaa', 4),
+(7, 1, 1, 'This shall be the third requirement.', 'aaaaaaaaahaaaaaaaaaa', 6),
+(8, 1, 2, 'This is only a prose.', 'aaaaaaaaaiaaaaaaaaaa', 6),
+(9, 1, 2, 'This is chapter 2.2', 'aaaaaaaaajaaaaaaaaaa', 4),
+(10, 1, 2, 'Yet another prose.', 'aaaaaaaaakaaaaaaaaaa', 9);
 
 --
 -- Daten für Tabelle `element_type`
