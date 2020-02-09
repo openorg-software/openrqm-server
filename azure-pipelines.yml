@@ -34,5 +34,5 @@ steps:
     tag: $(Build.SourceBranchName)  
     assetUploadMode: replace
     assets: |
-         $(Build.Repository.LocalPath)/target/openrqm-server-0.1-jar-with-dependencies.jar
+         $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0.jar
          $(Build.Repository.LocalPath)/README.md
