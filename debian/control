@@ -1,0 +1,13 @@
+Source: openrqm-server
+Section: text
+Priority: optional
+Maintainer: marceljaehn <https://github.com/marceljaehn>
+Build-Depends: maven, openjdk-11-jdk
+Standards-Version: 4.0.0
+Homepage: https://github.com/openrqm/openrqm-server
+
+Package: openrqm-server
+Architecture: any
+Depends: openjdk-11-jre-headless, mariadb-server
+Description: OpenRQM Backend
+ Open Source Requirements Management System backend, implemented in Java

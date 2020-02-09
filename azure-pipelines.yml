@@ -23,6 +23,19 @@ steps:
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
 
+# Create a debian package
+- script: |
+    sudo apt-get maven openjdk-11-jdk debhelper
+  displayName: 'Install Debian build dependencies'
+
+- script: |
+    mkdir buildTemp
+    cp -r * buildTemp/
+    cd buildTemp/
+    dpkg-buildpackage -uc -us
+    cd ..
+  displayName: 'Build Debian package'
+
 - task: GithubRelease@0 
   condition: or(and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')), and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development')))
   displayName: 'Create GitHub Release'      
@@ -35,4 +48,5 @@ steps:
     assetUploadMode: replace
     assets: |
          $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0.jar
+         $(Build.Repository.LocalPath)/target/openrqm-server_1.0.0.deb
          $(Build.Repository.LocalPath)/README.md
