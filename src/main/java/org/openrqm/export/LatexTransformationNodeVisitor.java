@@ -21,11 +21,11 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
     public void head(Node node, int i) {
         switch (node.nodeName()) {
             case "body": break; //do nothing
-            case "#text": content += node.toString(); break;
+            case "#text": content += node.toString().replace("\n", "").replace("&nbsp;", "\\ "); break;
             case "h2": content += "\n\\section{"; break;
             case "h3": content += "\n\\subsection{"; break;
             case "h4": content += "\n\\subsubsection{"; break;
-            case "p": content += "\n"; break;
+            case "p": break; //do nothing
             case "strong": content += "\\textbf{"; break;
             case "i": content += "\\textit{"; break;
             case "blockquote": content += "\n\\begin{quotation}"; break;

@@ -28,9 +28,9 @@ import org.springframework.core.io.Resource;
  *
  * @author Marcel Jaehn <marcel.jaehn@online.de>
  */
-public class PdfExporter implements Exporter {
+public class MarkdownExporter implements Exporter {
 
-    private final static Logger logger = LoggerFactory.getLogger(PdfExporter.class);
+    private final static Logger logger = LoggerFactory.getLogger(MarkdownExporter.class);
     
     private final static String TEMPLATE_DIR = "templates/";
     private final static String EXPORT_DIR = "export/";
@@ -40,7 +40,7 @@ public class PdfExporter implements Exporter {
         // load template file to fill with the document
         logger.info("Load template");
         MustacheFactory mf = new DefaultMustacheFactory();
-        Mustache m = mf.compile(TEMPLATE_DIR + templateName + ".tex");
+        Mustache m = mf.compile(TEMPLATE_DIR + templateName + ".md");
         logger.info("Template loaded successful");
         
         // transform styling in all elements
@@ -50,21 +50,14 @@ public class PdfExporter implements Exporter {
         logger.info("Filling template");
         Map<String, Object> context = new HashMap<>();
         context.put("rqmelements", elements);
-        File generatedFile = new File(EXPORT_DIR + exportName + ".tex");
+        File generatedFile = new File(EXPORT_DIR + exportName + ".md");
         generatedFile.getParentFile().mkdirs();
         try (FileWriter writer = new FileWriter(generatedFile)) {
             m.execute(writer, context).flush();
         }
         logger.info("Template filled successful");
 
-        // convert the generated file to pdf
-        logger.info("Convert to pdf");
-        ProcessBuilder pb = new ProcessBuilder("pdflatex",exportName + ".tex"); //-shell-escape -interaction=nonstopmode
-        pb.inheritIO().directory(new File(EXPORT_DIR));
-        pb.start().waitFor();
-        pb.start().waitFor(); // run twice to generate table of contents
-        logger.info("Converted to pdf successful");
-        return new FileSystemResource(EXPORT_DIR + exportName + ".pdf");
+        return new FileSystemResource(EXPORT_DIR + exportName + ".md");
     }
     
     public void transformElement(RQMElement element) {
@@ -73,7 +66,7 @@ public class PdfExporter implements Exporter {
             logger.info("Error while parsing the element content of elementId " + element.getId());
             return;
         }
-        LatexTransformationNodeVisitor transformation = new LatexTransformationNodeVisitor();
+        MarkdownNodeVisitor transformation = new MarkdownNodeVisitor();
         NodeTraversor.traverse(transformation, document.body());
         element.setContent(transformation.content);
     }
