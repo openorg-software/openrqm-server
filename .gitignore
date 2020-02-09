@@ -17,4 +17,4 @@ nb-configuration.xml
 .vscode/
 
 logs/
-export/
+/export/
