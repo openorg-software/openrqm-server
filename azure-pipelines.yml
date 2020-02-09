@@ -21,7 +21,7 @@ steps:
 
 # Create a debian package
 - script: |
-    sudo apt-get maven openjdk-11-jdk debhelper
+    sudo apt-get install maven openjdk-11-jdk debhelper
   displayName: 'Install Debian build dependencies'
 
 - script: |
