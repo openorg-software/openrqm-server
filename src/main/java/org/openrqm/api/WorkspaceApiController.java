@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class WorkspaceApiController implements WorkspaceApi {
+
     private static final Logger logger = LoggerFactory.getLogger(WorkspaceApiController.class);
 
     private final ObjectMapper objectMapper;

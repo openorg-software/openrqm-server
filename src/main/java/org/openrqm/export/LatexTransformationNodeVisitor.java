@@ -10,11 +10,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.NodeVisitor;
 
-/**
- *
- * @author Marcel Jaehn <marcel.jaehn@online.de>
- */
 public class LatexTransformationNodeVisitor implements NodeVisitor {
+
     String content = "";
 
     @Override

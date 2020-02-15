@@ -10,10 +10,6 @@ import org.openrqm.model.RQMDocument;
 import org.openrqm.model.RQMElements;
 import org.springframework.core.io.Resource;
 
-/**
- *
- * @author Marcel Jaehn <marcel.jaehn@online.de>
- */
 public interface Exporter {
     abstract public Resource export(RQMDocument document, RQMElements elements, String templateName, String exportName) throws Exception;
 }

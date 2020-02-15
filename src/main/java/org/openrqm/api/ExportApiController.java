@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-2.0-only
  * Copyright (C) 2019 Marcel Jaehn
  */
+
 package org.openrqm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.openrqm.export.Exporter;
-import org.openrqm.export.MarkdownExporter;
 import org.openrqm.export.PdfExporter;
 import org.openrqm.mapper.ElementRowMapper;
 import org.openrqm.model.RQMElement;

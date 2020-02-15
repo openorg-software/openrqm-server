@@ -6,15 +6,11 @@
 
 package org.openrqm.export;
 
-import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.NodeVisitor;
 
-/**
- *
- * @author Marcel Jaehn <marcel.jaehn@online.de>
- */
 public class MarkdownNodeVisitor implements NodeVisitor {
+
     String content = "";
 
     @Override

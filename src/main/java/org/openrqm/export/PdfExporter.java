@@ -24,16 +24,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-/**
- *
- * @author Marcel Jaehn <marcel.jaehn@online.de>
- */
 public class PdfExporter implements Exporter {
 
-    private final static Logger logger = LoggerFactory.getLogger(PdfExporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PdfExporter.class);
     
-    private final static String TEMPLATE_DIR = "templates/";
-    private final static String EXPORT_DIR = "export/";
+    private static final String TEMPLATE_DIR = "templates/";
+    private static final String EXPORT_DIR = "export/";
 
     @Override
     public Resource export(RQMDocument document, RQMElements elements, String templateName, String exportName) throws Exception {

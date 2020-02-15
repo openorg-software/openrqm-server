@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ElementsApiController implements ElementsApi {
+
     private static final Logger logger = LoggerFactory.getLogger(ElementsApiController.class);
 
     private final ObjectMapper objectMapper;
