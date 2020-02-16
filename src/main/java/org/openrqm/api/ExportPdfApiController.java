@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.openrqm.export.Exporter;
 import org.openrqm.export.PdfExporter;
 import org.openrqm.mapper.ElementRowMapper;
@@ -29,9 +30,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ExportApiController implements ExportApi {
+public class ExportPdfApiController implements ExportPdfApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExportApiController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExportPdfApiController.class);
 
     private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
@@ -40,7 +41,7 @@ public class ExportApiController implements ExportApi {
     JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public ExportApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public ExportPdfApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
     }
@@ -56,7 +57,7 @@ public class ExportApiController implements ExportApi {
     }
 
     @Override
-    public ResponseEntity<Resource> exportDocument(@ApiParam(value = "The document to export") @Valid @RequestParam(value = "documentId", required = false) Long documentId) {
+    public ResponseEntity<Resource> exportPdf(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
         logger.info("Gettings elements from database");
         RQMElements elements = new RQMElements();
         try {

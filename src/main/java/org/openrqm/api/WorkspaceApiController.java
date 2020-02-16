@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.openrqm.mapper.WorkspaceRowMapper;
 import org.openrqm.model.RQMWorkspace;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
     
     @Override
-    public ResponseEntity<Void> deleteWorkspace(@ApiParam(value = "The workspace to delete") @Valid @RequestParam(value = "workspaceId", required = false) Long workspaceId) {
+    public ResponseEntity<Void> deleteWorkspace(@NotNull @ApiParam(value = "The workspace to delete", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
         try {
             jdbcTemplate.update("DELETE FROM workspace WHERE id = ?;", workspaceId);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -73,21 +74,9 @@ public class WorkspaceApiController implements WorkspaceApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @Override
-    public ResponseEntity<Void> postWorkspace(@ApiParam(value = "The workspace to create") @Valid @RequestBody RQMWorkspace workspace) {
-        try {
-            jdbcTemplate.update("INSERT INTO workspace(id, name, workspace_id) VALUES (?, ?, ?);",
-                    0, workspace.getName(), workspace.getWorkspaceId());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    
-    @Override
-    public ResponseEntity<Void> patchWorkspace(@ApiParam(value = "The workspace to update") @Valid @RequestBody RQMWorkspace workspace) {
+    public ResponseEntity<Void> patchWorkspace(@ApiParam(value = "The workspace to update", required=true) @Valid @RequestBody RQMWorkspace workspace) {
         try {
             jdbcTemplate.update("UPDATE workspace SET name = ?, workspace_id = ? WHERE id = ?;",
                     workspace.getName(), workspace.getWorkspaceId(), workspace.getId());
@@ -99,7 +88,14 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
     
     @Override
-    public ResponseEntity<Void> putWorkspace(@ApiParam(value = "The workspace to update") @Valid @RequestBody RQMWorkspace workspace) {
-        return patchWorkspace(workspace);
+    public ResponseEntity<Void> postWorkspace(@ApiParam(value = "The workspace to create", required=true) @Valid @RequestBody RQMWorkspace workspace) {
+        try {
+            jdbcTemplate.update("INSERT INTO workspace(id, name, workspace_id) VALUES (?, ?, ?);",
+                    0, workspace.getName(), workspace.getWorkspaceId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

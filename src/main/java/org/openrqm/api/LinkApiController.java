@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.openrqm.model.RQMLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class LinkApiController implements LinkApi {
     }
 
     @Override
-    public ResponseEntity<RQMLink> linkElement(@ApiParam(value = "The element that is the source of the link") @Valid @RequestParam(value = "fromElementId", required = false) Long fromElementId, @ApiParam(value = "The element that is the target of the link") @Valid @RequestParam(value = "toElementId", required = false) Long toElementId, @ApiParam(value = "The type of the link") @Valid @RequestParam(value = "linkTypeId", required = false) Long linkTypeId) {
+    public ResponseEntity<RQMLink> linkElement(@NotNull @ApiParam(value = "The element that is the source of the link", required = true) @Valid @RequestParam(value = "fromElementId", required = true) Long fromElementId, @NotNull @ApiParam(value = "The element that is the target of the link", required = true) @Valid @RequestParam(value = "toElementId", required = true) Long toElementId, @NotNull @ApiParam(value = "The type of the link", required = true) @Valid @RequestParam(value = "linkTypeId", required = true) Long linkTypeId) {
         try {
             jdbcTemplate.update("INSERT INTO link(id, from_element_id, to_element_id, link_type_id) VALUES (?, ?, ?, ?);",
                     0, fromElementId, toElementId, linkTypeId);

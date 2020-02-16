@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.openrqm.model.RQMElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class ElementApiController implements ElementApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteElement(@ApiParam(value = "The element to delete") @Valid @RequestParam(value = "elementId", required = false) Long elementId) {
+    public ResponseEntity<Void> deleteElement(@NotNull @ApiParam(value = "The element to delete", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
         try {
             jdbcTemplate.update("DELETE FROM element WHERE id = ?;", elementId);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -62,9 +63,21 @@ public class ElementApiController implements ElementApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @Override
+    public ResponseEntity<Void> patchElement(@ApiParam(value = "The element to update", required=true) @Valid @RequestBody RQMElement element) {
+        try {
+            jdbcTemplate.update("UPDATE element SET element_type_id = ?, content = ?, rank = ?, parent_element_id = ? WHERE id = ?;",
+                    element.getElementTypeId(), element.getContent(), element.getRank(), element.getParentElementId(), element.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @Override
-    public ResponseEntity<Void> postElement(@ApiParam(value = "The element to create") @Valid @RequestBody RQMElement element, @ApiParam(value = "The rank of the element above") @Valid @RequestParam(value = "aboveRank", required = false) String aboveRank, @ApiParam(value = "The rank of the element below") @Valid @RequestParam(value = "belowRank", required = false) String belowRank) {
+    public ResponseEntity<Void> postElement(@ApiParam(value = "The element to create, if the element should be created at the highest level, the parentElementId shall be null", required=true) @Valid @RequestBody RQMElement element, @NotNull @ApiParam(value = "The rank of the element above, if no above element exists this shall be set to aaaaaaaaaaaaaaaaaaaa", required = true) @Valid @RequestParam(value = "aboveRank", required = true) String aboveRank, @NotNull @ApiParam(value = "The rank of the element below, if not above element exists this shall be set to an empty string", required = true) @Valid @RequestParam(value = "belowRank", required = true) String belowRank) {
         String newRank;
         if (belowRank.isEmpty()) {
             newRank = rankUtils.calculateNewRank(aboveRank, RankUtils.NEW_ELEMENTS, RankUtils.MAX_ELEMENTS);
@@ -88,22 +101,5 @@ public class ElementApiController implements ElementApi {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Override
-    public ResponseEntity<Void> patchElement(@ApiParam(value = "The element to update") @Valid @RequestBody RQMElement element) {
-        try {
-            jdbcTemplate.update("UPDATE element SET element_type_id = ?, content = ?, rank = ?, parent_element_id = ? WHERE id = ?;",
-                    element.getElementTypeId(), element.getContent(), element.getRank(), element.getParentElementId(), element.getId());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public ResponseEntity<Void> putElement(@ApiParam(value = "The element to update") @Valid @RequestBody RQMElement element) {
-        return patchElement(element);
     }
 }

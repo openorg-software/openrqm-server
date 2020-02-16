@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.model.RQMDocument;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class DocumentApiController implements DocumentApi {
     }
     
     @Override
-    public ResponseEntity<Void> deleteDocument(@ApiParam(value = "The document to delete") @Valid @RequestParam(value = "documentId", required = false) Long documentId) {
+    public ResponseEntity<Void> deleteDocument(@NotNull @ApiParam(value = "The document to delete", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
         try {
             jdbcTemplate.update("DELETE FROM document WHERE id = ?;", documentId);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -65,7 +66,7 @@ public class DocumentApiController implements DocumentApi {
     }
 
     @Override
-    public ResponseEntity<RQMDocument> getDocument(@ApiParam(value = "The element above") @Valid @RequestParam(value = "documentId", required = false) Long documentId) {
+    public ResponseEntity<RQMDocument> getDocument(@NotNull @ApiParam(value = "The element above", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
         try {
             RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?;", new Object[]{documentId}, new DocumentRowMapper());
             return new ResponseEntity<>(document, HttpStatus.OK);
@@ -74,33 +75,9 @@ public class DocumentApiController implements DocumentApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @Override
-    public ResponseEntity<Void> postDocument(@ApiParam(value = "The document to create") @Valid @RequestBody RQMDocument document) {
-        try {
-            //TODO: check that the time is set server-side in UTC; Timestamp.from() might make problems for 2k38
-            Instant currentInstant = Instant.now();
-            //TODO: load author and last_modified_by_id from session
-            long author_id = 1;
-            //TODO: set internal identifier in the server, with persistent incremented id
-            long internal_identifier = 123;
-            jdbcTemplate.update("INSERT INTO document(id, workspace_id, internal_identifier, external_identifier, name, short_name, description, "
-                    + "confidentiality, author_id, language_id, approver_id, reviewer_text, last_modified_by_id, last_modified_on, baseline_major, "
-                    + "baseline_minor, baseline_review, previous_baseline_id) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                    0, document.getWorkspaceId(), internal_identifier, document.getExternalIdentifier(), document.getName(),
-                    document.getShortName(), document.getDescription(), document.getConfidentiality(), author_id, document.getLanguageId(),
-                    document.getApproverId(), document.getReviewerText(), author_id, Timestamp.from(currentInstant),
-                    document.getBaselineMajor(), document.getBaselineMinor(), document.getBaselineReview(), document.getPreviousBaselineId());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    public ResponseEntity<Void> patchDocument(@ApiParam(value = "The document to update") @Valid @RequestBody RQMDocument document) {
+    public ResponseEntity<Void> patchDocument(@ApiParam(value = "The document to update", required=true) @Valid @RequestBody RQMDocument document) {
         //TODO: check that the time is set server-side in UTC; Timestamp.from() might make problems for 2k38
         Instant currentInstant = Instant.now();
         //TODO: set last_modified_by_id from session
@@ -123,7 +100,26 @@ public class DocumentApiController implements DocumentApi {
     }
 
     @Override
-    public ResponseEntity<Void> putDocument(@ApiParam(value = "The document to update") @Valid @RequestBody RQMDocument document) {
-        return patchDocument(document);
+    public ResponseEntity<Void> postDocument(@ApiParam(value = "The document to create", required=true) @Valid @RequestBody RQMDocument document) {
+        try {
+            //TODO: check that the time is set server-side in UTC; Timestamp.from() might make problems for 2k38
+            Instant currentInstant = Instant.now();
+            //TODO: load author and last_modified_by_id from session
+            long author_id = 1;
+            //TODO: set internal identifier in the server, with persistent incremented id
+            long internal_identifier = 123;
+            jdbcTemplate.update("INSERT INTO document(id, workspace_id, internal_identifier, external_identifier, name, short_name, description, "
+                    + "confidentiality, author_id, language_id, approver_id, reviewer_text, last_modified_by_id, last_modified_on, baseline_major, "
+                    + "baseline_minor, baseline_review, previous_baseline_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                    0, document.getWorkspaceId(), internal_identifier, document.getExternalIdentifier(), document.getName(),
+                    document.getShortName(), document.getDescription(), document.getConfidentiality(), author_id, document.getLanguageId(),
+                    document.getApproverId(), document.getReviewerText(), author_id, Timestamp.from(currentInstant),
+                    document.getBaselineMajor(), document.getBaselineMinor(), document.getBaselineReview(), document.getPreviousBaselineId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
