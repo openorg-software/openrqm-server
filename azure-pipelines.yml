@@ -28,7 +28,7 @@ steps:
     mavenVersionOption: 'Default'
     mavenAuthenticateFeed: false
     effectivePomSkip: false
-    sonarQubeRunAnalysis: true
+    sonarQubeRunAnalysis: false
     sqMavenPluginVersionChoice: 'latest'
 - task: GithubRelease@0 
   condition: or(and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')), and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development')))
