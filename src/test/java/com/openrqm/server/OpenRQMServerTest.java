@@ -7,11 +7,11 @@ Copyright (C) 2019 Marcel Jaehn
 
 package com.openrqm.server;
 
+import static org.junit.Assert.*;
+
 import org.junit.*;
 import java.io.IOException;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Unit test for the OpenRQM server.

@@ -10,16 +10,15 @@ import java.math.BigInteger;
 
 /**
  * Utilities for calculating the rank of an element.
- *
- * @author Marcel Jaehn <marcel.jaehn@online.de>
  */
 public class RankUtils {
+
     public static final BigInteger NEW_ELEMENTS = new BigInteger("19928148895209409152"); //26^20 : 10^9
     public static final BigInteger MAX_ELEMENTS = new BigInteger("19928148895209409152340197376"); //26^20
     public static final int MAX_LENGTH = 29;
     
-    //lookup table 'a'-'z' maps to '0'-'p'
-    private static final char[] BASE26 = new char[123]; //97 to 122 ('a' to 'z') as inputs
+    // lookup table 'a'-'z' maps to '0'-'p'
+    private static final char[] BASE26 = new char[123]; // 97 to 122 ('a' to 'z') as inputs
     static {
         BASE26['a'] = '0';
         BASE26['b'] = '1';
@@ -49,8 +48,8 @@ public class RankUtils {
         BASE26['z'] = 'p';
     }
 
-    //reverse lookup table '0'-'p' maps to 'a'-'z'
-    private static final char[] REVERSE_BASE26 = new char[113]; //we need 48 to 57 ('0' to '9') and 97 to 112 ('a' to 'p') as inputs
+    // reverse lookup table '0'-'p' maps to 'a'-'z'
+    private static final char[] REVERSE_BASE26 = new char[113]; // we need 48 to 57 ('0' to '9') and 97 to 112 ('a' to 'p') as inputs
     static {
         REVERSE_BASE26['0'] = 'a';
         REVERSE_BASE26['1'] = 'b';

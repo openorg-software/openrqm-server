@@ -6,7 +6,6 @@
 
 package org.openrqm.server;
 
-import org.openrqm.export.PdfExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -22,7 +21,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @SpringBootApplication
 @EnableSwagger2
-@ComponentScan(basePackages = { "org.openrqm.server", "org.openrqm.controller", "org.openrqm.api", "org.openrqm.config", })
+@ComponentScan(basePackages = {"org.openrqm.server", "org.openrqm.controller", "org.openrqm.api", "org.openrqm.config"})
 public class OpenRQMServer implements CommandLineRunner {
     private final static Logger logger = LoggerFactory.getLogger(OpenRQMServer.class);
 
@@ -53,6 +52,5 @@ public class OpenRQMServer implements CommandLineRunner {
         public int getExitCode() {
             return 10;
         }
-
     }
 }

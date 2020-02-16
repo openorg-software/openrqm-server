@@ -3,27 +3,24 @@
  * SPDX-License-Identifier: GPL-2.0-only
  * Copyright (C) 2019 Marcel Jaehn
  */
+
 package org.openrqm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
-import java.io.FileInputStream;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import java.util.logging.Level;
 import javax.validation.Valid;
+import org.openrqm.export.Exporter;
 import org.openrqm.export.PdfExporter;
-import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.mapper.ElementRowMapper;
-import org.openrqm.model.RQMDocument;
 import org.openrqm.model.RQMElement;
 import org.openrqm.model.RQMElements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -70,20 +67,20 @@ public class ExportApiController implements ExportApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         logger.info("Retrieved elements from database");
-        
-        logger.info("Starting export");
-        Resource pdfExportResource;
+
+        Resource exportResource;
         try {
-            PdfExporter pdfExporter = new PdfExporter();
-            pdfExportResource = pdfExporter.export(null, elements, "template", "export");
+            logger.info("Starting export");
+            Exporter exporter = new PdfExporter();
+            exportResource = exporter.export(null, elements, "template", "export");
             logger.info("Finished export successful");
         } catch (Exception ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (pdfExportResource != null && pdfExportResource.exists()) {
-            return new ResponseEntity<>(pdfExportResource, HttpStatus.OK);
+        if (exportResource != null && exportResource.exists()) {
+            return new ResponseEntity<>(exportResource, HttpStatus.OK);
         } else {
             logger.error("No exported document can be returned");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

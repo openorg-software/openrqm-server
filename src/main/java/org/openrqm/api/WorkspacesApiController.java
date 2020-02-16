@@ -26,6 +26,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @Controller
 public class WorkspacesApiController implements WorkspacesApi {
+
     private static final Logger logger = LoggerFactory.getLogger(WorkspacesApiController.class);
 
     private final ObjectMapper objectMapper;

@@ -8,7 +8,6 @@ package org.openrqm.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.openrqm.model.RQMWorkspace;
 import org.springframework.jdbc.core.RowMapper;
 

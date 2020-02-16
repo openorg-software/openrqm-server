@@ -28,10 +28,10 @@ import utils.RankUtils;
 public class ElementApiController implements ElementApi {
 
     private static final Logger logger = LoggerFactory.getLogger(ElementApiController.class);
+    private static final RankUtils rankUtils = new RankUtils();
 
     private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
-    private final static RankUtils rankUtils = new RankUtils();
 
     @Autowired
     JdbcTemplate jdbcTemplate;

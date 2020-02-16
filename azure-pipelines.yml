@@ -6,32 +6,26 @@
 pool:
   vmImage: 'ubuntu-latest'
 
+
+
 steps:
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'SonarQube'
+    scannerMode: 'Other'
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
     options: '--batch-mode'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
-
-# Create a debian package
-- script: |
-    sudo apt-get install maven openjdk-11-jdk debhelper
-  displayName: 'Install Debian build dependencies'
-
-- script: |
-    mkdir buildTemp
-    cp -r * buildTemp/
-    cd buildTemp/
-    dpkg-buildpackage -uc -us
-    cd ..
-  displayName: 'Build Debian package'
-
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+    sqMavenPluginVersionChoice: 'latest'
 - task: GithubRelease@0 
   condition: or(and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')), and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development')))
   displayName: 'Create GitHub Release'      
@@ -43,6 +37,7 @@ steps:
     tag: $(Build.SourceBranchName)  
     assetUploadMode: replace
     assets: |
-         $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0.jar
-         $(Build.Repository.LocalPath)/target/openrqm-server_1.0.0.deb
-         $(Build.Repository.LocalPath)/README.md
+        $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0.jar
+        $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0-javadoc.jar
+        $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0-sources.jar
+        $(Build.Repository.LocalPath)/README.md
