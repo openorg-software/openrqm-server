@@ -4,17 +4,19 @@
 all: clean build
 
 build:
-		mvn package
+		export JAVA_HOME=$$(readlink -f /usr/bin/javac | sed "s:/bin/javac::") && mvn package
 
 install: 
 		# copy binaries
-		mkdir -p $(DESTDIR)/opt/
-		cp -r target/openrqm-server  $(DESTDIR)/opt/openrqm-server
+		mkdir -p $(DESTDIR)/opt/openrqm-server/
+		cp -r target/openrqm-server-1.0.0.jar  $(DESTDIR)/opt/openrqm-server/openrqm-server-1.0.0.jar
 		# copy database queries
 		cp -r sql $(DESTDIR)/opt/openrqm-server/sql
 		# copy export templates
 		cp -r templates $(DESTDIR)/opt/openrqm-server/templates
 		# copy systemd service
+		mkdir -p $(DESTDIR)/etc/systemd/system/
+		cp -r systemd/openrqm-server.service $(DESTDIR)/etc/systemd/system/openrqm-server.service
 
 clean:
 		rm -f -r target
@@ -22,3 +24,4 @@ clean:
 
 uninstall:
 		rm -r  $(DESTDIR)/opt/openrqm-server
+		rm -r  $(DESTDIR)/etc/systemd/system/openrqm-server.service

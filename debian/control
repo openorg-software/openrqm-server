@@ -8,6 +8,6 @@ Homepage: https://github.com/openrqm/openrqm-server
 
 Package: openrqm-server
 Architecture: any
-Depends: openjdk-11-jre-headless, mariadb-server
+Depends: openjdk-11-jre-headless, mariadb-server, texlive-full
 Description: OpenRQM Backend
  Open Source Requirements Management System backend, implemented in Java

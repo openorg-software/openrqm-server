@@ -6,7 +6,7 @@
 -- Erstellungszeit: 01. Okt 2019 um 20:34
 -- Server-Version: 10.4.6-MariaDB
 -- PHP-Version: 7.3.9
-
+USE openrqm;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;

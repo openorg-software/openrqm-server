@@ -18,3 +18,10 @@ nb-configuration.xml
 
 logs/
 /export/
+
+# debianization
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/openrqm-server.substvars
+debian/openrqm-server/
+debian/files
