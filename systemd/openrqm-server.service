@@ -1,0 +1,13 @@
+[Unit]
+Description=OpenRQM Backend service
+Requires=<mariadb service>
+Documentation=https://github.com/openrqm/openrqm-server
+
+[Service]
+Type=<one-shot | daemon>
+ExecStart=/opt/start-openrqm-server.sh
+StandardOutput=null
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

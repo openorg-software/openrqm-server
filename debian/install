@@ -1,1 +1,4 @@
 buildTemp/target/openrqm-server-1.0.0.jar /opt/openrqm-server/
+buildTemp/systemd/openrqm-server.service /usr/lib/systemd/system/
+buildTemp/templates/* /opt/openrqm-server/
+buildTemp/sql/* /opt/openrqm-server/

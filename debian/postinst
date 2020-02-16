@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# add openrqm user to database
+
+# execute sql file to local database
+
+#enable systemd service unit
+systemctl enable openrqm-server.service
