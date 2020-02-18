@@ -12,8 +12,9 @@ echo "FLUSH PRIVILEGES;" | sudo mysql -u root
 sudo mysql -u root < /opt/openrqm-server/sql/openrqm-data.sql 
 sudo mysql -u root --init-command="SET SESSION FOREIGN_KEY_CHECKS=0;" < /opt/openrqm-server/sql/openrqm-data.sql 
 
-# change ownership of /opt/openrqm-server
-sudo chown /opt/openrqm-server 
+# add user and change ownership of /opt/openrqm-server
+sudo useradd openrqm
+sudo chown -R openrqm /opt/openrqm-server 
 
 #enable systemd service unit
 systemctl enable openrqm-server.service
