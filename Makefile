@@ -19,7 +19,7 @@ install:
 		cp -r templates $(DESTDIR)/opt/openrqm-server/templates
 		# copy systemd service
 		mkdir -p $(DESTDIR)/etc/systemd/system/
-		cp -r systemd/openrqm-server.service $(DESTDIR)/etc/systemd/system/openrqm-server.service
+		cp systemd/openrqm-server.service $(DESTDIR)/etc/systemd/system/openrqm-server.service
 
 clean:
 		rm -f -r target

@@ -17,5 +17,6 @@ sudo useradd openrqm
 sudo chown -R openrqm /opt/openrqm-server 
 
 #enable systemd service unit
+systemctl daemon-reload
 systemctl enable openrqm-server.service
 systemctl start openrqm-server
