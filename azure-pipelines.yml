@@ -28,7 +28,7 @@ steps:
     sqMavenPluginVersionChoice: 'latest'
 
 - script: |
-    sudo apt-get install debhelper maven
+    sudo apt-get install debhelper maven openjdk-11-jdk
     mkdir -p debian-packaging
     rsync -av --exclude='debian-packaging' . debian-packaging/
     cd debian-packaging
