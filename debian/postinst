@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# enable TCP in MariaDB installation
+sed -i 's/#port                   = 3306/port                    = 3306/g' /etc/mysql/mariadb.conf.d/50-server.cnf
+
+# add openrqm user to database
+echo "CREATE USER 'openrqm'@'localhost' IDENTIFIED BY '';" | sudo mysql -u root
+echo "GRANT ALL PRIVILEGES ON openrqm . * TO 'openrqm'@'localhost';" | sudo mysql -u root
+echo "FLUSH PRIVILEGES;" | sudo mysql -u root 
+
+# execute sql files to local database
+sudo mysql -u root < /opt/openrqm-server/sql/openrqm-data.sql 
+sudo mysql -u root --init-command="SET SESSION FOREIGN_KEY_CHECKS=0;" < /opt/openrqm-server/sql/openrqm-data.sql 
+
+# add user and change ownership of /opt/openrqm-server
+sudo useradd openrqm
+sudo chown -R openrqm /opt/openrqm-server 
+
+#enable systemd service unit
+systemctl daemon-reload
+systemctl enable openrqm-server.service
+systemctl start openrqm-server
