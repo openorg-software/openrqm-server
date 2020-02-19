@@ -24,6 +24,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @Controller
 public class LinkTypesApiController implements LinkTypesApi {
+
     private static final Logger logger = LoggerFactory.getLogger(LinkTypesApiController.class);
 
     private final ObjectMapper objectMapper;

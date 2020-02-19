@@ -22,13 +22,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestParam;
-import utils.RankUtils;
 
 @Controller
 public class LinkApiController implements LinkApi {
 
     private static final Logger logger = LoggerFactory.getLogger(LinkApiController.class);
-    private static final RankUtils rankUtils = new RankUtils();
 
     private final ObjectMapper objectMapper;
     private final HttpServletRequest request;

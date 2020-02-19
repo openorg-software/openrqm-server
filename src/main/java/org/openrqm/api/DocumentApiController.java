@@ -83,7 +83,7 @@ public class DocumentApiController implements DocumentApi {
         //TODO: set last_modified_by_id from session
         long author_id = 1;
         try {
-            jdbcTemplate.update("UPDATE element SET workspace_id = ?, external_identifier = ?, name = ?, short_name = ?, "
+            jdbcTemplate.update("UPDATE document SET workspace_id = ?, external_identifier = ?, name = ?, short_name = ?, "
                     + "description = ?, confidentiality = ?, author_id = ?, language_id = ?, approver_id = ?, reviewer_text = ?, "
                     + "last_modified_by_id = ?, last_modified_on = ?, baseline_major = ?, baseline_minor = ?, baseline_review = ?, "
                     + "previous_baseline_id = ? WHERE id = ?;",
