@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: openrqm-server
+Upstream-Contact: Benjamin Schilling <benjamin.a.schilling@freenet.de>
+Source: https://github.com/openrqm/openrqm-server
+
+Files: *
+Copyright: 2019-2020 Marcel Jaehn
+License: GPL-2
