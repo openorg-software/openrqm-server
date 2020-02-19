@@ -26,8 +26,8 @@ The design and architecture is described in the documents in the `doc` directory
 | Feature                                    | Status  | Release |
 | ------------------------------------------ | ------- | ------- |
 | Basic workspace explorer & document viewer | in work | MVP     |
-| Linking                                    |         | MVP     |
-| PDF export                                 |         | MVP     |
+| Linking                                    | in work | MVP     |
+| PDF export                                 | in work | MVP     |
 | Multiple views per document                |         |         |
 | Baselining                                 |         |         |
 | Shared edit                                |         |         |
