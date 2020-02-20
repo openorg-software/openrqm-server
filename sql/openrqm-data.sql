@@ -66,9 +66,9 @@ INSERT INTO `link_type` (`id`, `name`) VALUES
 -- Daten für Tabelle `user`
 --
 
-INSERT INTO `user` (`id`, `email`, `name`, `surname`, `department`, `password_hash`, `password_salt`) VALUES
-(1, 'user1@email.com', 'UserOne', 'One', 'DepartmentOne', 'thisisarandompaasworhashbutnotreallyrandom', 'thisisarandompaasworhashbutnotreallyrandom'),
-(2, 'user2@email.com', 'UserTwo', 'Two', 'DepartmentTwo', 'thisisarandompaasworhashbutnotreallyrandom', 'thisisarandompaasworhashbutnotreallyrandom');
+INSERT INTO `user` (`id`, `email`, `name`, `surname`, `department`, `password_hash`, `token`) VALUES
+(1, 'user1@email.com', 'UserOne', 'One', 'DepartmentOne', '$2a$10$qSpRELdXOy/P9adWxSw3F.IUfXxBoJ/kmzq.wq30I7pEKvZeNNJ5W', NULL),
+(2, 'user2@email.com', 'UserTwo', 'Two', 'DepartmentTwo', '$2a$10$qSpRELdXOy/P9adWxSw3F.IUfXxBoJ/kmzq.wq30I7pEKvZeNNJ5W', NULL);
 
 --
 -- Daten für Tabelle `workspace`

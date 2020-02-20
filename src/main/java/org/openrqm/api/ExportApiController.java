@@ -15,10 +15,12 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.openrqm.export.Exporter;
+import org.openrqm.export.MarkdownExporter;
 import org.openrqm.export.PdfExporter;
 import org.openrqm.mapper.ElementRowMapper;
 import org.openrqm.model.RQMElement;
 import org.openrqm.model.RQMElements;
+import org.openrqm.model.RQMTemplates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ExportPdfApiController implements ExportPdfApi {
+public class ExportApiController implements ExportApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExportPdfApiController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExportApiController.class);
 
     private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
@@ -41,7 +43,7 @@ public class ExportPdfApiController implements ExportPdfApi {
     JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public ExportPdfApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public ExportApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
     }
@@ -56,6 +58,38 @@ public class ExportPdfApiController implements ExportPdfApi {
         return Optional.ofNullable(request);
     }
 
+    @Override
+    public ResponseEntity<Resource> exportMarkdown(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
+        logger.info("Gettings elements from database");
+        RQMElements elements = new RQMElements();
+        try {
+            List<RQMElement> elementsList = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentId } , new ElementRowMapper());
+            elements.addAll(elementsList); //TODO: improve this, we are touching elements twice here
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        logger.info("Retrieved elements from database");
+
+        Resource exportResource;
+        try {
+            logger.info("Starting export");
+            Exporter exporter = new MarkdownExporter();
+            exportResource = exporter.export(null, elements, "template", "export");
+            logger.info("Finished export successful");
+        } catch (Exception ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (exportResource != null && exportResource.exists()) {
+            return new ResponseEntity<>(exportResource, HttpStatus.OK);
+        } else {
+            logger.error("No exported document can be returned");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     @Override
     public ResponseEntity<Resource> exportPdf(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
         logger.info("Gettings elements from database");
@@ -86,5 +120,15 @@ public class ExportPdfApiController implements ExportPdfApi {
             logger.error("No exported document can be returned");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public ResponseEntity<RQMTemplates> getMarkdownTemplates() {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<RQMTemplates> getPdfTemplates() {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }

@@ -64,10 +64,9 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
 
     @Override
-    public ResponseEntity<RQMWorkspace> getWorkspace() {
+    public ResponseEntity<RQMWorkspace> getWorkspace(@NotNull @ApiParam(value = "The workspace identifier", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
         try {
-            Long id = new Long(1);
-            RQMWorkspace workspace = jdbcTemplate.queryForObject("SELECT * FROM workspace WHERE id = ?;", new Object[] { id } , new WorkspaceRowMapper());
+            RQMWorkspace workspace = jdbcTemplate.queryForObject("SELECT * FROM workspace WHERE id = ?;", new Object[] { workspaceId } , new WorkspaceRowMapper());
             return new ResponseEntity<>(workspace, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

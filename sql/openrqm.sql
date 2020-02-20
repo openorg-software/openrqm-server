@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 24. Sep 2019 um 20:47
--- Server-Version: 10.4.6-MariaDB
--- PHP-Version: 7.3.9
+-- Erstellungszeit: 20. Feb 2020 um 22:48
+-- Server-Version: 10.4.11-MariaDB
+-- PHP-Version: 7.4.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -146,8 +146,8 @@ CREATE TABLE `user` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `surname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `department` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password_hash` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password_salt` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL
+  `password_hash` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

@@ -8,19 +8,16 @@ package org.openrqm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import org.openrqm.mapper.UserRowMapper;
+import org.openrqm.mapper.UserDetailsRowMapper;
+import org.openrqm.model.RQMToken;
 import org.openrqm.model.RQMUser;
-import org.openrqm.model.RQMWorkspaces;
+import org.openrqm.model.RQMUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
 public class UserApiController implements UserApi {
@@ -65,15 +62,24 @@ public class UserApiController implements UserApi {
     }
     
     @Override
-    public ResponseEntity<RQMWorkspaces> changeUser(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "passwordHash", required = true) String passwordHash, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "email", required = true) String email, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "name", required = true) String name, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "surname", required = true) String surname, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "department", required = true) String department, @NotNull @ApiParam(value = "The SHA512 of the new password", required = true) @Valid @RequestParam(value = "newPasswordHash", required = true) String newPasswordHash) {
-        // check again whether password matches before deletion
-        RQMUser user = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ email }, new UserRowMapper());
-        if (!passwordEncoder.matches(passwordHash, user.getPasswordHash())) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<Void> changeUser(@ApiParam(value = "", required=true) @Valid @RequestBody RQMUser user, @ApiParam(value = "", required=true) @RequestHeader(value="id", required=true) Long id, @ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash, @ApiParam(value = "The SHA512 of the new password", required=true) @RequestHeader(value = "newPasswordHash", required=true) String newPasswordHash) {
         try {
-            jdbcTemplate.update("UPDATE user SET email = ?, name = ?, surname = ?, department = ?, password_hash = ? WHERE email = ?;",
-                    email, name, surname, department, passwordHash, email);
+            // check again whether password matches before deletion
+            RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE id = ?;", new Object[]{ id }, new UserDetailsRowMapper());
+            if (!passwordEncoder.matches(passwordHash, userInDatabase.getPasswordHash())) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            // if new password hash is not empty generate a salted hash with bcrypt
+            String bcryptPasswordHash = userInDatabase.getPasswordHash();
+            if (!newPasswordHash.isEmpty()) {
+                // base64 decode provided password hash
+                byte[] providedPasswordHashBytes = Base64.getDecoder().decode(passwordHash);
+                String providedPasswordHash = new String(providedPasswordHashBytes);
+                // hash and salt provided password hash with the use of bcrypt
+                bcryptPasswordHash = passwordEncoder.encode(providedPasswordHash);
+            }
+            jdbcTemplate.update("UPDATE user SET email = ?, name = ?, surname = ?, department = ?, password_hash = ? WHERE id = ?;",
+                    user.getEmail(), user.getName(), user.getSurname(), user.getDepartment(), bcryptPasswordHash, id);
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -82,14 +88,14 @@ public class UserApiController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteUser(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "passwordHash", required = true) String passwordHash, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "email", required = true) String email) {
-        // check again whether password matches before deletion
-        RQMUser user = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ email }, new UserRowMapper());
-        if (!passwordEncoder.matches(passwordHash, user.getPasswordHash())) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<Void> deleteUser(@ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash, @ApiParam(value = "", required=true) @RequestHeader(value="id", required=true) Long id) {
         try {
-            jdbcTemplate.update("DELETE FROM user WHERE email = ?;", email);
+            // check again whether password matches before deletion
+            RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE id = ?;", new Object[]{ id }, new UserDetailsRowMapper());
+            if (!passwordEncoder.matches(passwordHash, userInDatabase.getPasswordHash())) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            jdbcTemplate.update("DELETE FROM user WHERE id = ?;", id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -98,17 +104,20 @@ public class UserApiController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<String> login(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "passwordHash", required = true) String passwordHash, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "email", required = true) String email) {
+    public ResponseEntity<RQMToken> login(@ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash, @ApiParam(value = "", required=true) @RequestHeader(value = "email", required=true) String email) {
         try {
             // get password_hash from database
-            RQMUser user = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ email }, new UserRowMapper());
-            if (passwordEncoder.matches(passwordHash, user.getPasswordHash())) {
+            RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ email }, new UserDetailsRowMapper());
+            if (passwordEncoder.matches(passwordHash, userInDatabase.getPasswordHash())) {
                 // generate authentication token
                 byte[] randomBytes = new byte[24];
                 secureRandom.nextBytes(randomBytes);
-                String token = base64UrlEncoder.encodeToString(randomBytes);
+                String randomToken = base64UrlEncoder.encodeToString(randomBytes);
+                RQMToken token = new RQMToken();
+                token.setId(userInDatabase.getId());
+                token.setToken(randomToken);
                 // store generated authentication token for user
-                jdbcTemplate.update("UPDATE user SET token = ? WHERE email = ?;", token, email);
+                jdbcTemplate.update("UPDATE user SET token = ? WHERE email = ?;", randomToken, email);
                 return new ResponseEntity<>(token, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(null, HttpStatus.OK);
@@ -120,9 +129,9 @@ public class UserApiController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<Void> logout(@ApiParam(value = "The token of the user that should be logged out", required=true) @Valid @RequestBody String token) {
+    public ResponseEntity<Void> logout(@ApiParam(value = "", required=true) @RequestHeader(value = "id", required=true) Long id) {
         try {
-            jdbcTemplate.update("UPDATE user SET token = ? WHERE token = ?;", null, token);
+            jdbcTemplate.update("UPDATE user SET token = ? WHERE id = ?;", null, id);
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -131,7 +140,7 @@ public class UserApiController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<String> register(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "passwordHash", required = true) String passwordHash, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "email", required = true) String email, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "name", required = true) String name, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "surname", required = true) String surname, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "department", required = true) String department) {
+    public ResponseEntity<RQMToken> register(@ApiParam(value = "", required=true) @Valid @RequestBody RQMUser user, @ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash) {
         // base64 decode provided password hash
         byte[] providedPasswordHashBytes = Base64.getDecoder().decode(passwordHash);
         String providedPasswordHash = new String(providedPasswordHashBytes);
@@ -140,10 +149,14 @@ public class UserApiController implements UserApi {
         // generate authentication token
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
-        String token = base64UrlEncoder.encodeToString(randomBytes);
+        String randomToken = base64UrlEncoder.encodeToString(randomBytes);
+        RQMToken token = new RQMToken();
+        token.setToken(randomToken);
         try {
             jdbcTemplate.update("INSERT INTO user(id, email, name, surname, department, password_hash, token) VALUES (?, ?, ?, ?, ?, ?, ?);",
-                    0, email, name, surname, department, bcryptPasswordHash, token);
+                    0, user.getEmail(), user.getName(), user.getSurname(), user.getDepartment(), bcryptPasswordHash, randomToken);
+            RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ user.getEmail() }, new UserDetailsRowMapper());
+            token.setId(userInDatabase.getId());
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
