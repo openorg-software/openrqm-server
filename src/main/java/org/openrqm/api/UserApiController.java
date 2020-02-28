@@ -106,8 +106,9 @@ public class UserApiController implements UserApi {
     @Override
     public ResponseEntity<RQMToken> login(@ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash, @ApiParam(value = "", required=true) @RequestHeader(value = "email", required=true) String email) {
         try {
-            // get password_hash from database
+            // get stored password hash from user in database
             RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ email }, new UserDetailsRowMapper());
+            // return token if password hashes match
             if (passwordEncoder.matches(passwordHash, userInDatabase.getPasswordHash())) {
                 // generate authentication token
                 byte[] randomBytes = new byte[24];
@@ -143,11 +144,8 @@ public class UserApiController implements UserApi {
 
     @Override
     public ResponseEntity<RQMToken> register(@ApiParam(value = "", required=true) @Valid @RequestBody RQMUser user, @ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash) {
-        // base64 decode provided password hash
-        byte[] providedPasswordHashBytes = Base64.getDecoder().decode(passwordHash);
-        String providedPasswordHash = new String(providedPasswordHashBytes);
         // hash and salt provided password hash with the use of bcrypt
-        String bcryptPasswordHash = passwordEncoder.encode(providedPasswordHash);
+        String bcryptPasswordHash = passwordEncoder.encode(passwordHash);
         // generate authentication token
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
