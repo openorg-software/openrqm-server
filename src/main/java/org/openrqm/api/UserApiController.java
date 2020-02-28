@@ -120,7 +120,7 @@ public class UserApiController implements UserApi {
                 jdbcTemplate.update("UPDATE user SET token = ? WHERE email = ?;", randomToken, email);
                 return new ResponseEntity<>(token, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -132,6 +132,8 @@ public class UserApiController implements UserApi {
     public ResponseEntity<Void> logout(@ApiParam(value = "", required=true) @RequestHeader(value = "id", required=true) Long id) {
         try {
             jdbcTemplate.update("UPDATE user SET token = ? WHERE id = ?;", null, id);
+            //TODO check whether user exists. don't give the user any info
+            //on whether a users exists by logging an id out
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
