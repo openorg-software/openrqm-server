@@ -1,12 +1,13 @@
-FROM gitpod/workspace-full
+FROM gitpod/workspace-full:latest
+
+USER root
+
+# Get packages in the cache
+RUN apt-get update
+# Install tex packages, non-interactive and quiet
+RUN apt-get -qq -y install texlive-xetex
+RUN apt-get -qq -y install texlive-fonts-recommended
+RUN apt-get -qq -y install texlive-fonts-extra
+RUN apt-get -qq -y install texlive-latex-extra
 
 USER gitpod
-
-# Install custom tools, runtime, etc. using apt-get
-# For example, the command below would install "bastet" - a command line tetris clone:
-#
-# RUN sudo apt-get -q update && #     sudo apt-get install -yq bastet && #     sudo rm -rf /var/lib/apt/lists/*
-#
-# More information: https://www.gitpod.io/docs/config-docker/
-
-RUN sudo apt-get -q update && sudo apt-get install -y texlive-full && sudo rm -rf /var/lib/apt/lists/*
