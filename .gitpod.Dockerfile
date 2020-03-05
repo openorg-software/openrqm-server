@@ -1,4 +1,4 @@
-FROM gitpod/workspace-mysql
+FROM gitpod/workspace-full
 
 USER gitpod
 
@@ -9,4 +9,4 @@ USER gitpod
 #
 # More information: https://www.gitpod.io/docs/config-docker/
 
-RUN sudo apt-get install texlive
+RUN sudo apt-get -q update && sudo apt-get install -y texlive-full && sudo rm -rf /var/lib/apt/lists/*
