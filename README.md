@@ -1,9 +1,11 @@
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/openrqm/openrqm-server) 
 
 # OpenRQM server
 The OpenRQM server implementation.
 
-[![Build Status](https://dev.azure.com/OpenRQM/OpenRQM/_apis/build/status/openrqm.openrqm-server?branchName=development)](https://dev.azure.com/OpenRQM/OpenRQM/_build/latest?definitionId=3&branchName=development) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenrqm%2Fopenrqm-server.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenrqm%2Fopenrqm-server?ref=badge_shield) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=openrqm_openrqm-server&metric=alert_status)](https://sonarcloud.io/dashboard?id=openrqm_openrqm-server)
+[![Build Status](https://dev.azure.com/OpenRQM/OpenRQM/_apis/build/status/openrqm.openrqm-server?branchName=development)](https://dev.azure.com/OpenRQM/OpenRQM/_build/latest?definitionId=3&branchName=development)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fopenrqm%2Fopenrqm-server.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fopenrqm%2Fopenrqm-server?ref=badge_shield)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=openrqm_openrqm-server&metric=alert_status)](https://sonarcloud.io/dashboard?id=openrqm_openrqm-server)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/openrqm/openrqm-server) 
 
 ## Content
 
