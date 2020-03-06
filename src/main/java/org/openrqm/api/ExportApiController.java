@@ -60,6 +60,7 @@ public class ExportApiController implements ExportApi {
 
     @Override
     public ResponseEntity<Resource> exportMarkdown(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
+        //TODO: templateId is not used currently
         logger.info("Gettings elements from database");
         RQMElements elements = new RQMElements();
         try {
@@ -89,9 +90,10 @@ public class ExportApiController implements ExportApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @Override
     public ResponseEntity<Resource> exportPdf(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
+        //TODO: templateId is not used currently
         logger.info("Gettings elements from database");
         RQMElements elements = new RQMElements();
         try {

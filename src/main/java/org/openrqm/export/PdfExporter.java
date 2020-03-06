@@ -27,7 +27,7 @@ import org.springframework.core.io.Resource;
 public class PdfExporter implements Exporter {
 
     private static final Logger logger = LoggerFactory.getLogger(PdfExporter.class);
-    
+
     private static final String TEMPLATE_DIR = "templates/";
     private static final String EXPORT_DIR = "export/";
 
@@ -38,10 +38,10 @@ public class PdfExporter implements Exporter {
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache m = mf.compile(TEMPLATE_DIR + templateName + ".tex");
         logger.info("Template loaded successful");
-        
+
         // transform styling in all elements
         elements.forEach((element) -> {transformElement(element);} );
-        
+
         // fill the template file with the content of the document
         logger.info("Filling template");
         Map<String, Object> context = new HashMap<>();
@@ -56,13 +56,14 @@ public class PdfExporter implements Exporter {
         // convert the generated file to pdf
         logger.info("Convert to pdf");
         ProcessBuilder pb = new ProcessBuilder("pdflatex",exportName + ".tex"); //-shell-escape -interaction=nonstopmode
-        pb.inheritIO().directory(new File(EXPORT_DIR));
+        //pb.inheritIO();
+        pb.directory(new File(EXPORT_DIR));
         pb.start().waitFor();
         pb.start().waitFor(); // run twice to generate table of contents
-        logger.info("Converted to pdf successful");
+        logger.info("Conversion to pdf successful");
         return new FileSystemResource(EXPORT_DIR + exportName + ".pdf");
     }
-    
+
     public void transformElement(RQMElement element) {
         Document document = Jsoup.parseBodyFragment(element.getContent());
         if (document == null) {
