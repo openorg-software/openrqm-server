@@ -36,19 +36,18 @@ steps:
     cd ..
   displayName: 'Debian packaging'
 
-- task: GithubRelease@0 
+- task: GithubRelease@0
   condition: or(and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')), and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development')))
-  displayName: 'Create GitHub Release'      
+  displayName: 'Create GitHub Release'
   inputs:
     gitHubConnection: benjaminSchilling33
     repositoryName: openrqm/openrqm-server
     action: edit
     tagSource: manual
-    tag: $(Build.SourceBranchName)  
+    tag: $(Build.SourceBranchName)
     assetUploadMode: replace
     assets: |
         $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0.jar
-        $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0-javadoc.jar
         $(Build.Repository.LocalPath)/target/openrqm-server-1.0.0-sources.jar
         $(Build.Repository.LocalPath)/README.md
         $(Build.Repository.LocalPath)/openrqm-server_1.0.0_amd64.deb
