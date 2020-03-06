@@ -1,4 +1,9 @@
-tasks:
-  - init: mvn install -DskipTests=false && make
 image:
   file: .gitpod.Dockerfile
+tasks:
+  - init: ./sql/database-init.sh
+    command: mvn package -DskipTests=false
+    command: java -jar target/openssl-server-1.0.0.jar
+ports:
+  - port: 8090
+    onOpen: open-preview
