@@ -15,6 +15,7 @@ nb-configuration.xml
 .classpath
 .project
 .vscode/
+.theia/
 
 logs/
 /export/
