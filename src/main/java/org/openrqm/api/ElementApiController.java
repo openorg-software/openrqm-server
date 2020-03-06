@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.openrqm.model.RQMElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,12 +66,13 @@ public class ElementApiController implements ElementApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @Override
     public ResponseEntity<Void> patchElement(@ApiParam(value = "The element to update", required=true) @Valid @RequestBody RQMElement element) {
         try {
+            String whitelistedContent = Jsoup.clean(element.getContent(), Whitelist.basicWithImages());
             jdbcTemplate.update("UPDATE element SET element_type_id = ?, content = ?, rank = ?, parent_element_id = ? WHERE id = ?;",
-                    element.getElementTypeId(), element.getContent(), element.getRank(), element.getParentElementId(), element.getId());
+                    element.getElementTypeId(), whitelistedContent, element.getRank(), element.getParentElementId(), element.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -94,8 +98,9 @@ public class ElementApiController implements ElementApi {
             }
         }
         try {
+            String whitelistedContent = Jsoup.clean(element.getContent(), Whitelist.basicWithImages());
             jdbcTemplate.update("INSERT INTO element(id, document_id, element_type_id, content, rank, parent_element_id) VALUES (?, ?, ?, ?, ?, ?);",
-                    0, element.getDocumentId(), element.getElementTypeId(), element.getContent(), newRank, element.getParentElementId());
+                    0, element.getDocumentId(), element.getElementTypeId(), whitelistedContent, newRank, element.getParentElementId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

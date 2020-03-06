@@ -41,7 +41,7 @@ public class UserApiController implements UserApi {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -60,7 +60,7 @@ public class UserApiController implements UserApi {
     public Optional<HttpServletRequest> getRequest() {
         return Optional.ofNullable(request);
     }
-    
+
     @Override
     public ResponseEntity<Void> changeUser(@ApiParam(value = "", required=true) @Valid @RequestBody RQMUser user, @ApiParam(value = "", required=true) @RequestHeader(value="id", required=true) Long id, @ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash, @ApiParam(value = "The SHA512 of the new password", required=true) @RequestHeader(value = "newPasswordHash", required=true) String newPasswordHash) {
         try {
@@ -132,9 +132,7 @@ public class UserApiController implements UserApi {
     @Override
     public ResponseEntity<Void> logout(@ApiParam(value = "", required=true) @RequestHeader(value = "id", required=true) Long id) {
         try {
-            jdbcTemplate.update("UPDATE user SET token = ? WHERE id = ?;", null, id);
-            //TODO check whether user exists. don't give the user any info
-            //on whether a users exists by logging an id out
+            jdbcTemplate.update("UPDATE user SET token = NULL WHERE id = ?;", id);
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
