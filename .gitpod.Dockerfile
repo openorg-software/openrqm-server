@@ -1,6 +1,8 @@
-FROM gitpod/workspace-mysql
+FROM gitpod/workspace-mysql:latest
 
-USER gitpod
+USER root
+
+RUN apt-get update
 
 # Install tex packages, non-interactive and quiet
 RUN apt-get install -qq -y texlive-xetex
