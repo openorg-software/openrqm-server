@@ -15,7 +15,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.select.Elements;
 import org.openrqm.model.RQMElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import utils.EditorContentWhitelist;
 import utils.RankUtils;
 
 @Controller
@@ -70,9 +74,9 @@ public class ElementApiController implements ElementApi {
     @Override
     public ResponseEntity<Void> patchElement(@ApiParam(value = "The element to update", required=true) @Valid @RequestBody RQMElement element) {
         try {
-            String whitelistedContent = Jsoup.clean(element.getContent(), Whitelist.basicWithImages());
+            String processedContent = sanitizeAndProcessElementContent(element.getContent(), element.getId());
             jdbcTemplate.update("UPDATE element SET element_type_id = ?, content = ?, rank = ?, parent_element_id = ? WHERE id = ?;",
-                    element.getElementTypeId(), whitelistedContent, element.getRank(), element.getParentElementId(), element.getId());
+                    element.getElementTypeId(), processedContent, element.getRank(), element.getParentElementId(), element.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -98,13 +102,23 @@ public class ElementApiController implements ElementApi {
             }
         }
         try {
-            String whitelistedContent = Jsoup.clean(element.getContent(), Whitelist.basicWithImages());
+            String processedContent = sanitizeAndProcessElementContent(element.getContent(), element.getId());
             jdbcTemplate.update("INSERT INTO element(id, document_id, element_type_id, content, rank, parent_element_id) VALUES (?, ?, ?, ?, ?, ?);",
-                    0, element.getDocumentId(), element.getElementTypeId(), whitelistedContent, newRank, element.getParentElementId());
+                    0, element.getDocumentId(), element.getElementTypeId(), processedContent, newRank, element.getParentElementId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private String sanitizeAndProcessElementContent(String elementContent, Long elementId) {
+        Document htmlContent = Jsoup.parseBodyFragment(elementContent);
+        Document cleanedHtmlContent = new Cleaner(EditorContentWhitelist.allowedEditorContent()).clean(htmlContent);
+        Elements images = cleanedHtmlContent.select("img");
+        if (images.size() != 0) {
+            logger.info("There are images in this element, that need to be stored separately");
+        }
+        return cleanedHtmlContent.toString();
     }
 }
