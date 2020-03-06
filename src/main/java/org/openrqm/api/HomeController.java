@@ -4,7 +4,7 @@
  * Copyright (C) 2019 Marcel Jaehn
  */
 
-package org.openrqm.config;
+package org.openrqm.api;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +17,7 @@ public class HomeController {
 
     @RequestMapping(value = "/")
     public String index() {
+        //TODO: does not work currently
         return "redirect:swagger-ui.html";
     }
 }
