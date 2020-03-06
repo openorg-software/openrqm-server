@@ -2,6 +2,6 @@ tasks:
   - init: sh sql/database-init.sh
     command: |
       mvn package
-      java -jar target/openssl-server-1.0.0.jar
+      java -jar target/openrqm-server-1.0.0.jar
 image:
   file: .gitpod.Dockerfile
