@@ -10,6 +10,9 @@ RUN apt-get install -qq -y texlive-fonts-recommended
 RUN apt-get install -qq -y texlive-fonts-extra
 RUN apt-get install -qq -y texlive-latex-extra
 
+# Start MySql
+RUN services mysql restart
+
 # Install Apache
 #RUN apt-get install -qq -y apache2 apache2-doc libexpat1 ssl-cert
 
