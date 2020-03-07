@@ -30,4 +30,4 @@ RUN apt-get install -qq -y phpmyadmin
 RUN a2enmod rewrite
 RUN phpenmod mbstring
 RUN chown -R www-data:www-data /var/www
-RUN systemctl restart apache2
+#RUN systemctl restart apache2
