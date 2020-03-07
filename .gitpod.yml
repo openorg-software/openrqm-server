@@ -5,3 +5,6 @@ tasks:
       java -jar target/openrqm-server-1.0.0.jar
 image:
   file: .gitpod.Dockerfile
+ports:
+  - port: 8090
+    onOpen: open-preview
