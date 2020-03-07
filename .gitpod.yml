@@ -8,3 +8,5 @@ image:
 ports:
   - port: 8090
     onOpen: open-preview
+  - port: 3306
+    onOpen: ignore

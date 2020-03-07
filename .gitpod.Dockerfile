@@ -11,7 +11,7 @@ RUN apt-get install -qq -y texlive-fonts-extra
 RUN apt-get install -qq -y texlive-latex-extra
 
 # Install Apache
-RUN apt-get install -qq -y apache2 apache2-doc libexpat1 ssl-cert
+#RUN apt-get install -qq -y apache2 apache2-doc libexpat1 ssl-cert
 
 # Install PHP
 RUN apt-get install -qq -y php php-common libapache2-mod-php php-curl php-dev php-gd php-gettext php-imagick php-intl php-mbstring php-mysql php-pear php-pspell php-recode php-xml php-zip
@@ -30,4 +30,5 @@ RUN apt-get install -qq -y phpmyadmin
 RUN a2enmod rewrite
 RUN phpenmod mbstring
 RUN chown -R www-data:www-data /var/www
-#RUN systemctl restart apache2
+
+RUN service apache2 restart
