@@ -33,7 +33,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- add generated sources to classpath -->
+            <!-- add generated sources to classpath >
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -51,7 +51,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
             <!-- spring boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
