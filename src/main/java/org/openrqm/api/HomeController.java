@@ -6,8 +6,12 @@
 
 package org.openrqm.api;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Home redirection to swagger api documentation
@@ -15,9 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class HomeController {
 
-    @RequestMapping(value = "/")
+    @ApiOperation(value = "Show API documentation", tags = {"API documentation"})
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Show API documentation")})
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index() {
-        //TODO: does not work currently
         return "redirect:swagger-ui.html";
     }
 }

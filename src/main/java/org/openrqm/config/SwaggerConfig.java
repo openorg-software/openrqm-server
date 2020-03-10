@@ -16,7 +16,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
-public class SwaggerDocumentationConfig {
+public class SwaggerConfig {
 
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
@@ -31,14 +31,14 @@ public class SwaggerDocumentationConfig {
     }
 
     @Bean
-    public Docket customImplementation(){
+    public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                    .apis(RequestHandlerSelectors.basePackage("org.openrqm.api"))
-                    .build()
-                .directModelSubstitute(java.time.LocalDate.class, java.sql.Date.class)
-                .directModelSubstitute(java.time.OffsetDateTime.class, java.util.Date.class)
-                .apiInfo(apiInfo());
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("org.openrqm.api"))
+            .build()
+            .directModelSubstitute(java.time.LocalDate.class, java.sql.Date.class)
+            .directModelSubstitute(java.time.OffsetDateTime.class, java.util.Date.class)
+            .apiInfo(apiInfo());
     }
 
 }
