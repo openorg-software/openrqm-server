@@ -14,7 +14,11 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.openrqm.mapper.WorkspaceRowMapper;
+import org.openrqm.model.RQMAccessGroup;
 import org.openrqm.model.RQMWorkspace;
+import org.openrqm.model.RQMWorkspaceAccessgroups;
+import org.openrqm.model.RQMWorkspaceUser;
+import org.openrqm.model.RQMWorkspaceUsers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +55,26 @@ public class WorkspaceApiController implements WorkspaceApi {
     public Optional<HttpServletRequest> getRequest() {
         return Optional.ofNullable(request);
     }
+
+    @Override
+    public ResponseEntity<Void> addAccessGroupToWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMAccessGroup accessGroup) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<Void> addUserToWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteAccessGroupOfWorkspace(@ApiParam(value = "The access group to delete") @Valid @RequestBody RQMAccessGroup accessGroup) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteUserOfWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
     
     @Override
     public ResponseEntity<Void> deleteWorkspace(@NotNull @ApiParam(value = "The workspace to delete", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
@@ -64,6 +88,16 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
 
     @Override
+    public ResponseEntity<RQMWorkspaceAccessgroups> getAccessGroupsOfWorkspace() {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<RQMWorkspaceUsers> getUsersOfWorkspace() {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
     public ResponseEntity<RQMWorkspace> getWorkspace(@NotNull @ApiParam(value = "The workspace identifier", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
         try {
             RQMWorkspace workspace = jdbcTemplate.queryForObject("SELECT * FROM workspace WHERE id = ?;", new Object[] { workspaceId } , new WorkspaceRowMapper());
@@ -72,6 +106,16 @@ public class WorkspaceApiController implements WorkspaceApi {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public ResponseEntity<Void> patchAccessGroupOfWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMAccessGroup accessGroup) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public ResponseEntity<Void> patchUserOfWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override

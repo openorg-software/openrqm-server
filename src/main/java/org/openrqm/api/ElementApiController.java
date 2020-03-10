@@ -8,6 +8,7 @@ package org.openrqm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -18,7 +19,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.select.Elements;
+import org.openrqm.mapper.LinkRowMapper;
 import org.openrqm.model.RQMElement;
+import org.openrqm.model.RQMLink;
+import org.openrqm.model.RQMLinks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +76,19 @@ public class ElementApiController implements ElementApi {
     }
 
     @Override
+    public ResponseEntity<RQMLinks> getLinksOfElement(@NotNull @ApiParam(value = "The id of the element", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
+        try {
+            List<RQMLink> linksList = jdbcTemplate.query("SELECT * FROM link WHERE from_element_id = ?;", new Object[] { elementId } , new LinkRowMapper());
+            RQMLinks links = new RQMLinks();
+            links.addAll(linksList); //TODO: improve this, we are touching elements twice here
+            return new ResponseEntity<>(links, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
     public ResponseEntity<Void> patchElement(@ApiParam(value = "The element to update", required=true) @Valid @RequestBody RQMElement element) {
         try {
             String processedContent = sanitizeAndProcessElementContent(element.getContent(), element.getId());
@@ -116,7 +133,7 @@ public class ElementApiController implements ElementApi {
         Document htmlContent = Jsoup.parseBodyFragment(elementContent);
         Document cleanedHtmlContent = new Cleaner(EditorContentWhitelist.allowedEditorContent()).clean(htmlContent);
         Elements images = cleanedHtmlContent.select("img");
-        if (images.size() != 0) {
+        if (!images.isEmpty()) {
             logger.info("There are images in this element, that need to be stored separately");
         }
         return cleanedHtmlContent.toString();

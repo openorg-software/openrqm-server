@@ -51,6 +51,17 @@ public class LinkApiController implements LinkApi {
     }
 
     @Override
+    public ResponseEntity<Void> deleteLink(@NotNull @ApiParam(value = "The id of the link", required = true) @Valid @RequestParam(value = "linkId", required = true) Long linkId) {
+        try {
+            jdbcTemplate.update("DELETE FROM link WHERE id = ?;", linkId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
     public ResponseEntity<RQMLink> linkElement(@NotNull @ApiParam(value = "The element that is the source of the link", required = true) @Valid @RequestParam(value = "fromElementId", required = true) Long fromElementId, @NotNull @ApiParam(value = "The element that is the target of the link", required = true) @Valid @RequestParam(value = "toElementId", required = true) Long toElementId, @NotNull @ApiParam(value = "The type of the link", required = true) @Valid @RequestParam(value = "linkTypeId", required = true) Long linkTypeId) {
         try {
             jdbcTemplate.update("INSERT INTO link(id, from_element_id, to_element_id, link_type_id) VALUES (?, ?, ?, ?);",

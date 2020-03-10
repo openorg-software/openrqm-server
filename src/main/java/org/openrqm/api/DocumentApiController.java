@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.model.RQMDocument;
+import org.openrqm.model.RQMThemes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,12 @@ public class DocumentApiController implements DocumentApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
+    @Override
+    public ResponseEntity<RQMThemes> getThemes(@NotNull @ApiParam(value = "The document id to identify the correct themes", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
     @Override
     public ResponseEntity<Void> patchDocument(@ApiParam(value = "The document to update", required=true) @Valid @RequestBody RQMDocument document) {
         //TODO: check that the time is set server-side in UTC; Timestamp.from() might make problems for 2k38
