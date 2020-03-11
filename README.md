@@ -7,8 +7,6 @@ The OpenRQM server implementation.
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=openrqm_openrqm-server&metric=alert_status)](https://sonarcloud.io/dashboard?id=openrqm_openrqm-server)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/openrqm/openrqm-server) 
 
-## Content
-
 ## How to build and run
 
 This project is written in [Java](openjdk.java.net) and can be build using [Maven](maven.apache.org). The source code for the API methods is generated with [Swagger](swagger.io), the corresponding api specification can be found in the `api` directory and at [SwaggerHub](https://app.swaggerhub.com/apis/OpenRQM/OpenRQM/1.0.0).
@@ -19,7 +17,7 @@ Run `mvn package` to build the project. The build artifacts will be stored in th
 
 ### Run
 
-Run `java -jar target/openrqm-server-1.0.0.jar` to start the OpenRQM server. Navigate to `http://localhost:8090/api/v1/` for an overview of the api methods.
+Run `java -jar target/openrqm-server-1.0.0.jar` to start the OpenRQM server. Navigate to `http://localhost:8090/` for an overview of the api methods.
 
 ## Design & Architecture
 
@@ -29,14 +27,13 @@ The design and architecture is described in the documents in the `doc` directory
 
 | Feature                                    | Status  | Release |
 | ------------------------------------------ | ------- | ------- |
-| Basic workspace explorer & document viewer | in work | MVP     |
-| Linking                                    | in work | MVP     |
+| Basic API functionality                    | in work | MVP     |
+| Linking                                    | done    | MVP     |
 | PDF export                                 | in work | MVP     |
-| Multiple views per document                |         |         |
 | Baselining                                 |         |         |
 | Shared edit                                |         |         |
-| Multimedia content                         |         |         |
-| Tracing Graphs                             |         |         |
+| Multimedia content                         | in work |         |
+| Tracing                                    |         |         |
 
 ## License
 
