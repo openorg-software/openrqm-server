@@ -74,9 +74,22 @@ public class ElementApiController implements ElementApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @Override
+    public ResponseEntity<RQMLinks> getIncomingLinksOfElement(@NotNull @ApiParam(value = "The id of the element", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
+        try {
+            List<RQMLink> linksList = jdbcTemplate.query("SELECT * FROM link WHERE to_element_id = ?;", new Object[] { elementId } , new LinkRowMapper());
+            RQMLinks links = new RQMLinks();
+            links.addAll(linksList); //TODO: improve this, we are touching elements twice here
+            return new ResponseEntity<>(links, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @Override
-    public ResponseEntity<RQMLinks> getLinksOfElement(@NotNull @ApiParam(value = "The id of the element", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
+    public ResponseEntity<RQMLinks> getOutgoingLinksOfElement(@NotNull @ApiParam(value = "The id of the element", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
         try {
             List<RQMLink> linksList = jdbcTemplate.query("SELECT * FROM link WHERE from_element_id = ?;", new Object[] { elementId } , new LinkRowMapper());
             RQMLinks links = new RQMLinks();
