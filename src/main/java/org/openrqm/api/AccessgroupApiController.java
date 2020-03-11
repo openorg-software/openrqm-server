@@ -8,14 +8,13 @@ package org.openrqm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.openrqm.model.RQMAccessGroup;
-import org.openrqm.model.RQMAccessGroupUser;
-import org.openrqm.model.RQMAccessGroupUsers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +57,7 @@ public class AccessgroupApiController implements AccessgroupApi {
     }
 
     @Override
-    public ResponseEntity<Void> addUserToAccessGroup(@ApiParam(value = "") @Valid @RequestBody RQMAccessGroupUser user) {
+    public ResponseEntity<Void> addUserToAccessGroup(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "userId", required = true) Long userId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -68,27 +67,22 @@ public class AccessgroupApiController implements AccessgroupApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteUserOfAccessGroup(@ApiParam(value = "") @Valid @RequestBody RQMAccessGroupUser user) {
+    public ResponseEntity<Void> deleteUserOfAccessGroup(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId,@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "userId", required = true) Long userId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<RQMAccessGroup> getAccessgroup() {
+    public ResponseEntity<RQMAccessGroup> getAccessgroup(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<RQMAccessGroupUsers> getUsersOfAccessGroup() {
+    public ResponseEntity<List<Long>> getUsersOfAccessGroup(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
     public ResponseEntity<Void> patchAccessgroup(@ApiParam(value = "The access group to update", required = true) @Valid @RequestBody RQMAccessGroup accessGroup) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    @Override
-    public ResponseEntity<Void> patchUserOfAccessGroup(@ApiParam(value = "") @Valid @RequestBody RQMAccessGroupUser user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }

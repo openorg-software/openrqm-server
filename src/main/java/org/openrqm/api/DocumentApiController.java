@@ -78,7 +78,7 @@ public class DocumentApiController implements DocumentApi {
     }
 
     @Override
-    public ResponseEntity<RQMThemes> getThemes(@NotNull @ApiParam(value = "The document id to identify the correct themes", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
+    public ResponseEntity<RQMThemes> getThemesOfDocument(@NotNull @ApiParam(value = "The document id to identify the correct themes", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 

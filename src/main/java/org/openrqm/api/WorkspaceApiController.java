@@ -13,9 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import static org.openrqm.api.WorkspaceApi.log;
 import org.openrqm.mapper.WorkspaceRowMapper;
 import org.openrqm.model.RQMAccessGroup;
 import org.openrqm.model.RQMWorkspace;
+import org.openrqm.model.RQMWorkspaceAccessgroup;
 import org.openrqm.model.RQMWorkspaceAccessgroups;
 import org.openrqm.model.RQMWorkspaceUser;
 import org.openrqm.model.RQMWorkspaceUsers;
@@ -57,22 +59,22 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
 
     @Override
-    public ResponseEntity<Void> addAccessGroupToWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMAccessGroup accessGroup) {
+    public ResponseEntity<Void> addAccessGroupToWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId,@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceAccessgroup accessGroup) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<Void> addUserToWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
+    public ResponseEntity<Void> addUserToWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId,@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<Void> deleteAccessGroupOfWorkspace(@ApiParam(value = "The access group to delete") @Valid @RequestBody RQMAccessGroup accessGroup) {
+    public ResponseEntity<Void> deleteAccessGroupOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId, @NotNull @ApiParam(value = "The access group to delete", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<Void> deleteUserOfWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
+    public ResponseEntity<Void> deleteUserOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "userId", required = true) Long userId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
     
@@ -88,12 +90,12 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
 
     @Override
-    public ResponseEntity<RQMWorkspaceAccessgroups> getAccessGroupsOfWorkspace() {
+    public ResponseEntity<RQMWorkspaceAccessgroups> getAccessGroupsOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<RQMWorkspaceUsers> getUsersOfWorkspace() {
+    public ResponseEntity<RQMWorkspaceUsers> getUsersOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -109,17 +111,17 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
 
     @Override
-    public ResponseEntity<Void> patchAccessGroupOfWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMAccessGroup accessGroup) {
+    public ResponseEntity<Void> patchAccessGroupOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId, @ApiParam(value = "") @Valid @RequestBody RQMWorkspaceAccessgroup accessGroup) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<Void> patchUserOfWorkspace(@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
+    public ResponseEntity<Void> patchUserOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId,@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @Override
-    public ResponseEntity<Void> patchWorkspace(@ApiParam(value = "The workspace to update", required=true) @Valid @RequestBody RQMWorkspace workspace) {
+    public ResponseEntity<Void> patchWorkspace(@ApiParam(value = "The workspace to update", required = true) @Valid @RequestBody RQMWorkspace workspace) {
         try {
             jdbcTemplate.update("UPDATE workspace SET name = ?, workspace_id = ? WHERE id = ?;",
                     workspace.getName(), workspace.getWorkspaceId(), workspace.getId());
@@ -131,7 +133,7 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
     
     @Override
-    public ResponseEntity<Void> postWorkspace(@ApiParam(value = "The workspace to create", required=true) @Valid @RequestBody RQMWorkspace workspace) {
+    public ResponseEntity<Void> postWorkspace(@ApiParam(value = "The workspace to create", required = true) @Valid @RequestBody RQMWorkspace workspace) {
         try {
             jdbcTemplate.update("INSERT INTO workspace(id, name, workspace_id) VALUES (?, ?, ?);",
                     0, workspace.getName(), workspace.getWorkspaceId());
