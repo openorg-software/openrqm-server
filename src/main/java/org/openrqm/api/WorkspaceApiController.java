@@ -8,14 +8,15 @@ package org.openrqm.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import static org.openrqm.api.WorkspaceApi.log;
+import org.openrqm.mapper.WorkspaceAccessgroupRowMapper;
 import org.openrqm.mapper.WorkspaceRowMapper;
-import org.openrqm.model.RQMAccessGroup;
+import org.openrqm.mapper.WorkspaceUserRowMapper;
 import org.openrqm.model.RQMWorkspace;
 import org.openrqm.model.RQMWorkspaceAccessgroup;
 import org.openrqm.model.RQMWorkspaceAccessgroups;
@@ -59,23 +60,47 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
 
     @Override
-    public ResponseEntity<Void> addAccessGroupToWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId,@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceAccessgroup accessGroup) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Void> addAccessGroupToWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId, @ApiParam(value = "") @Valid @RequestBody RQMWorkspaceAccessgroup accessGroup) {
+        try {
+            jdbcTemplate.update("INSERT INTO workspace_accessgroup(workspace_id, accessgroup_id, permissions) VALUES (?, ?, ?);", workspaceId, accessGroup.getAccessGroupId(), accessGroup.getPermissions());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
-    public ResponseEntity<Void> addUserToWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId,@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Void> addUserToWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId, @ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
+        try {
+            jdbcTemplate.update("INSERT INTO workspace_user(workspace_id, user_id, permissions) VALUES (?, ?, ?);", workspaceId, user.getUserId(), user.getPermissions());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<Void> deleteAccessGroupOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId, @NotNull @ApiParam(value = "The access group to delete", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            jdbcTemplate.update("DELETE FROM workspace_accessgroup WHERE workspace_id = ? AND accessgroup_id = ?;", workspaceId, accessGroupId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<Void> deleteUserOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "userId", required = true) Long userId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            jdbcTemplate.update("DELETE FROM workspace_user WHERE workspace_id = ? AND user_id = ?;", workspaceId, userId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     
     @Override
@@ -91,12 +116,28 @@ public class WorkspaceApiController implements WorkspaceApi {
 
     @Override
     public ResponseEntity<RQMWorkspaceAccessgroups> getAccessGroupsOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            List<RQMWorkspaceAccessgroup> workspaceAccessgroupList = jdbcTemplate.query("SELECT * FROM workspace_accessgroup WHERE workspace_id = ?;", new Object[] { workspaceId } , new WorkspaceAccessgroupRowMapper());
+            RQMWorkspaceAccessgroups workspaceAccessgroups = new RQMWorkspaceAccessgroups();
+            workspaceAccessgroups.addAll(workspaceAccessgroupList); //TODO: improve this, we are touching elements twice here
+            return new ResponseEntity<>(workspaceAccessgroups, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<RQMWorkspaceUsers> getUsersOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            List<RQMWorkspaceUser> workspaceUserList = jdbcTemplate.query("SELECT * FROM workspace_user WHERE workspace_id = ?;", new Object[] { workspaceId } , new WorkspaceUserRowMapper());
+            RQMWorkspaceUsers workspaceUsers = new RQMWorkspaceUsers();
+            workspaceUsers.addAll(workspaceUserList); //TODO: improve this, we are touching elements twice here
+            return new ResponseEntity<>(workspaceUsers, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -112,12 +153,24 @@ public class WorkspaceApiController implements WorkspaceApi {
 
     @Override
     public ResponseEntity<Void> patchAccessGroupOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId, @ApiParam(value = "") @Valid @RequestBody RQMWorkspaceAccessgroup accessGroup) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            jdbcTemplate.update("UPDATE workspace_accessgroup SET permissions = ? WHERE workspace_id = ? AND accessgroup_id = ?;", accessGroup.getPermissions(), workspaceId, accessGroup.getAccessGroupId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<Void> patchUserOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId,@ApiParam(value = "") @Valid @RequestBody RQMWorkspaceUser user) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            jdbcTemplate.update("UPDATE workspace_user SET permissions = ? WHERE workspace_id = ? AND user_id = ?;", user.getPermissions(), workspaceId, user.getUserId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override

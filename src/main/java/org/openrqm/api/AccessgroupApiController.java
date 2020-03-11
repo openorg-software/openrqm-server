@@ -90,7 +90,7 @@ public class AccessgroupApiController implements AccessgroupApi {
     @Override
     public ResponseEntity<Void> deleteUserOfAccessGroup(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "userId", required = true) Long userId) {
         try {
-            jdbcTemplate.update("DELETE FROM accessgroup_user WHERE accessgroup_id = ? AND user_id;", accessGroupId, userId);
+            jdbcTemplate.update("DELETE FROM accessgroup_user WHERE accessgroup_id = ? AND user_id = ?;", accessGroupId, userId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
