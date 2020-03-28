@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import org.openrqm.mapper.ElementTypeRowMapper;
 import org.openrqm.model.RQMElementType;
-import org.openrqm.model.RQMElementTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +48,9 @@ public class ElementTypesApiController implements ElementTypesApi {
     }
 
     @Override
-    public ResponseEntity<RQMElementTypes> getElementTypes() {
+    public ResponseEntity<List<RQMElementType>> getElementTypes() {
         try {
-            List<RQMElementType> elementTypesList = jdbcTemplate.query("SELECT * FROM element_type;", new ElementTypeRowMapper());
-            RQMElementTypes elementTypes = new RQMElementTypes();
-            elementTypes.addAll(elementTypesList); //TODO: improve this, we are touching elements twice here
+            List<RQMElementType> elementTypes = jdbcTemplate.query("SELECT * FROM element_type;", new ElementTypeRowMapper());
             return new ResponseEntity<>(elementTypes, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

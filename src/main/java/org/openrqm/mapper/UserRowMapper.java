@@ -16,6 +16,7 @@ public class UserRowMapper implements RowMapper<RQMUser> {
     @Override
     public RQMUser mapRow(ResultSet rs, int rowNum) throws SQLException {
         RQMUser user = new RQMUser();
+        user.setId(rs.getLong("id"));
         user.setEmail(rs.getString("email"));
         user.setName(rs.getString("name"));
         user.setSurname(rs.getString("surname"));

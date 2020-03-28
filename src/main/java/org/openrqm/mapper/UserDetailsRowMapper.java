@@ -8,14 +8,14 @@ package org.openrqm.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.openrqm.model.RQMUserDetails;
+import org.openrqm.model.RQMUserDetail;
 import org.springframework.jdbc.core.RowMapper;
 
-public class UserDetailsRowMapper implements RowMapper<RQMUserDetails> {
+public class UserDetailsRowMapper implements RowMapper<RQMUserDetail> {
 
     @Override
-    public RQMUserDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
-        RQMUserDetails user = new RQMUserDetails();
+    public RQMUserDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+        RQMUserDetail user = new RQMUserDetail();
         user.setId(rs.getLong("id"));
         user.setEmail(rs.getString("email"));
         user.setName(rs.getString("name"));

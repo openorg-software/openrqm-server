@@ -19,8 +19,8 @@ import javax.validation.constraints.NotNull;
 import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.mapper.ThemeRowMapper;
 import org.openrqm.model.RQMDocument;
+import org.openrqm.model.RQMLinkDetails;
 import org.openrqm.model.RQMTheme;
-import org.openrqm.model.RQMThemes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,14 +79,17 @@ public class DocumentApiController implements DocumentApi {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @Override
+    public ResponseEntity<List<RQMLinkDetails>> getLinksOfDocument(@NotNull @ApiParam(value = "The document id to identify the correct links", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
 
     @Override
-    public ResponseEntity<RQMThemes> getThemesOfDocument(@NotNull @ApiParam(value = "The document id to identify the correct themes", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
+    public ResponseEntity<List<RQMTheme>> getThemesOfDocument(@NotNull @ApiParam(value = "The document id to identify the correct themes", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
         try {
-            List<RQMTheme> themesList = jdbcTemplate.query("SELECT * FROM theme JOIN document_theme ON id = document_id WHERE document_id = ?;", new Object[] { documentId } , new ThemeRowMapper());
-            RQMThemes elements = new RQMThemes();
-            elements.addAll(themesList); //TODO: improve this, we are touching elements twice here
-            return new ResponseEntity<>(elements, HttpStatus.OK);
+            List<RQMTheme> themes = jdbcTemplate.query("SELECT * FROM theme JOIN document_theme ON id = document_id WHERE document_id = ?;", new Object[] { documentId } , new ThemeRowMapper());
+            return new ResponseEntity<>(themes, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

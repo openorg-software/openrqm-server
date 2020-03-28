@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.model.RQMDocument;
-import org.openrqm.model.RQMDocuments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +48,9 @@ public class DocumentsApiController implements DocumentsApi {
     }
 
     @Override
-    public ResponseEntity<RQMDocuments> getDocuments() {
+    public ResponseEntity<List<RQMDocument>> getDocuments() {
         try {
-            List<RQMDocument> documentsList = jdbcTemplate.query("SELECT * FROM document;", new DocumentRowMapper());
-            RQMDocuments documents = new RQMDocuments();
-            documents.addAll(documentsList); //TODO: improve this, we are touching elements twice here
+            List<RQMDocument> documents = jdbcTemplate.query("SELECT * FROM document;", new DocumentRowMapper());
             return new ResponseEntity<>(documents, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

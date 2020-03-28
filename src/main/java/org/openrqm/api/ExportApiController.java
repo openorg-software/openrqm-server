@@ -20,9 +20,7 @@ import org.openrqm.export.PdfExporter;
 import org.openrqm.mapper.ElementRowMapper;
 import org.openrqm.mapper.TemplateRowMapper;
 import org.openrqm.model.RQMElement;
-import org.openrqm.model.RQMElements;
 import org.openrqm.model.RQMTemplate;
-import org.openrqm.model.RQMTemplates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +69,9 @@ public class ExportApiController implements ExportApi {
         }
 
         logger.info("Gettings elements from database");
-        RQMElements elements = new RQMElements();
+        List<RQMElement> elements;
         try {
-            List<RQMElement> elementsList = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentId } , new ElementRowMapper());
-            elements.addAll(elementsList); //TODO: improve this, we are touching elements twice here
+            elements = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentId } , new ElementRowMapper());
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,10 +108,9 @@ public class ExportApiController implements ExportApi {
         }
 
         logger.info("Gettings elements from database");
-        RQMElements elements = new RQMElements();
+        List<RQMElement> elements;
         try {
-            List<RQMElement> elementsList = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentId } , new ElementRowMapper());
-            elements.addAll(elementsList); //TODO: improve this, we are touching elements twice here
+            elements = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentId } , new ElementRowMapper());
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -141,11 +137,9 @@ public class ExportApiController implements ExportApi {
     }
 
     @Override
-    public ResponseEntity<RQMTemplates> getMarkdownTemplates() {
+    public ResponseEntity<List<RQMTemplate>> getMarkdownTemplates() {
         try {
-            List<RQMTemplate> templatesList = jdbcTemplate.query("SELECT * FROM export_template WHERE type = 'markdown';", new TemplateRowMapper());
-            RQMTemplates templates = new RQMTemplates();
-            templates.addAll(templatesList); //TODO: improve this, we are touching elements twice here
+            List<RQMTemplate> templates = jdbcTemplate.query("SELECT * FROM export_template WHERE type = 'markdown';", new TemplateRowMapper());
             return new ResponseEntity<>(templates, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -154,11 +148,9 @@ public class ExportApiController implements ExportApi {
     }
 
     @Override
-    public ResponseEntity<RQMTemplates> getPdfTemplates() {
+    public ResponseEntity<List<RQMTemplate>> getPdfTemplates() {
         try {
-            List<RQMTemplate> templatesList = jdbcTemplate.query("SELECT * FROM export_template WHERE type = 'pdf';", new TemplateRowMapper());
-            RQMTemplates templates = new RQMTemplates();
-            templates.addAll(templatesList); //TODO: improve this, we are touching elements twice here
+            List<RQMTemplate> templates = jdbcTemplate.query("SELECT * FROM export_template WHERE type = 'pdf';", new TemplateRowMapper());
             return new ResponseEntity<>(templates, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

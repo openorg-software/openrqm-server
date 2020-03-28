@@ -6,10 +6,11 @@
 
 package org.openrqm.export;
 
+import java.util.List;
 import org.openrqm.model.RQMDocument;
-import org.openrqm.model.RQMElements;
+import org.openrqm.model.RQMElement;
 import org.springframework.core.io.Resource;
 
 public interface Exporter {
-    abstract public Resource export(RQMDocument document, RQMElements elements, String templateName, String exportName) throws Exception;
+    abstract public Resource export(RQMDocument document, List<RQMElement> elements, String templateName, String exportName) throws Exception;
 }

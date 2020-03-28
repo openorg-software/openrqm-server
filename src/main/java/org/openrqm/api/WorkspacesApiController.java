@@ -15,7 +15,6 @@ import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.mapper.WorkspaceRowMapper;
 import org.openrqm.model.RQMDocument;
 import org.openrqm.model.RQMWorkspace;
-import org.openrqm.model.RQMWorkspaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +51,10 @@ public class WorkspacesApiController implements WorkspacesApi {
     }
 
     @Override
-    public ResponseEntity<RQMWorkspaces> getWorkspaces() {
+    public ResponseEntity<List<RQMWorkspace>> getWorkspaces() {
         try {
-            List<RQMWorkspace> workspacesList = jdbcTemplate.query("SELECT * FROM workspace WHERE workspace_id IS NULL;", new WorkspaceRowMapper());
-            getWorkspacesRecursive(workspacesList); //TODO: this is a really bad way of doing this, used only for testing
-            RQMWorkspaces workspaces = new RQMWorkspaces();
-            workspaces.addAll(workspacesList); //TODO: improve this, we are touching elements twice here
+            List<RQMWorkspace> workspaces = jdbcTemplate.query("SELECT * FROM workspace WHERE workspace_id IS NULL;", new WorkspaceRowMapper());
+            getWorkspacesRecursive(workspaces); //TODO: this is a really bad way of doing this, used only for testing
             return new ResponseEntity<>(workspaces, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -65,8 +62,8 @@ public class WorkspacesApiController implements WorkspacesApi {
         }
     }
     
-    private void getWorkspacesRecursive(List<RQMWorkspace> workspacesList) {
-        for (RQMWorkspace workspace : workspacesList) {
+    private void getWorkspacesRecursive(List<RQMWorkspace> workspaces) {
+        for (RQMWorkspace workspace : workspaces) {
             List<RQMDocument> documentsList = jdbcTemplate.query("SELECT * FROM document WHERE workspace_id = ?;", new DocumentRowMapper(), workspace.getId());
             workspace.setDocuments(documentsList);
             List<RQMWorkspace> childWorkspacesList = jdbcTemplate.query("SELECT * FROM workspace WHERE workspace_id = ?;", new WorkspaceRowMapper(), workspace.getId());

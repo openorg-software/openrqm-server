@@ -12,13 +12,13 @@ import com.github.mustachejava.MustacheFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.NodeTraversor;
 import org.openrqm.model.RQMDocument;
 import org.openrqm.model.RQMElement;
-import org.openrqm.model.RQMElements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -32,7 +32,7 @@ public class PdfExporter implements Exporter {
     private static final String EXPORT_DIR = "export/";
 
     @Override
-    public Resource export(RQMDocument document, RQMElements elements, String templateName, String exportName) throws Exception {
+    public Resource export(RQMDocument document, List<RQMElement> elements, String templateName, String exportName) throws Exception {
         // load template file to fill with the document
         logger.info("Load template");
         MustacheFactory mf = new DefaultMustacheFactory();
@@ -56,7 +56,7 @@ public class PdfExporter implements Exporter {
         // convert the generated file to pdf
         logger.info("Convert to pdf");
         ProcessBuilder pb = new ProcessBuilder("pdflatex",exportName + ".tex"); //-shell-escape -interaction=nonstopmode
-        //pb.inheritIO();
+        pb.inheritIO();
         pb.directory(new File(EXPORT_DIR));
         pb.start().waitFor();
         pb.start().waitFor(); // run twice to generate table of contents

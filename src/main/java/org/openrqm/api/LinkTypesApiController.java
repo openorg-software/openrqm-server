@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import org.openrqm.mapper.LinkTypeRowMapper;
 import org.openrqm.model.RQMLinkType;
-import org.openrqm.model.RQMLinkTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +49,9 @@ public class LinkTypesApiController implements LinkTypesApi {
     }
 
     @Override
-    public ResponseEntity<RQMLinkTypes> getLinkTypes() {
+    public ResponseEntity<List<RQMLinkType>> getLinkTypes() {
         try {
-            List<RQMLinkType> linkTypesList = jdbcTemplate.query("SELECT * FROM link_type;", new LinkTypeRowMapper());
-            RQMLinkTypes linkTypes = new RQMLinkTypes();
-            linkTypes.addAll(linkTypesList); //TODO: improve this, we are touching elements twice here
+            List<RQMLinkType> linkTypes = jdbcTemplate.query("SELECT * FROM link_type;", new LinkTypeRowMapper());
             return new ResponseEntity<>(linkTypes, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

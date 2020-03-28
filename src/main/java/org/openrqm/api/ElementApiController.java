@@ -21,7 +21,6 @@ import org.jsoup.safety.Cleaner;
 import org.openrqm.mapper.LinkRowMapper;
 import org.openrqm.model.RQMElement;
 import org.openrqm.model.RQMLink;
-import org.openrqm.model.RQMLinks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,11 +74,9 @@ public class ElementApiController implements ElementApi {
     }
     
     @Override
-    public ResponseEntity<RQMLinks> getIncomingLinksOfElement(@NotNull @ApiParam(value = "The id of the element", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
+    public ResponseEntity<List<RQMLink>> getIncomingLinksOfElement(@NotNull @ApiParam(value = "The id of the element", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
         try {
-            List<RQMLink> linksList = jdbcTemplate.query("SELECT * FROM link WHERE to_element_id = ?;", new Object[] { elementId } , new LinkRowMapper());
-            RQMLinks links = new RQMLinks();
-            links.addAll(linksList); //TODO: improve this, we are touching elements twice here
+            List<RQMLink> links = jdbcTemplate.query("SELECT * FROM link WHERE to_element_id = ?;", new Object[] { elementId } , new LinkRowMapper());
             return new ResponseEntity<>(links, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -88,11 +85,9 @@ public class ElementApiController implements ElementApi {
     }
 
     @Override
-    public ResponseEntity<RQMLinks> getOutgoingLinksOfElement(@NotNull @ApiParam(value = "The id of the element", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
+    public ResponseEntity<List<RQMLink>> getOutgoingLinksOfElement(@NotNull @ApiParam(value = "The id of the element", required = true) @Valid @RequestParam(value = "elementId", required = true) Long elementId) {
         try {
-            List<RQMLink> linksList = jdbcTemplate.query("SELECT * FROM link WHERE from_element_id = ?;", new Object[] { elementId } , new LinkRowMapper());
-            RQMLinks links = new RQMLinks();
-            links.addAll(linksList); //TODO: improve this, we are touching elements twice here
+            List<RQMLink> links = jdbcTemplate.query("SELECT * FROM link WHERE from_element_id = ?;", new Object[] { elementId } , new LinkRowMapper());
             return new ResponseEntity<>(links, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

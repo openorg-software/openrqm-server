@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import org.openrqm.mapper.AccessGroupRowMapper;
 import org.openrqm.model.RQMAccessGroup;
-import org.openrqm.model.RQMAccessGroups;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +49,9 @@ public class AccessgroupsApiController implements AccessgroupsApi {
     }
 
     @Override
-    public ResponseEntity<RQMAccessGroups> getAccessgroups() {
+    public ResponseEntity<List<RQMAccessGroup>> getAccessgroups() {
         try {
-            List<RQMAccessGroup> accessGroupsList = jdbcTemplate.query("SELECT * FROM accessgroup;", new AccessGroupRowMapper());
-            RQMAccessGroups accessGroups = new RQMAccessGroups();
-            accessGroups.addAll(accessGroupsList); //TODO: improve this, we are touching elements twice here
+            List<RQMAccessGroup> accessGroups = jdbcTemplate.query("SELECT * FROM accessgroup;", new AccessGroupRowMapper());
             return new ResponseEntity<>(accessGroups, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

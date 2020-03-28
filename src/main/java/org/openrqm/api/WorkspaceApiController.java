@@ -19,9 +19,7 @@ import org.openrqm.mapper.WorkspaceRowMapper;
 import org.openrqm.mapper.WorkspaceUserRowMapper;
 import org.openrqm.model.RQMWorkspace;
 import org.openrqm.model.RQMWorkspaceAccessgroup;
-import org.openrqm.model.RQMWorkspaceAccessgroups;
 import org.openrqm.model.RQMWorkspaceUser;
-import org.openrqm.model.RQMWorkspaceUsers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,11 +113,9 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
 
     @Override
-    public ResponseEntity<RQMWorkspaceAccessgroups> getAccessGroupsOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
+    public ResponseEntity<List<RQMWorkspaceAccessgroup>> getAccessGroupsOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
         try {
-            List<RQMWorkspaceAccessgroup> workspaceAccessgroupList = jdbcTemplate.query("SELECT * FROM workspace_accessgroup WHERE workspace_id = ?;", new Object[] { workspaceId } , new WorkspaceAccessgroupRowMapper());
-            RQMWorkspaceAccessgroups workspaceAccessgroups = new RQMWorkspaceAccessgroups();
-            workspaceAccessgroups.addAll(workspaceAccessgroupList); //TODO: improve this, we are touching elements twice here
+            List<RQMWorkspaceAccessgroup> workspaceAccessgroups = jdbcTemplate.query("SELECT * FROM workspace_accessgroup WHERE workspace_id = ?;", new Object[] { workspaceId } , new WorkspaceAccessgroupRowMapper());
             return new ResponseEntity<>(workspaceAccessgroups, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
@@ -128,11 +124,9 @@ public class WorkspaceApiController implements WorkspaceApi {
     }
 
     @Override
-    public ResponseEntity<RQMWorkspaceUsers> getUsersOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
+    public ResponseEntity<List<RQMWorkspaceUser>> getUsersOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
         try {
-            List<RQMWorkspaceUser> workspaceUserList = jdbcTemplate.query("SELECT * FROM workspace_user WHERE workspace_id = ?;", new Object[] { workspaceId } , new WorkspaceUserRowMapper());
-            RQMWorkspaceUsers workspaceUsers = new RQMWorkspaceUsers();
-            workspaceUsers.addAll(workspaceUserList); //TODO: improve this, we are touching elements twice here
+            List<RQMWorkspaceUser> workspaceUsers = jdbcTemplate.query("SELECT * FROM workspace_user WHERE workspace_id = ?;", new Object[] { workspaceId } , new WorkspaceUserRowMapper());
             return new ResponseEntity<>(workspaceUsers, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

@@ -20,7 +20,7 @@ import org.openrqm.mapper.UserIdRowMapper;
 import org.openrqm.mapper.UserRowMapper;
 import org.openrqm.model.RQMToken;
 import org.openrqm.model.RQMUser;
-import org.openrqm.model.RQMUserDetails;
+import org.openrqm.model.RQMUserDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ public class UserApiController implements UserApi {
     public ResponseEntity<Void> changeUser(@ApiParam(value = "", required=true) @Valid @RequestBody RQMUser user, @ApiParam(value = "", required=true) @RequestHeader(value="id", required=true) Long id, @ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash, @ApiParam(value = "The SHA512 of the new password", required=true) @RequestHeader(value = "newPasswordHash", required=true) String newPasswordHash) {
         try {
             // check again whether password matches before deletion
-            RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE id = ?;", new Object[]{ id }, new UserDetailsRowMapper());
+            RQMUserDetail userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE id = ?;", new Object[]{ id }, new UserDetailsRowMapper());
             if (!passwordEncoder.matches(passwordHash, userInDatabase.getPasswordHash())) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -94,7 +94,7 @@ public class UserApiController implements UserApi {
     public ResponseEntity<Void> deleteUser(@ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash, @ApiParam(value = "", required=true) @RequestHeader(value="id", required=true) Long id) {
         try {
             // check again whether password matches before deletion
-            RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE id = ?;", new Object[]{ id }, new UserDetailsRowMapper());
+            RQMUserDetail userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE id = ?;", new Object[]{ id }, new UserDetailsRowMapper());
             if (!passwordEncoder.matches(passwordHash, userInDatabase.getPasswordHash())) {
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
@@ -132,7 +132,7 @@ public class UserApiController implements UserApi {
     public ResponseEntity<RQMToken> login(@ApiParam(value = "", required=true) @RequestHeader(value = "passwordHash", required=true) String passwordHash, @ApiParam(value = "", required=true) @RequestHeader(value = "email", required=true) String email) {
         try {
             // get stored password hash from user in database
-            RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ email }, new UserDetailsRowMapper());
+            RQMUserDetail userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ email }, new UserDetailsRowMapper());
             // return token if password hashes match
             if (passwordEncoder.matches(passwordHash, userInDatabase.getPasswordHash())) {
                 // generate authentication token
@@ -178,7 +178,7 @@ public class UserApiController implements UserApi {
         try {
             jdbcTemplate.update("INSERT INTO user(id, email, name, surname, department, password_hash, token) VALUES (?, ?, ?, ?, ?, ?, ?);",
                     0, user.getEmail(), user.getName(), user.getSurname(), user.getDepartment(), bcryptPasswordHash, randomToken);
-            RQMUserDetails userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ user.getEmail() }, new UserDetailsRowMapper());
+            RQMUserDetail userInDatabase = jdbcTemplate.queryForObject("SELECT * FROM user WHERE email = ?;", new Object[]{ user.getEmail() }, new UserDetailsRowMapper());
             token.setId(userInDatabase.getId());
             return new ResponseEntity<>(token, HttpStatus.OK);
         } catch (DataAccessException ex) {

@@ -6,7 +6,7 @@
 
 package org.openrqm.model;
 
-public class RQMUserDetails extends RQMUser {
+public class RQMUserDetail extends RQMUser {
     
     private Long id;
     private String passwordHash;
