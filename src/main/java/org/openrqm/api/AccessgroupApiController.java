@@ -15,8 +15,9 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.openrqm.mapper.AccessGroupRowMapper;
-import org.openrqm.mapper.AccessGroupUserRowMapper;
+import org.openrqm.mapper.UserRowMapper;
 import org.openrqm.model.RQMAccessGroup;
+import org.openrqm.model.RQMUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,10 +111,10 @@ public class AccessgroupApiController implements AccessgroupApi {
     }
 
     @Override
-    public ResponseEntity<List<Long>> getUsersOfAccessGroup(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId) {
+    public ResponseEntity<List<RQMUser>> getUsersOfAccessGroup(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "accessGroupId", required = true) Long accessGroupId) {
         try {
-            List<Long> accessGroupUserList = jdbcTemplate.query("SELECT user_id FROM accessgroup_user WHERE accessgroup_id = ?;", new Object[] { accessGroupId } , new AccessGroupUserRowMapper());
-            return new ResponseEntity<>(accessGroupUserList, HttpStatus.OK);
+            List<RQMUser> usersInAccessgroup = jdbcTemplate.query("SELECT * FROM user LEFT JOIN accessgroup_user ON user_id = id WHERE accessgroup_id = ?;", new Object[] { accessGroupId } , new UserRowMapper());
+            return new ResponseEntity<>(usersInAccessgroup, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

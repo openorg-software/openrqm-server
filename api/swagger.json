@@ -110,6 +110,31 @@
         }
       }
     },
+    "/user/info" : {
+      "get" : {
+        "security" : [ {
+          "APIKeyHeader" : [ ]
+        } ],
+        "tags" : [ "User Management" ],
+        "summary" : "Get info of user",
+        "operationId" : "getInfo",
+        "parameters" : [ {
+          "in" : "header",
+          "name" : "id",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Get user info successfully",
+            "schema" : {
+              "$ref" : "#/definitions/RQMUser"
+            }
+          }
+        }
+      }
+    },
     "/user/logout" : {
       "get" : {
         "security" : [ {
@@ -325,8 +350,7 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "type" : "integer",
-                "format" : "int64"
+                "$ref" : "#/definitions/RQMUser"
               }
             }
           }
@@ -1008,6 +1032,34 @@
         }
       }
     },
+    "/theme/elementTypeColors" : {
+      "get" : {
+        "security" : [ {
+          "APIKeyHeader" : [ ]
+        } ],
+        "tags" : [ "Themes" ],
+        "summary" : "Get all element type colors of a theme",
+        "operationId" : "getElementTypeColorsOfTheme",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "themeId",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Get ElementTypeColors successful",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/RQMElementTypeColor"
+              }
+            }
+          }
+        }
+      }
+    },
     "/elements" : {
       "get" : {
         "security" : [ {
@@ -1061,7 +1113,7 @@
           "name" : "belowRank",
           "required" : true,
           "type" : "string",
-          "description" : "The rank of the element below, if not above element exists this shall be set to an empty string"
+          "description" : "The rank of the element below, if no below element exists this shall be set to an empty string"
         } ],
         "responses" : {
           "200" : {
@@ -1591,20 +1643,6 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "documentIds" : {
-          "description" : "The document ids the theme can apply to",
-          "type" : "array",
-          "items" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        },
-        "elementTypeColors" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/RQMElementTypeColor"
-          }
-        },
         "linkFromHighlightColor" : {
           "type" : "string"
         },
@@ -1616,6 +1654,10 @@
     "RQMElementTypeColor" : {
       "type" : "object",
       "properties" : {
+        "themeId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "elementTypeId" : {
           "type" : "integer",
           "format" : "int64"

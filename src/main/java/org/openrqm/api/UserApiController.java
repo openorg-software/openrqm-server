@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.openrqm.mapper.UserDetailsRowMapper;
+import org.openrqm.mapper.UserRowMapper;
 import org.openrqm.model.RQMToken;
 import org.openrqm.model.RQMUser;
 import org.openrqm.model.RQMUserDetails;
@@ -97,6 +98,17 @@ public class UserApiController implements UserApi {
             }
             jdbcTemplate.update("DELETE FROM user WHERE id = ?;", id);
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<RQMUser> getInfo(@ApiParam(value = "", required = true) @RequestHeader(value = "id", required = true) Long id) {
+        try {
+            RQMUser user = jdbcTemplate.queryForObject("SELECT * FROM user WHERE id = ?;", new Object[]{ id }, new UserRowMapper());
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

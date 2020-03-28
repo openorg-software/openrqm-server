@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 20. Feb 2020 um 22:48
+-- Erstellungszeit: 28. Mrz 2020 um 13:07
 -- Server-Version: 10.4.11-MariaDB
 -- PHP-Version: 7.4.2
 
@@ -76,6 +76,17 @@ CREATE TABLE `document` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `document_theme`
+--
+
+CREATE TABLE `document_theme` (
+  `document_id` int(10) UNSIGNED NOT NULL,
+  `theme_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `element`
 --
 
@@ -83,7 +94,7 @@ CREATE TABLE `element` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `document_id` int(10) UNSIGNED NOT NULL,
   `element_type_id` int(10) UNSIGNED NOT NULL,
-  `content` varchar(2000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `rank` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `parent_element_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -98,6 +109,17 @@ CREATE TABLE `element_type` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `images`
+--
+
+CREATE TABLE `images` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `content` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -133,6 +155,30 @@ CREATE TABLE `reviewer` (
   `document_id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `theme`
+--
+
+CREATE TABLE `theme` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `link_from_color` varchar(7) COLLATE utf8_unicode_ci NOT NULL,
+  `link_to_color` varchar(7) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `theme_element_type`
+--
+
+CREATE TABLE `theme_element_type` (
+  `theme_id` int(10) UNSIGNED NOT NULL,
+  `element_type_id` int(10) UNSIGNED NOT NULL,
+  `color` varchar(7) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -216,6 +262,13 @@ ALTER TABLE `document`
   ADD KEY `previous_baseline_id` (`previous_baseline_id`);
 
 --
+-- Indizes für die Tabelle `document_theme`
+--
+ALTER TABLE `document_theme`
+  ADD PRIMARY KEY (`document_id`,`theme_id`),
+  ADD KEY `theme_id` (`theme_id`);
+
+--
 -- Indizes für die Tabelle `element`
 --
 ALTER TABLE `element`
@@ -229,6 +282,12 @@ ALTER TABLE `element`
 -- Indizes für die Tabelle `element_type`
 --
 ALTER TABLE `element_type`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indizes für die Tabelle `images`
+--
+ALTER TABLE `images`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -252,6 +311,19 @@ ALTER TABLE `link_type`
 ALTER TABLE `reviewer`
   ADD PRIMARY KEY (`document_id`,`user_id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indizes für die Tabelle `theme`
+--
+ALTER TABLE `theme`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indizes für die Tabelle `theme_element_type`
+--
+ALTER TABLE `theme_element_type`
+  ADD PRIMARY KEY (`theme_id`,`element_type_id`),
+  ADD KEY `element_type_id` (`element_type_id`);
 
 --
 -- Indizes für die Tabelle `user`
@@ -310,6 +382,12 @@ ALTER TABLE `element_type`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT für Tabelle `images`
+--
+ALTER TABLE `images`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT für Tabelle `link`
 --
 ALTER TABLE `link`
@@ -319,6 +397,12 @@ ALTER TABLE `link`
 -- AUTO_INCREMENT für Tabelle `link_type`
 --
 ALTER TABLE `link_type`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `theme`
+--
+ALTER TABLE `theme`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -355,6 +439,13 @@ ALTER TABLE `document`
   ADD CONSTRAINT `document_ibfk_5` FOREIGN KEY (`previous_baseline_id`) REFERENCES `document` (`id`);
 
 --
+-- Constraints der Tabelle `document_theme`
+--
+ALTER TABLE `document_theme`
+  ADD CONSTRAINT `document_theme_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `document` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `document_theme_ibfk_2` FOREIGN KEY (`theme_id`) REFERENCES `theme` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints der Tabelle `element`
 --
 ALTER TABLE `element`
@@ -376,6 +467,13 @@ ALTER TABLE `link`
 ALTER TABLE `reviewer`
   ADD CONSTRAINT `reviewer_ibfk_1` FOREIGN KEY (`document_id`) REFERENCES `document` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reviewer_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- Constraints der Tabelle `theme_element_type`
+--
+ALTER TABLE `theme_element_type`
+  ADD CONSTRAINT `theme_element_type_ibfk_1` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `theme_element_type_ibfk_2` FOREIGN KEY (`theme_id`) REFERENCES `theme` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints der Tabelle `workspace`
