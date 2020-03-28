@@ -89,8 +89,8 @@ public class DocumentApiController implements DocumentApi {
                     "FROM link l " + 
                     "JOIN document d " + 
                     "ON d.id = l.to_document_id " + 
-                    "WHERE l.from_document_id = ?;",
-                    new Object[] { documentId } , new LinkRowMapper());
+                    "WHERE l.from_document_id = ? OR l.to_document_id = ?;",
+                    new Object[] { documentId, documentId } , new LinkRowMapper());
             return new ResponseEntity<>(linksDetails, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
