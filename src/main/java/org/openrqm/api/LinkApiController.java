@@ -21,6 +21,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -62,10 +63,10 @@ public class LinkApiController implements LinkApi {
     }
 
     @Override
-    public ResponseEntity<RQMLink> linkElement(@NotNull @ApiParam(value = "The element that is the source of the link", required = true) @Valid @RequestParam(value = "fromElementId", required = true) Long fromElementId, @NotNull @ApiParam(value = "The element that is the target of the link", required = true) @Valid @RequestParam(value = "toElementId", required = true) Long toElementId, @NotNull @ApiParam(value = "The type of the link", required = true) @Valid @RequestParam(value = "linkTypeId", required = true) Long linkTypeId) {
+    public ResponseEntity<RQMLink> linkElement(@ApiParam(value = "") @Valid @RequestBody RQMLink link) {
         try {
-            jdbcTemplate.update("INSERT INTO link(id, from_element_id, to_element_id, link_type_id) VALUES (?, ?, ?, ?);",
-                    0, fromElementId, toElementId, linkTypeId);
+            jdbcTemplate.update("INSERT INTO link(id, from_element_id, from_document_id, to_element_id, to_document_id, link_type_id) VALUES (?, ?, ?, ?, ? ,?);",
+                    0, link.getFromElementId(), link.getFromDocumentId(), link.getToElementId(), link.getToDocumentId(), link.getLinkTypeId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

@@ -126,7 +126,7 @@ public class WorkspaceApiController implements WorkspaceApi {
     @Override
     public ResponseEntity<List<RQMWorkspaceUser>> getUsersOfWorkspace(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "workspaceId", required = true) Long workspaceId) {
         try {
-            List<RQMWorkspaceUser> workspaceUsers = jdbcTemplate.query("SELECT * FROM workspace_user WHERE workspace_id = ?;", new Object[] { workspaceId } , new WorkspaceUserRowMapper());
+            List<RQMWorkspaceUser> workspaceUsers = jdbcTemplate.query("SELECT wu.workspace_id, wu.user_id, u.email, wu.permissions FROM workspace_user wu JOIN user u ON u.id = wu.user_id WHERE workspace_id = ?;", new Object[] { workspaceId } , new WorkspaceUserRowMapper());
             return new ResponseEntity<>(workspaceUsers, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());

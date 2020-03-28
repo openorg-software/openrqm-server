@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 28. Mrz 2020 um 17:00
+-- Erstellungszeit: 28. Mrz 2020 um 20:05
 -- Server-Version: 10.4.11-MariaDB
 -- PHP-Version: 7.4.2
 
@@ -131,7 +131,9 @@ CREATE TABLE `export_template` (
 CREATE TABLE `link` (
   `id` int(10) UNSIGNED NOT NULL,
   `from_element_id` bigint(20) UNSIGNED NOT NULL,
+  `from_document_id` int(10) UNSIGNED NOT NULL,
   `to_element_id` bigint(20) UNSIGNED NOT NULL,
+  `to_document_id` int(10) UNSIGNED NOT NULL,
   `link_type_id` int(10) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -298,7 +300,9 @@ ALTER TABLE `link`
   ADD PRIMARY KEY (`id`),
   ADD KEY `from_element_id` (`from_element_id`),
   ADD KEY `to_element_id` (`to_element_id`),
-  ADD KEY `link_type_id` (`link_type_id`);
+  ADD KEY `link_type_id` (`link_type_id`),
+  ADD KEY `from_document_id` (`from_document_id`) USING BTREE,
+  ADD KEY `to_document_id` (`to_document_id`);
 
 --
 -- Indizes für die Tabelle `link_type`
@@ -460,7 +464,9 @@ ALTER TABLE `element`
 ALTER TABLE `link`
   ADD CONSTRAINT `link_ibfk_1` FOREIGN KEY (`from_element_id`) REFERENCES `element` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `link_ibfk_2` FOREIGN KEY (`to_element_id`) REFERENCES `element` (`id`),
-  ADD CONSTRAINT `link_ibfk_3` FOREIGN KEY (`link_type_id`) REFERENCES `link_type` (`id`);
+  ADD CONSTRAINT `link_ibfk_3` FOREIGN KEY (`link_type_id`) REFERENCES `link_type` (`id`),
+  ADD CONSTRAINT `link_ibfk_4` FOREIGN KEY (`from_document_id`) REFERENCES `document` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `link_ibfk_5` FOREIGN KEY (`to_document_id`) REFERENCES `document` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints der Tabelle `reviewer`

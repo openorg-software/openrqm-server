@@ -17,9 +17,10 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.openrqm.mapper.DocumentRowMapper;
+import org.openrqm.mapper.LinkRowMapper;
 import org.openrqm.mapper.ThemeRowMapper;
 import org.openrqm.model.RQMDocument;
-import org.openrqm.model.RQMLinkDetails;
+import org.openrqm.model.RQMLink;
 import org.openrqm.model.RQMTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,8 +82,20 @@ public class DocumentApiController implements DocumentApi {
     }
     
     @Override
-    public ResponseEntity<List<RQMLinkDetails>> getLinksOfDocument(@NotNull @ApiParam(value = "The document id to identify the correct links", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<List<RQMLink>> getLinksOfDocument(@NotNull @ApiParam(value = "The document id to identify the correct links", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
+        try {
+            List<RQMLink> linksDetails = jdbcTemplate.query(
+                    "SELECT l.id, l.from_element_id, l.from_document_id, l.to_element_id, l.to_document_id, d.short_name, l.link_type_id " +
+                    "FROM link l " + 
+                    "JOIN document d " + 
+                    "ON d.id = l.to_document_id " + 
+                    "WHERE l.from_document_id = ?;",
+                    new Object[] { documentId } , new LinkRowMapper());
+            return new ResponseEntity<>(linksDetails, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override

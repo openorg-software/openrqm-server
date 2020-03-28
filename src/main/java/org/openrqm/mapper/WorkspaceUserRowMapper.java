@@ -17,6 +17,7 @@ public class WorkspaceUserRowMapper implements RowMapper<RQMWorkspaceUser> {
     public RQMWorkspaceUser mapRow(ResultSet rs, int rowNum) throws SQLException {
         RQMWorkspaceUser workspaceUser = new RQMWorkspaceUser();
         workspaceUser.setUserId(rs.getLong("user_id"));
+        workspaceUser.setEmail(rs.getString("email"));
         workspaceUser.setPermissions(rs.getLong("permissions"));
         return workspaceUser;
     }

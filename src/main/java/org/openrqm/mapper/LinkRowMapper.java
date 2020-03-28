@@ -18,7 +18,9 @@ public class LinkRowMapper implements RowMapper<RQMLink> {
         RQMLink link = new RQMLink();
         link.setId(rs.getLong("id"));
         link.setFromElementId(rs.getLong("from_element_id"));
+        link.setFromDocumentId(rs.getLong("from_document_id"));
         link.setToElementId(rs.getLong("to_element_id"));
+        link.setToDocumentId(rs.getLong("to_document_id"));
         link.setLinkTypeId(rs.getLong("link_type_id"));
         return link;
     }

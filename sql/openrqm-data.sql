@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 28. Mrz 2020 um 17:00
+-- Erstellungszeit: 28. Mrz 2020 um 20:05
 -- Server-Version: 10.4.11-MariaDB
 -- PHP-Version: 7.4.2
 
@@ -78,6 +78,15 @@ INSERT INTO `export_template` (`id`, `type`, `name`) VALUES
 (2, 'markdown', 'template');
 
 --
+-- Daten für Tabelle `link`
+--
+
+INSERT INTO `link` (`id`, `from_element_id`, `from_document_id`, `to_element_id`, `to_document_id`, `link_type_id`) VALUES
+(3, 21, 1, 12, 3, 1),
+(4, 20, 1, 1, 1, 2),
+(5, 12, 3, 1, 1, 1);
+
+--
 -- Daten für Tabelle `link_type`
 --
 
@@ -113,7 +122,7 @@ INSERT INTO `user` (`id`, `email`, `name`, `surname`, `department`, `password_ha
 (2, 'user2@organization.com', 'UserTwo', 'Two', 'DepartmentTwo', '$2a$10$qSpRELdXOy/P9adWxSw3F.IUfXxBoJ/kmzq.wq30I7pEKvZeNNJ5W', ''),
 (3, 'user3@organization.com', 'UserThree', 'Three', 'DepartmentOne', '$2a$10$qSpRELdXOy/P9adWxSw3F.IUfXxBoJ/kmzq.wq30I7pEKvZeNNJ5W', ''),
 (4, 'user4@organization2.com', 'UserFour', 'Four', 'DepartmentTwo', '$2a$10$qSpRELdXOy/P9adWxSw3F.IUfXxBoJ/kmzq.wq30I7pEKvZeNNJ5W', ''),
-(5, 'hunter@openrqm.org', 'Hunter', 'Dev', 'Developers', '$2a$12$Y2iS8.0OUASrvqvdekRSHeDxXg0rIdfis4A1LTjCXPZLNRdrpAps6', '1Jy7JBTET6Hx9y3SxKmXdsUkRVF1HWaO');
+(5, 'hunter@openrqm.org', 'Hunter', 'Dev', 'Developers', '$2a$12$Y2iS8.0OUASrvqvdekRSHeDxXg0rIdfis4A1LTjCXPZLNRdrpAps6', 'K2ieXCFJF3E5SXXoe6vu7MXFDutKCDYc');
 
 --
 -- Daten für Tabelle `workspace`
@@ -131,6 +140,16 @@ INSERT INTO `workspace` (`id`, `name`, `workspace_id`) VALUES
 (9, 'Subworkspace 2.2.2', 6),
 (10, 'Subworkspace 2.2.1.1', 8),
 (11, 'Subworkspace 2.2.1.2', 8);
+
+--
+-- Daten für Tabelle `workspace_user`
+--
+
+INSERT INTO `workspace_user` (`workspace_id`, `user_id`, `permissions`) VALUES
+(1, 1, 0),
+(1, 2, 0),
+(2, 3, 0),
+(2, 4, 0);
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
