@@ -10,11 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.openrqm.mapper.UserDetailsRowMapper;
+import org.openrqm.mapper.UserIdRowMapper;
 import org.openrqm.mapper.UserRowMapper;
 import org.openrqm.model.RQMToken;
 import org.openrqm.model.RQMUser;
@@ -109,6 +111,17 @@ public class UserApiController implements UserApi {
         try {
             RQMUser user = jdbcTemplate.queryForObject("SELECT * FROM user WHERE id = ?;", new Object[]{ id }, new UserRowMapper());
             return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @Override
+    public ResponseEntity<List<Long>> getUsers() {
+        try {
+            List<Long> userIds = jdbcTemplate.query("SELECT id FROM user;", new UserIdRowMapper());
+            return new ResponseEntity<>(userIds, HttpStatus.OK);
         } catch (DataAccessException ex) {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
