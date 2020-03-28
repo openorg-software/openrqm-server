@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Cleaner;
-import org.jsoup.select.Elements;
 import org.openrqm.mapper.LinkRowMapper;
 import org.openrqm.model.RQMElement;
 import org.openrqm.model.RQMLink;
@@ -104,7 +103,7 @@ public class ElementApiController implements ElementApi {
     @Override
     public ResponseEntity<Void> patchElement(@ApiParam(value = "The element to update", required=true) @Valid @RequestBody RQMElement element) {
         try {
-            String processedContent = sanitizeAndProcessElementContent(element.getContent(), element.getId());
+            String processedContent = sanitizeAndProcessElementContent(element.getContent());
             jdbcTemplate.update("UPDATE element SET element_type_id = ?, content = ?, rank = ?, parent_element_id = ? WHERE id = ?;",
                     element.getElementTypeId(), processedContent, element.getRank(), element.getParentElementId(), element.getId());
             return new ResponseEntity<>(HttpStatus.OK);
@@ -132,7 +131,7 @@ public class ElementApiController implements ElementApi {
             }
         }
         try {
-            String processedContent = sanitizeAndProcessElementContent(element.getContent(), element.getId());
+            String processedContent = sanitizeAndProcessElementContent(element.getContent());
             jdbcTemplate.update("INSERT INTO element(id, document_id, element_type_id, content, rank, parent_element_id) VALUES (?, ?, ?, ?, ?, ?);",
                     0, element.getDocumentId(), element.getElementTypeId(), processedContent, newRank, element.getParentElementId());
             return new ResponseEntity<>(HttpStatus.OK);
@@ -142,13 +141,9 @@ public class ElementApiController implements ElementApi {
         }
     }
 
-    private String sanitizeAndProcessElementContent(String elementContent, Long elementId) {
+    private String sanitizeAndProcessElementContent(String elementContent) {
         Document htmlContent = Jsoup.parseBodyFragment(elementContent);
         Document cleanedHtmlContent = new Cleaner(EditorContentWhitelist.allowedEditorContent()).clean(htmlContent);
-        Elements images = cleanedHtmlContent.select("img");
-        if (!images.isEmpty()) {
-            logger.info("There are images in this element, that need to be stored separately");
-        }
-        return cleanedHtmlContent.toString();
+        return cleanedHtmlContent.body().html();
     }
 }

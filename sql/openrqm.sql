@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 28. Mrz 2020 um 13:37
+-- Erstellungszeit: 28. Mrz 2020 um 17:00
 -- Server-Version: 10.4.11-MariaDB
 -- PHP-Version: 7.4.2
 
@@ -94,7 +94,7 @@ CREATE TABLE `element` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `document_id` int(10) UNSIGNED NOT NULL,
   `element_type_id` int(10) UNSIGNED NOT NULL,
-  `content` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `rank` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `parent_element_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -120,17 +120,6 @@ CREATE TABLE `export_template` (
   `id` int(10) UNSIGNED NOT NULL,
   `type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `images`
---
-
-CREATE TABLE `images` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `content` text COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -303,12 +292,6 @@ ALTER TABLE `export_template`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indizes für die Tabelle `images`
---
-ALTER TABLE `images`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indizes für die Tabelle `link`
 --
 ALTER TABLE `link`
@@ -403,12 +386,6 @@ ALTER TABLE `element_type`
 -- AUTO_INCREMENT für Tabelle `export_template`
 --
 ALTER TABLE `export_template`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT für Tabelle `images`
---
-ALTER TABLE `images`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
