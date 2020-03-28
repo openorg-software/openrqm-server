@@ -18,8 +18,10 @@ import org.openrqm.export.Exporter;
 import org.openrqm.export.MarkdownExporter;
 import org.openrqm.export.PdfExporter;
 import org.openrqm.mapper.ElementRowMapper;
+import org.openrqm.mapper.TemplateRowMapper;
 import org.openrqm.model.RQMElement;
 import org.openrqm.model.RQMElements;
+import org.openrqm.model.RQMTemplate;
 import org.openrqm.model.RQMTemplates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +62,14 @@ public class ExportApiController implements ExportApi {
 
     @Override
     public ResponseEntity<Resource> exportMarkdown(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
-        //TODO: templateId is not used currently
+        RQMTemplate template;
+        try {
+            template = jdbcTemplate.queryForObject("SELECT * FROM export_template WHERE id = ?;", new Object[]{ templateId }, new TemplateRowMapper());
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         logger.info("Gettings elements from database");
         RQMElements elements = new RQMElements();
         try {
@@ -76,7 +85,7 @@ public class ExportApiController implements ExportApi {
         try {
             logger.info("Starting export");
             Exporter exporter = new MarkdownExporter();
-            exportResource = exporter.export(null, elements, "template", "export");
+            exportResource = exporter.export(null, elements, template.getName(), "export");
             logger.info("Finished export successful");
         } catch (Exception ex) {
             logger.error(ex.getLocalizedMessage());
@@ -93,7 +102,14 @@ public class ExportApiController implements ExportApi {
 
     @Override
     public ResponseEntity<Resource> exportPdf(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
-        //TODO: templateId is not used currently
+        RQMTemplate template;
+        try {
+            template = jdbcTemplate.queryForObject("SELECT * FROM export_template WHERE id = ?;", new Object[]{ templateId }, new TemplateRowMapper());
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         logger.info("Gettings elements from database");
         RQMElements elements = new RQMElements();
         try {
@@ -109,7 +125,7 @@ public class ExportApiController implements ExportApi {
         try {
             logger.info("Starting export");
             Exporter exporter = new PdfExporter();
-            exportResource = exporter.export(null, elements, "template", "export");
+            exportResource = exporter.export(null, elements, template.getName(), "export");
             logger.info("Finished export successful");
         } catch (Exception ex) {
             logger.error(ex.getLocalizedMessage());
@@ -126,11 +142,27 @@ public class ExportApiController implements ExportApi {
 
     @Override
     public ResponseEntity<RQMTemplates> getMarkdownTemplates() {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            List<RQMTemplate> templatesList = jdbcTemplate.query("SELECT * FROM export_template WHERE type = 'markdown';", new TemplateRowMapper());
+            RQMTemplates templates = new RQMTemplates();
+            templates.addAll(templatesList); //TODO: improve this, we are touching elements twice here
+            return new ResponseEntity<>(templates, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<RQMTemplates> getPdfTemplates() {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            List<RQMTemplate> templatesList = jdbcTemplate.query("SELECT * FROM export_template WHERE type = 'pdf';", new TemplateRowMapper());
+            RQMTemplates templates = new RQMTemplates();
+            templates.addAll(templatesList); //TODO: improve this, we are touching elements twice here
+            return new ResponseEntity<>(templates, HttpStatus.OK);
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

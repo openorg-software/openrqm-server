@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 28. Mrz 2020 um 13:07
+-- Erstellungszeit: 28. Mrz 2020 um 13:37
 -- Server-Version: 10.4.11-MariaDB
 -- PHP-Version: 7.4.2
 
@@ -109,6 +109,18 @@ CREATE TABLE `element_type` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `export_template`
+--
+
+CREATE TABLE `export_template` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -285,6 +297,12 @@ ALTER TABLE `element_type`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indizes für die Tabelle `export_template`
+--
+ALTER TABLE `export_template`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indizes für die Tabelle `images`
 --
 ALTER TABLE `images`
@@ -379,6 +397,12 @@ ALTER TABLE `element`
 -- AUTO_INCREMENT für Tabelle `element_type`
 --
 ALTER TABLE `element_type`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `export_template`
+--
+ALTER TABLE `export_template`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
