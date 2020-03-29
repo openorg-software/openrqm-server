@@ -70,8 +70,8 @@ public class PdfExporter implements Exporter {
             logger.info("Error while parsing the element content of elementId " + element.getId());
             return;
         }
-        LatexTransformationNodeVisitor transformation = new LatexTransformationNodeVisitor();
-        NodeTraversor.traverse(transformation, document.body());
-        element.setContent(transformation.content);
+        LatexTransformationNodeVisitor transformationNodeVisitor = new LatexTransformationNodeVisitor();
+        NodeTraversor.traverse(transformationNodeVisitor, document.body());
+        element.setContent(transformationNodeVisitor.transformedContent);
     }
 }

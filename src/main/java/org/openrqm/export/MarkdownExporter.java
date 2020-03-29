@@ -62,8 +62,8 @@ public class MarkdownExporter implements Exporter {
             logger.info("Error while parsing the element content of elementId " + element.getId());
             return;
         }
-        MarkdownNodeVisitor transformation = new MarkdownNodeVisitor();
-        NodeTraversor.traverse(transformation, document.body());
-        element.setContent(transformation.content);
+        MarkdownTransformationNodeVisitor transformationNodeVisitor = new MarkdownTransformationNodeVisitor();
+        NodeTraversor.traverse(transformationNodeVisitor, document.body());
+        element.setContent(transformationNodeVisitor.transformedContent);
     }
 }

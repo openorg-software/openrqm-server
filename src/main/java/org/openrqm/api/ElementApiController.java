@@ -17,6 +17,8 @@ import javax.validation.constraints.NotNull;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Document.OutputSettings;
+import org.jsoup.nodes.Entities;
 import org.jsoup.safety.Cleaner;
 import org.openrqm.mapper.LinkRowMapper;
 import org.openrqm.model.RQMElement;
@@ -139,6 +141,10 @@ public class ElementApiController implements ElementApi {
     private String sanitizeAndProcessElementContent(String elementContent) {
         Document htmlContent = Jsoup.parseBodyFragment(elementContent);
         Document cleanedHtmlContent = new Cleaner(EditorContentWhitelist.allowedEditorContent()).clean(htmlContent);
-        return cleanedHtmlContent.body().html();
+        OutputSettings outputSettings = htmlContent.outputSettings();
+        outputSettings.prettyPrint(false).charset("UTF-8");
+        cleanedHtmlContent = cleanedHtmlContent.outputSettings(outputSettings);
+        String result = cleanedHtmlContent.body().html();
+        return result;
     }
 }
