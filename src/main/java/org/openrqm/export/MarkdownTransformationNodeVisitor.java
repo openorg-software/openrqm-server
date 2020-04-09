@@ -6,18 +6,23 @@
 
 package org.openrqm.export;
 
-import org.jsoup.nodes.Element;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 import org.jsoup.nodes.Node;
-import org.jsoup.parser.Parser;
 import org.jsoup.select.NodeVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.ImageUtils;
 
 public class MarkdownTransformationNodeVisitor implements NodeVisitor {
     
     private static final Logger logger = LoggerFactory.getLogger(MarkdownTransformationNodeVisitor.class);
 
     String transformedContent = "";
+    int currentImageCount = 0;
+    
+    String dataUri = "";
 
     @Override
     public void head(Node node, int i) {
@@ -36,8 +41,28 @@ public class MarkdownTransformationNodeVisitor implements NodeVisitor {
             case "li": transformedContent += "<li>"; break;
             case "a": transformedContent += "["; break;
             case "figure": break; //do nothing
-            case "img": transformedContent += "\n![" + node.attr("alt") + "][image]"; break;
-            case "figcaption": transformedContent += "\n[image] images/image.png " + '"'; break;
+            case "img":
+                currentImageCount++;
+                dataUri = node.attr("src");
+                // there is no figcaption, so save the image now
+                if (node.nextSibling() == null || !node.nextSibling().nodeName().equals("figcaption")) {
+                    String imageType = ImageUtils.dataUriToImageType(dataUri);
+                    transformedContent += "\n![" + node.attr("alt") + "](images/image" + currentImageCount + "." + imageType + ")";
+                    ImageUtils.saveImage(dataUri, imageType, "image" + currentImageCount);
+                    dataUri = "";
+                }
+                break;
+            case "figcaption":
+                // this figcaption is related to a previous img, so save the image now
+                if (node.previousSibling() != null && node.previousSibling().nodeName().equals("img")) {
+                    String imageType = ImageUtils.dataUriToImageType(dataUri);
+                    String imgAlt = node.previousSibling().attr("alt");
+                    String imageName = "image" + currentImageCount + "_" + ImageUtils.replaceInvalidFilenameCharacters(node.childNode(0).toString());
+                    transformedContent += "\n![" + imgAlt + "](images/" + imageName + "." + imageType + " " + '"';
+                    ImageUtils.saveImage(dataUri, imageType, imageName);
+                    dataUri = "";
+                }
+                break;
             case "table": transformedContent += "<table>"; break;
             case "tbody": transformedContent += "<tbody>"; break;
             case "tr": transformedContent += "<tr>"; break;
@@ -64,7 +89,11 @@ public class MarkdownTransformationNodeVisitor implements NodeVisitor {
             case "a": transformedContent += "]("+node.attr("href")+")"; break;
             case "figure": break; //do nothing
             case "img": transformedContent += "\n"; break;
-            case "figcaption": transformedContent += '"'; break;
+            case "figcaption":
+                if (node.previousSibling() != null && node.previousSibling().nodeName().equals("img")) {
+                    transformedContent += '"' + ")\n";
+                };
+                break;
             case "table": transformedContent += "</table>\n"; break;
             case "tbody": transformedContent += "</tbody>"; break;
             case "tr": transformedContent += "</tr>"; break;
@@ -80,8 +109,6 @@ public class MarkdownTransformationNodeVisitor implements NodeVisitor {
     
     private String replaceSpecialCharacters(String text) {
         // replace line breaks, they will be determined by the HTML tags
-        text = text.replace("\n", "").replace("\r", "");
-        System.out.println("Text:" + text);
-        return text;
+        return text.replace("\n", "").replace("\r", "");
     }
 }

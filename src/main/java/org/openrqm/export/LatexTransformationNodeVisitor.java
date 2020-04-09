@@ -12,17 +12,20 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.NodeVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.ImageUtils;
 
 public class LatexTransformationNodeVisitor implements NodeVisitor {
     
     private static final Logger logger = LoggerFactory.getLogger(LatexTransformationNodeVisitor.class);
 
     String transformedContent = "";
+    int currentImageCount = 0;
+
     boolean tableHasHeader = false;
+    String dataUri = "";
 
     @Override
     public void head(Node node, int i) {
-        String layout;
         switch (node.nodeName()) {
             case "body": break; //do nothing
             case "#text": transformedContent += replaceSpecialCharacters(unescape(node.toString())); break;
@@ -38,16 +41,35 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
             case "li": transformedContent += "  \\item "; break;
             case "a": transformedContent += "\\href{"+node.attr("href")+"}{"; break;
             case "figure": break; //do nothing
-            case "img": transformedContent +=
-                    "\\begin{figure}[H]\n" +
-                    "  \\centering\n" +
-                    "  \\includegraphics[scale=1]{images/image.png}\n" +
-                    "  \\label{fig:image}\n";
-                    break;
+            case "img":
+                currentImageCount++;
+                dataUri = node.attr("src");
+                // there is no figcaption, so save the image now
+                if (node.nextSibling() == null || !node.nextSibling().nodeName().equals("figcaption")) {
+                    String imageType = ImageUtils.dataUriToImageType(dataUri);
+                    transformedContent +=
+                        "\\begin{figure}[H]\n" +
+                        "  \\centering\n" +
+                        "  \\includegraphics[scale=0.7]{images/image" + currentImageCount + "." + imageType + "}\n" +
+                        "  \\label{fig:image" + currentImageCount + "}\n";
+                    ImageUtils.saveImage(dataUri, imageType, "image" + currentImageCount);
+                    dataUri = "";
+                }
+                break;
             case "figcaption":
-                if (node.previousSibling().nodeName().equals("img")) {
-                    transformedContent += "  \\caption{";
-                };
+                // this figcaption is related to a previous img, so save the image now
+                if (node.previousSibling() != null && node.previousSibling().nodeName().equals("img")) {
+                    String imageType = ImageUtils.dataUriToImageType(dataUri);
+                    String imageName = "image" + currentImageCount + "_" + ImageUtils.replaceInvalidFilenameCharacters(node.childNode(0).toString());
+                    transformedContent +=
+                        "\\begin{figure}[H]\n" +
+                        "  \\centering\n" +
+                        "  \\includegraphics[scale=0.7]{images/" + imageName + "." + imageType + "}\n" +
+                        "  \\label{fig:image" + currentImageCount + "}\n" +
+                        "  \\caption{";
+                    ImageUtils.saveImage(dataUri, imageType, imageName);
+                    dataUri = "";
+                }
                 break;
             case "table": transformedContent += "\n\\begin{center}\n\\begin{tabular}"; break;
             case "thead":
@@ -91,12 +113,12 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
             case "a": transformedContent += "}"; break;
             case "figure": break; //do nothing
             case "img": 
-                if (!node.nextSibling().nodeName().equals("figcaption")) {
+                if (node.nextSibling() == null || !node.nextSibling().nodeName().equals("figcaption")) {
                     transformedContent += "\\end{figure}\n";
                 };
                 break;
             case "figcaption":
-                if (node.previousSibling().nodeName().equals("img")) {
+                if (node.previousSibling() != null && node.previousSibling().nodeName().equals("img")) {
                     //close the figcaption and the image, it has been delayed because there is a figcaption
                     transformedContent +=
                             "}\n"+
@@ -105,7 +127,6 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 break;
             case "table": transformedContent += "\n\\end{tabular}\n\\captionof{table}{}\n\\end{center}"; break;
             case "tbody": transformedContent += "\n\\hline"; break;
-            
             case "tr": transformedContent += "\\\\"; break;
             case "th":
                 // only if not last th in tr
@@ -148,7 +169,6 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 .replace("&", "\\&")
                 .replace("#", "\\#")
                 .replace("{", "\\{");
-        System.out.println("Text:" + text);
         return text;
     }
     

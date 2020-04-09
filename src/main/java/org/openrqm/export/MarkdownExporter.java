@@ -30,6 +30,8 @@ public class MarkdownExporter implements Exporter {
     
     private static final String TEMPLATE_DIR = "templates/";
     private static final String EXPORT_DIR = "export/";
+    
+    int currentImageCount = 0;
 
     @Override
     public Resource export(RQMDocument document, List<RQMElement> elements, String templateName, String exportName) throws Exception {
@@ -63,7 +65,9 @@ public class MarkdownExporter implements Exporter {
             return;
         }
         MarkdownTransformationNodeVisitor transformationNodeVisitor = new MarkdownTransformationNodeVisitor();
+        transformationNodeVisitor.currentImageCount = currentImageCount;
         NodeTraversor.traverse(transformationNodeVisitor, document.body());
+        this.currentImageCount += transformationNodeVisitor.currentImageCount;
         element.setContent(transformationNodeVisitor.transformedContent);
     }
 }
