@@ -154,9 +154,9 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 .replace("Ä", "\\\"A")
                 .replace("Ü", "\\\"U")
                 .replace("Ö", "\\\"O")
-                .replace("ß", "{\\ss}"),
-                .replace(":", "\\colon"),
-                .replace("/", "\\slash"),
+                .replace("ß", "{\\ss}")
+                .replace(":", "\\colon")
+                .replace("/", "\\slash")
                 .replace("\"", "\\slash");
         System.out.println("Text:" + text);
         return text;
