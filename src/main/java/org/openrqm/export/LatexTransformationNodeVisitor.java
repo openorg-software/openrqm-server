@@ -64,7 +64,7 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                     transformedContent +=
                         "\\begin{figure}[H]\n" +
                         "  \\centering\n" +
-                        "  \\includegraphics[scale=0.7]{images/" + imageName + "." + imageType + "}\n" +
+                        "  \\includegraphics[width=0.9\\columnwidth]{images/" + imageName + "." + imageType + "}\n" +
                         "  \\label{fig:image" + currentImageCount + "}\n" +
                         "  \\caption{";
                     ImageUtils.saveImage(dataUri, imageType, imageName);
@@ -161,6 +161,8 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 .replace("\u00a0", " ")
                 // this must be done before inserting the escaping backslashes
                 .replace("\\", "\\textbackslash ")
+                // afterwards replace double quotes, they have to be replaced before umlaute
+                .replace("\"", " \\dq ")
                 // replace LaTeX special characters
                 .replace("$", "\\$")
                 .replace("%", "\\%")
@@ -175,10 +177,7 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 .replace("Ä", "\\\"A")
                 .replace("Ü", "\\\"U")
                 .replace("Ö", "\\\"O")
-                .replace("ß", "{\\ss}")
-                .replace(":", "\\colon")
-                .replace("/", "\\slash")
-                .replace("\"", "\\slash");
+                .replace("ß", "{\\ss}");
         System.out.println("Text:" + text);
         return text;
     }
