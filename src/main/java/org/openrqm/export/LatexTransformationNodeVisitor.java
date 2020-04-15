@@ -125,7 +125,7 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                             "\\end{figure}\n";
                 };
                 break;
-            case "table": transformedContent += "\n\\end{tabular}\n\\captionof{table}{}\n\\end{center}"; break;
+            case "table": transformedContent += "\n\\end{tabular}\n\\end{center}"; break;
             case "tbody": transformedContent += "\n\\hline"; break;
             case "tr": transformedContent += "\\\\"; break;
             case "th":
@@ -175,10 +175,7 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 .replace("Ä", "\\\"A")
                 .replace("Ü", "\\\"U")
                 .replace("Ö", "\\\"O")
-                .replace("ß", "{\\ss}")
-                .replace(":", "\\colon")
-                .replace("/", "\\slash")
-                .replace("\"", "\\slash");
+                .replace("ß", "{\\ss}");
         System.out.println("Text:" + text);
         return text;
     }

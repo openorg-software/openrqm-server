@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 29. Mrz 2020 um 19:19
+-- Erstellungszeit: 15. Apr 2020 um 19:38
 -- Server-Version: 10.4.11-MariaDB
 -- PHP-Version: 7.4.2
 
@@ -145,7 +145,8 @@ CREATE TABLE `link` (
 
 CREATE TABLE `link_type` (
   `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name_from` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name_to` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

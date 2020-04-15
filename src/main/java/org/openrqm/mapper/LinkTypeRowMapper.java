@@ -17,7 +17,8 @@ public class LinkTypeRowMapper implements RowMapper<RQMLinkType> {
     public RQMLinkType mapRow(ResultSet rs, int rowNum) throws SQLException {
         RQMLinkType linkType = new RQMLinkType();
         linkType.setId(rs.getLong("id"));
-        linkType.setName(rs.getString("name"));
+        linkType.setNameFrom(rs.getString("name_from"));
+        linkType.setNameTo(rs.getString("name_to"));
         return linkType;
     }
 }
