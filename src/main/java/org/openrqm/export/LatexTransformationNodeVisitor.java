@@ -64,14 +64,14 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                     transformedContent +=
                         "\\begin{figure}[H]\n" +
                         "  \\centering\n" +
-                        "  \\includegraphics[scale=0.7]{images/" + imageName + "." + imageType + "}\n" +
+                        "  \\includegraphics[width=0.9\\columnwidth]{images/" + imageName + "." + imageType + "}\n" +
                         "  \\label{fig:image" + currentImageCount + "}\n" +
                         "  \\caption{";
                     ImageUtils.saveImage(dataUri, imageType, imageName);
                     dataUri = "";
                 }
                 break;
-            case "table": transformedContent += "\n\\begin{center}\n\\begin{tabular}"; break;
+            case "table": transformedContent += "\n\\begin{center}\n\\begin{tabularx}{\\textwidth}"; break;
             case "thead":
                 transformedContent += determineTableLayout((Element)node, "th");
                 tableHasHeader = true;
@@ -133,7 +133,9 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 if (((Element)node).lastElementSibling() != (Element)node) {
                     transformedContent += "} & ";
                 } else {
-                    transformedContent += "}";
+                    // Add \endhead to last table head to assure that the table head 
+                    // appears on all pages if the table spans over multiple pages
+                    transformedContent += "} \\endhead";
                 }
                 break;
             case "td":
@@ -161,6 +163,10 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 .replace("\u00a0", " ")
                 // this must be done before inserting the escaping backslashes
                 .replace("\\", "\\textbackslash ")
+                // afterwards replace double quotes, they have to be replaced before umlaute
+                .replace("\"", " \\dq ")
+                // special replacement for linebreaks
+                .replace("@linebreak@", "\\\\")
                 // replace LaTeX special characters
                 .replace("$", "\\$")
                 .replace("%", "\\%")
@@ -181,8 +187,9 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
     }
     
     private String determineTableLayout(Element element, String tagToCount) {
+        
         String layout = "{|";
-        // add 'c|' for every table row
+        // add 'X|' for every table row to add line breaks
         layout = element.getElementsByTag(tagToCount).stream().map((tableRow) -> "c|").reduce(layout, String::concat);
         return layout+"}";
     }

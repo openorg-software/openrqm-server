@@ -109,6 +109,7 @@ public class MarkdownTransformationNodeVisitor implements NodeVisitor {
     
     private String replaceSpecialCharacters(String text) {
         // replace line breaks, they will be determined by the HTML tags
-        return text.replace("\n", "").replace("\r", "");
+        return text.replace("\n", "").replace("\r", "")
+                .replace("@linebreak@", "");
     }
 }
