@@ -125,7 +125,7 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                             "\\end{figure}\n";
                 };
                 break;
-            case "table": transformedContent += "\n\\end{tabular}\n\\end{center}"; break;
+            case "table": transformedContent += "\n\\end{tabularx}\n\\captionof{table}{}\n\\end{center}"; break;
             case "tbody": transformedContent += "\n\\hline"; break;
             case "tr": transformedContent += "\\\\"; break;
             case "th":
@@ -135,7 +135,7 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 } else {
                     // Add \endhead to last table head to assure that the table head 
                     // appears on all pages if the table spans over multiple pages
-                    transformedContent += "} \\endhead";
+                    transformedContent += "} \\endhead %";
                 }
                 break;
             case "td":
@@ -190,7 +190,9 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
         
         String layout = "{|";
         // add 'X|' for every table row to add line breaks
-        layout = element.getElementsByTag(tagToCount).stream().map((tableRow) -> "c|").reduce(layout, String::concat);
+        for (int i = 0; i < element.getElementsByTag(tagToCount).size(); i++) {
+            layout += "X|";
+        }
         return layout+"}";
     }
 }
