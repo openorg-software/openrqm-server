@@ -50,7 +50,7 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                     transformedContent +=
                         "\\begin{figure}[H]\n" +
                         "  \\centering\n" +
-                        "  \\includegraphics[scale=0.7]{images/image" + currentImageCount + "." + imageType + "}\n" +
+                        "  \\includegraphics[width=0.9\\columnwidth]{images/image" + currentImageCount + "." + imageType + "}\n" +
                         "  \\label{fig:image" + currentImageCount + "}\n";
                     ImageUtils.saveImage(dataUri, imageType, "image" + currentImageCount);
                     dataUri = "";
