@@ -6,11 +6,16 @@
 
 package org.openrqm.export;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
-import java.nio.file.Files;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.openrqm.model.RQMDocument;
 import org.openrqm.model.RQMElement;
 import org.slf4j.Logger;
@@ -29,21 +34,37 @@ public class RQMExporter implements Exporter {
 
         logger.info("Export OpenRQM document");
         
-        // export to json file ...
-        ObjectMapper objectMapper = new ObjectMapper();
-        File exportFile = new File(EXPORT_DIR + exportName + ".json");
-        exportFile.getParentFile().mkdirs();
-        objectMapper.writeValue(exportFile, elements);
-        
-        // ... and import again
-        File importFile = new File(EXPORT_DIR + exportName + ".json");
+        // export document and elements to zip
+        JsonFactory jsonFactory = new JsonFactory();
+        jsonFactory.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false); // objectMapper shall not close the ZipOutputStream
+        ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
+        File exportZip = new File(EXPORT_DIR + exportName + ".zip");
+        exportZip.getParentFile().mkdirs();
+        ZipEntry zipEntry;
+
+        try (FileOutputStream fos = new FileOutputStream(exportZip);
+                ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+            
+            // serialize document
+            zipEntry = new ZipEntry(exportName + "_document.json");
+            zipOut.putNextEntry(zipEntry);
+            objectMapper.writeValue(zipOut, document);
+            
+            // serialize elements
+            zipEntry = new ZipEntry(exportName + "_elements.json");
+            zipOut.putNextEntry(zipEntry);
+            objectMapper.writeValue(zipOut, elements);
+        }
+
+        // import list of elements
+        /*File importFile = new File(EXPORT_DIR + exportName + "_elements.json");
         String contents = new String(Files.readAllBytes(importFile.toPath()));
         List<RQMElement> elementsImport = objectMapper.readValue(contents, new TypeReference<List<RQMElement>>(){});
-        System.out.println(elementsImport);
+        System.out.println(elementsImport);*/
 
         logger.info("Exported OpenRQM document successful");
         
-        return new FileSystemResource(EXPORT_DIR + exportName + ".json");
+        return new FileSystemResource(EXPORT_DIR + exportName + ".zip");
     }
 
 }

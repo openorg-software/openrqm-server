@@ -17,8 +17,11 @@ import javax.validation.constraints.NotNull;
 import org.openrqm.export.Exporter;
 import org.openrqm.export.MarkdownExporter;
 import org.openrqm.export.PdfExporter;
+import org.openrqm.export.RQMExporter;
+import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.mapper.ElementRowMapper;
 import org.openrqm.mapper.TemplateRowMapper;
+import org.openrqm.model.RQMDocument;
 import org.openrqm.model.RQMElement;
 import org.openrqm.model.RQMTemplate;
 import org.slf4j.Logger;
@@ -59,81 +62,23 @@ public class ExportApiController implements ExportApi {
     }
 
     @Override
-    public ResponseEntity<Resource> exportMarkdown(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
-        RQMTemplate template;
-        try {
-            template = jdbcTemplate.queryForObject("SELECT * FROM export_template WHERE id = ?;", new Object[]{ templateId }, new TemplateRowMapper());
-        } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        logger.info("Gettings elements from database");
-        List<RQMElement> elements;
-        try {
-            elements = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentId } , new ElementRowMapper());
-        } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        logger.info("Retrieved elements from database");
-
-        Resource exportResource;
-        try {
-            logger.info("Starting export");
-            Exporter exporter = new MarkdownExporter();
-            exportResource = exporter.export(null, elements, template.getName(), "export");
-            logger.info("Finished export successful");
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if (exportResource != null && exportResource.exists()) {
-            return new ResponseEntity<>(exportResource, HttpStatus.OK);
-        } else {
-            logger.error("No exported document can be returned");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Resource> exportMarkdown(
+            @NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId,
+            @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
+        return export(new MarkdownExporter(), documentId, templateId);
     }
 
     @Override
-    public ResponseEntity<Resource> exportPdf(@NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId, @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
-        RQMTemplate template;
-        try {
-            template = jdbcTemplate.queryForObject("SELECT * FROM export_template WHERE id = ?;", new Object[]{ templateId }, new TemplateRowMapper());
-        } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        logger.info("Gettings elements from database");
-        List<RQMElement> elements;
-        try {
-            elements = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentId } , new ElementRowMapper());
-        } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        logger.info("Retrieved elements from database");
-
-        Resource exportResource;
-        try {
-            logger.info("Starting export");
-            Exporter exporter = new PdfExporter();
-            exportResource = exporter.export(null, elements, template.getName(), "export");
-            logger.info("Finished export successful");
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if (exportResource != null && exportResource.exists()) {
-            return new ResponseEntity<>(exportResource, HttpStatus.OK);
-        } else {
-            logger.error("No exported document can be returned");
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Resource> exportPdf(
+            @NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId,
+            @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
+        return export(new PdfExporter(), documentId, templateId);
+    }
+    
+    public ResponseEntity<Resource> exportRQM(
+            @NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId,
+            @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
+        return export(new RQMExporter(), documentId, templateId);
     }
 
     @Override
@@ -156,5 +101,48 @@ public class ExportApiController implements ExportApi {
             logger.error(ex.getLocalizedMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    private ResponseEntity<Resource> export(Exporter exporter, Long documentId, Long templateId) {
+        logger.info("Starting export");
+        try {
+            RQMTemplate template = retrieveTemplateFromDatabase(templateId);
+            RQMDocument document = retrieveDocumentFromDatabase(documentId);
+            List<RQMElement> elements = retrieveElementsFromDatabase(documentId);
+
+            Resource exportResource = exporter.export(document, elements, template.getName(), "export");
+            
+            if (exportResource != null && exportResource.exists()) {
+                logger.info("Finished export successful");
+                return new ResponseEntity<>(exportResource, HttpStatus.OK);
+            } else {
+                logger.error("No exported document can be returned");
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getLocalizedMessage());
+        }
+        logger.info("Failed to export");
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private RQMTemplate retrieveTemplateFromDatabase(Long templateId) {
+        logger.info("Getting template from database");
+        RQMTemplate template = jdbcTemplate.queryForObject("SELECT * FROM export_template WHERE id = ?;", new Object[]{ templateId }, new TemplateRowMapper());
+        logger.info("Retrieved template from database");
+        return template;
+    }
+
+    private RQMDocument retrieveDocumentFromDatabase(Long documentId) {
+        logger.info("Getting document from database");
+        RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?;", new Object[]{ documentId }, new DocumentRowMapper());
+        logger.info("Retrieved document from database");
+        return document;
+    }
+
+    private List<RQMElement> retrieveElementsFromDatabase(Long documentId) {
+        logger.info("Getting elements from database");
+        List<RQMElement> elements = jdbcTemplate.query("SELECT * FROM element WHERE document_id = ? ORDER BY rank;", new Object[] { documentId } , new ElementRowMapper());
+        logger.info("Retrieved elements from database");
+        return elements;
     }
 }
