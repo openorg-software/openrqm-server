@@ -4,7 +4,7 @@
  * Copyright (C) 2019 Marcel Jaehn
  */
 
-package org.openrqm.export;
+package org.openrqm.exporting;
 
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
@@ -14,35 +14,28 @@ import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.NodeTraversor;
 import org.openrqm.model.RQMDocument;
 import org.openrqm.model.RQMElement;
+import org.openrqm.model.RQMTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-public class PdfExporter implements Exporter {
-
-    private static final Logger logger = LoggerFactory.getLogger(PdfExporter.class);
-
-    private static final String TEMPLATE_DIR = "templates/";
-    private static final String EXPORT_DIR = "export/";
-    
-    int currentImageCount = 0;
+public class PdfExporter extends Exporter {
+    protected static Logger logger = LoggerFactory.getLogger(PdfExporter.class);
 
     @Override
-    public Resource export(RQMDocument document, List<RQMElement> elements, String templateName, String exportName) throws Exception {
+    public Resource export(RQMDocument document, List<RQMElement> elements, RQMTemplate template, String exportName) throws Exception {
         // load template file to fill with the document
         logger.info("Load template");
         MustacheFactory mf = new DefaultMustacheFactory();
-        Mustache m = mf.compile(TEMPLATE_DIR + templateName + ".tex");
+        Mustache m = mf.compile(TEMPLATE_DIR + template.getName() + ".tex");
         logger.info("Template loaded successful");
 
         // transform styling in all elements
-        elements.forEach((element) -> {transformElement(element);} );
+        LatexTransformationNodeVisitor transformationNodeVisitor = new LatexTransformationNodeVisitor();
+        elements.forEach((element) -> {transformElement(transformationNodeVisitor, element);} );
 
         // fill the template file with the content of the document
         logger.info("Filling template");
@@ -64,18 +57,5 @@ public class PdfExporter implements Exporter {
         pb.start().waitFor(); // run twice to generate table of contents
         logger.info("Conversion to pdf successful");
         return new FileSystemResource(EXPORT_DIR + exportName + ".pdf");
-    }
-
-    public void transformElement(RQMElement element) {
-        Document document = Jsoup.parseBodyFragment(element.getContent());
-        if (document == null) {
-            logger.info("Error while parsing the element content of elementId " + element.getId());
-            return;
-        }
-        LatexTransformationNodeVisitor transformationNodeVisitor = new LatexTransformationNodeVisitor();
-        transformationNodeVisitor.currentImageCount = currentImageCount;
-        NodeTraversor.traverse(transformationNodeVisitor, document.body());
-        this.currentImageCount += transformationNodeVisitor.currentImageCount;
-        element.setContent(transformationNodeVisitor.transformedContent);
     }
 }

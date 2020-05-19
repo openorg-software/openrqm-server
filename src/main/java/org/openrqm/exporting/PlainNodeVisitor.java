@@ -4,12 +4,14 @@
  * Copyright (C) 2020 Marcel Jaehn
  */
 
-package org.openrqm.export;
+package org.openrqm.exporting;
 
 import org.jsoup.nodes.Node;
-import org.jsoup.select.NodeVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class PlainNodeVisitor implements NodeVisitor {
+public class PlainNodeVisitor extends TransformationNodeVisitor {
+    protected static Logger logger = LoggerFactory.getLogger(PlainNodeVisitor.class);
 
     String content = "";
 

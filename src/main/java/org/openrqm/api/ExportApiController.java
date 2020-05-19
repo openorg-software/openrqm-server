@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import org.openrqm.export.Exporter;
-import org.openrqm.export.MarkdownExporter;
-import org.openrqm.export.PdfExporter;
-import org.openrqm.export.RQMExporter;
+import org.openrqm.exporting.Exporter;
+import org.openrqm.exporting.MarkdownExporter;
+import org.openrqm.exporting.PdfExporter;
+import org.openrqm.exporting.RQMExporter;
 import org.openrqm.mapper.DocumentRowMapper;
 import org.openrqm.mapper.ElementRowMapper;
 import org.openrqm.mapper.TemplateRowMapper;
@@ -75,10 +75,10 @@ public class ExportApiController implements ExportApi {
         return export(new PdfExporter(), documentId, templateId);
     }
     
-    public ResponseEntity<Resource> exportRQM(
-            @NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId,
-            @NotNull @ApiParam(value = "The template to use for the export", required = true) @Valid @RequestParam(value = "templateId", required = true) Long templateId) {
-        return export(new RQMExporter(), documentId, templateId);
+    @Override
+    public ResponseEntity<Resource> exportRaw(
+            @NotNull @ApiParam(value = "The document to export", required = true) @Valid @RequestParam(value = "documentId", required = true) Long documentId) {
+        return export(new RQMExporter(), documentId, null);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ExportApiController implements ExportApi {
             RQMDocument document = retrieveDocumentFromDatabase(documentId);
             List<RQMElement> elements = retrieveElementsFromDatabase(documentId);
 
-            Resource exportResource = exporter.export(document, elements, template.getName(), "export");
+            Resource exportResource = exporter.export(document, elements, template, "export");
             
             if (exportResource != null && exportResource.exists()) {
                 logger.info("Finished export successful");
@@ -126,6 +126,9 @@ public class ExportApiController implements ExportApi {
     }
 
     private RQMTemplate retrieveTemplateFromDatabase(Long templateId) {
+        if (templateId == null) {
+            return null;
+        }
         logger.info("Getting template from database");
         RQMTemplate template = jdbcTemplate.queryForObject("SELECT * FROM export_template WHERE id = ?;", new Object[]{ templateId }, new TemplateRowMapper());
         logger.info("Retrieved template from database");
@@ -133,6 +136,9 @@ public class ExportApiController implements ExportApi {
     }
 
     private RQMDocument retrieveDocumentFromDatabase(Long documentId) {
+        if (documentId == null) {
+            return null;
+        }
         logger.info("Getting document from database");
         RQMDocument document = jdbcTemplate.queryForObject("SELECT * FROM document WHERE id = ?;", new Object[]{ documentId }, new DocumentRowMapper());
         logger.info("Retrieved document from database");

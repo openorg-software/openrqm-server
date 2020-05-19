@@ -4,22 +4,17 @@
  * Copyright (C) 2020 Marcel Jaehn
  */
 
-package org.openrqm.export;
+package org.openrqm.exporting;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
-import org.jsoup.select.NodeVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ImageUtils;
 
-public class LatexTransformationNodeVisitor implements NodeVisitor {
-    
-    private static final Logger logger = LoggerFactory.getLogger(LatexTransformationNodeVisitor.class);
-
-    String transformedContent = "";
-    int currentImageCount = 0;
+public class LatexTransformationNodeVisitor extends TransformationNodeVisitor {
+    protected static Logger logger = LoggerFactory.getLogger(LatexTransformationNodeVisitor.class);
 
     boolean tableHasHeader = false;
     String dataUri = "";
@@ -42,7 +37,7 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
             case "a": transformedContent += "\\href{"+node.attr("href")+"}{"; break;
             case "figure": break; //do nothing
             case "img":
-                currentImageCount++;
+                imageCount++;
                 dataUri = node.attr("src");
                 // there is no figcaption, so save the image now
                 if (node.nextSibling() == null || !node.nextSibling().nodeName().equals("figcaption")) {
@@ -50,9 +45,10 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                     transformedContent +=
                         "\\begin{figure}[H]\n" +
                         "  \\centering\n" +
-                        "  \\includegraphics[width=0.9\\columnwidth]{images/image" + currentImageCount + "." + imageType + "}\n" +
-                        "  \\label{fig:image" + currentImageCount + "}\n";
-                    ImageUtils.saveImage(dataUri, imageType, "image" + currentImageCount);
+                        "  \\includegraphics[width=0.9\\columnwidth]{images/image" + imageCount + "." + imageType + "}\n" +
+                        "  \\label{fig:image" + imageCount + "}\n";
+                    ImageUtils.saveImage(dataUri, imageType, "image" + imageCount);
+                    images.add("images/" + "image" + imageCount + "." + imageType);
                     dataUri = "";
                 }
                 break;
@@ -60,14 +56,15 @@ public class LatexTransformationNodeVisitor implements NodeVisitor {
                 // this figcaption is related to a previous img, so save the image now
                 if (node.previousSibling() != null && node.previousSibling().nodeName().equals("img")) {
                     String imageType = ImageUtils.dataUriToImageType(dataUri);
-                    String imageName = "image" + currentImageCount + "_" + ImageUtils.replaceInvalidFilenameCharacters(node.childNode(0).toString());
+                    String imageName = "image" + imageCount + "_" + ImageUtils.replaceInvalidFilenameCharacters(node.childNode(0).toString());
                     transformedContent +=
                         "\\begin{figure}[H]\n" +
                         "  \\centering\n" +
                         "  \\includegraphics[width=0.9\\columnwidth]{images/" + imageName + "." + imageType + "}\n" +
-                        "  \\label{fig:image" + currentImageCount + "}\n" +
+                        "  \\label{fig:image" + imageCount + "}\n" +
                         "  \\caption{";
                     ImageUtils.saveImage(dataUri, imageType, imageName);
+                    images.add("images/" + imageName + "." + imageType);
                     dataUri = "";
                 }
                 break;
