@@ -1,0 +1,1084 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is the OpenRQM API specification.
+    [OpenRQM Docs - Github](https://github.com/openrqm/openrqm-docs)
+  license:
+    name: LGPL-2.0-only
+    url: https://spdx.org/licenses/LGPL-2.0-only.html#licenseText
+  title: OpenRQM
+  version: 1.0.1
+externalDocs:
+  description: Find out more about OpenRQM
+  url: https://github.com/openrqm/openrqm-docs
+servers:
+- url: https://virtserver.swaggerhub.com/OpenRQM/OpenRQM/1.0.0
+security:
+- bearerAuth: []
+tags:
+- description: Operations for workspaces
+  name: Workspaces
+- description: Operations about documents
+  name: Documents
+- description: Everything about importing documents
+  name: Import
+- description: Everything about document exports
+  name: Export
+- description: Everything about requirements
+  name: Elements
+- description: Everything about links between requirements
+  name: Links
+- description: Everything about themes of documents
+  name: Themes
+paths:
+  /workspaces:
+    get:
+      operationId: getWorkspaces
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMWorkspace'
+                type: array
+          description: All workspaces were fetched sucessfully
+      summary: Get all workspaces
+      tags:
+      - Workspaces
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Workspaces
+  /workspace:
+    delete:
+      operationId: deleteWorkspace
+      parameters:
+      - description: The workspace to delete
+        explode: true
+        in: query
+        name: workspaceId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: The workspace was deleted successfully
+      summary: Delete a workspace
+      tags:
+      - Workspaces
+      x-accepts: application/json
+      x-tags:
+      - tag: Workspaces
+    get:
+      operationId: getWorkspace
+      parameters:
+      - description: The workspace identifier
+        explode: true
+        in: query
+        name: workspaceId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RQMWorkspace'
+          description: The workspace was fetched successfully
+      summary: Get a workspace
+      tags:
+      - Workspaces
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Workspaces
+    patch:
+      operationId: patchWorkspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RQMWorkspace'
+        description: The workspace to update
+        required: true
+      responses:
+        "200":
+          description: Updating workspace successful
+      summary: Update a workspace
+      tags:
+      - Workspaces
+      x-contentType: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Workspaces
+    post:
+      operationId: postWorkspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RQMWorkspace'
+        description: The workspace to create
+        required: true
+      responses:
+        "200":
+          description: The workspace was created by the backend
+      summary: Add a workspace
+      tags:
+      - Workspaces
+      x-contentType: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Workspaces
+  /documents:
+    get:
+      operationId: getDocuments
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMDocument'
+                type: array
+          description: Documents sucessfully fetched
+      summary: Get all documents
+      tags:
+      - Documents
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Documents
+  /import:
+    post:
+      operationId: importDocument
+      parameters:
+      - description: The workspace for the document
+        explode: true
+        in: query
+        name: workspaceId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                upfile:
+                  description: The file to upload.
+                  format: binary
+                  type: string
+              required:
+              - upfile
+              type: object
+        required: true
+      responses:
+        "200":
+          description: Document successfully imported
+      summary: Post document for import
+      tags:
+      - Import
+      x-contentType: multipart/form-data
+      x-accepts: application/json
+      x-tags:
+      - tag: Import
+  /export/openrqm:
+    get:
+      operationId: exportRaw
+      parameters:
+      - description: The document to export
+        explode: true
+        in: query
+        name: documentId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/zip:
+              schema:
+                format: binary
+                type: string
+          description: Document successfully exported
+      summary: Export a document as OpenRQM Data for import
+      tags:
+      - Export
+      x-accepts: application/zip
+      x-tags:
+      - tag: Export
+  /export/pdf:
+    get:
+      operationId: exportPdf
+      parameters:
+      - description: The document to export
+        explode: true
+        in: query
+        name: documentId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: The template to use for the export
+        explode: true
+        in: query
+        name: templateId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/pdf:
+              schema:
+                format: binary
+                type: string
+          description: Document successfully exported
+      summary: Export a document as PDF
+      tags:
+      - Export
+      x-accepts: application/pdf
+      x-tags:
+      - tag: Export
+  /export/pdf/templates:
+    get:
+      operationId: getPdfTemplates
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMTemplate'
+                type: array
+          description: PDF templates successfully fetched
+      summary: Get all PDF templates
+      tags:
+      - Export
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Export
+  /export/markdown:
+    get:
+      operationId: exportMarkdown
+      parameters:
+      - description: The document to export
+        explode: true
+        in: query
+        name: documentId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: The template to use for the export
+        explode: true
+        in: query
+        name: templateId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/zip:
+              schema:
+                format: binary
+                type: string
+          description: Document successfully exported
+      summary: Export a document as Markdown
+      tags:
+      - Export
+      x-accepts: application/zip
+      x-tags:
+      - tag: Export
+  /export/markdown/templates:
+    get:
+      operationId: getMarkdownTemplates
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMTemplate'
+                type: array
+          description: Markdown templates successfully fetched
+      summary: Get all Markdown templates
+      tags:
+      - Export
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Export
+  /document:
+    delete:
+      operationId: deleteDocument
+      parameters:
+      - description: The document to delete
+        explode: true
+        in: query
+        name: documentId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: The document was deleted successfully
+      summary: Delete a document
+      tags:
+      - Documents
+      x-accepts: application/json
+      x-tags:
+      - tag: Documents
+    get:
+      operationId: getDocument
+      parameters:
+      - description: The document identifier
+        explode: true
+        in: query
+        name: documentId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RQMDocument'
+          description: Document successfully fetched
+      summary: Get a document
+      tags:
+      - Documents
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Documents
+    patch:
+      operationId: patchDocument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RQMDocument'
+        description: The document to update
+        required: true
+      responses:
+        "200":
+          description: Updating document successful
+      summary: Update a document
+      tags:
+      - Documents
+      x-contentType: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Documents
+    post:
+      operationId: postDocument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RQMDocument'
+        description: The document to create
+        required: true
+      responses:
+        "200":
+          description: The document created by the backend
+      summary: Add a document
+      tags:
+      - Documents
+      x-contentType: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Documents
+  /document/themes:
+    get:
+      operationId: getThemesOfDocument
+      parameters:
+      - description: The document id to identify the correct themes
+        explode: true
+        in: query
+        name: documentId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMTheme'
+                type: array
+          description: Fetching themes successful
+      summary: Get all themes of a document
+      tags:
+      - Themes
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Themes
+  /document/links:
+    get:
+      operationId: getLinksOfDocument
+      parameters:
+      - description: The document id to identify the correct links
+        explode: true
+        in: query
+        name: documentId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMLink'
+                type: array
+          description: Fetching links successful
+      summary: Get all links of a document
+      tags:
+      - Documents
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Documents
+  /theme:
+    get:
+      operationId: getTheme
+      parameters:
+      - description: The theme id
+        explode: true
+        in: query
+        name: themeId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RQMTheme'
+          description: Fetching theme successful
+      summary: Get a theme
+      tags:
+      - Themes
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Themes
+    patch:
+      operationId: updateTheme
+      requestBody:
+        $ref: '#/components/requestBodies/RQMTheme'
+      responses:
+        "200":
+          description: Updating theme successful
+      summary: Update a theme
+      tags:
+      - Themes
+      x-contentType: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Themes
+    post:
+      operationId: createTheme
+      requestBody:
+        $ref: '#/components/requestBodies/RQMTheme'
+      responses:
+        "200":
+          description: Creating theme successful
+      summary: Create a new theme
+      tags:
+      - Themes
+      x-contentType: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Themes
+  /theme/elementTypeColors:
+    get:
+      operationId: getElementTypeColorsOfTheme
+      parameters:
+      - explode: true
+        in: query
+        name: themeId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMElementTypeColor'
+                type: array
+          description: Get ElementTypeColors successful
+      summary: Get all element type colors of a theme
+      tags:
+      - Themes
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Themes
+  /elements:
+    get:
+      operationId: getElements
+      parameters:
+      - description: The document id for which the elements are fetched
+        explode: true
+        in: query
+        name: documentId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMElement'
+                type: array
+          description: Elements successfully fetched
+      summary: Get all elements
+      tags:
+      - Elements
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Elements
+  /element:
+    delete:
+      operationId: deleteElement
+      parameters:
+      - description: The element to delete
+        explode: true
+        in: query
+        name: elementId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: Deleting element successful
+      summary: Delete an element
+      tags:
+      - Elements
+      x-accepts: application/json
+      x-tags:
+      - tag: Elements
+    patch:
+      operationId: patchElement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RQMElement'
+        description: The element to update
+        required: true
+      responses:
+        "200":
+          description: Updating element successful
+      summary: Update an element
+      tags:
+      - Elements
+      x-contentType: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Elements
+    post:
+      operationId: postElement
+      parameters:
+      - description: The rank of the element above, if no above element exists this
+          shall be set to aaaaaaaaaaaaaaaaaaaa
+        explode: true
+        in: query
+        name: aboveRank
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: The rank of the element below, if no below element exists this
+          shall be set to an empty string
+        explode: true
+        in: query
+        name: belowRank
+        required: true
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RQMElement'
+        description: The element to create, if the element should be created at the
+          highest level, the parentElementId shall be null
+        required: true
+      responses:
+        "200":
+          description: The element created by the backend
+      summary: Add an element
+      tags:
+      - Elements
+      x-contentType: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Elements
+  /element/inlinks:
+    get:
+      operationId: getIncomingLinksOfElement
+      parameters:
+      - description: The id of the element
+        explode: true
+        in: query
+        name: elementId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMLink'
+                type: array
+          description: Incoming links successfully fetched
+      summary: Get all links of a given element
+      tags:
+      - Elements
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Elements
+  /element/outlinks:
+    get:
+      operationId: getOutgoingLinksOfElement
+      parameters:
+      - description: The id of the element
+        explode: true
+        in: query
+        name: elementId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMLink'
+                type: array
+          description: Outgoing links successfully fetched
+      summary: Get all links of a given element
+      tags:
+      - Elements
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Elements
+  /link:
+    delete:
+      operationId: deleteLink
+      parameters:
+      - description: The id of the link
+        explode: true
+        in: query
+        name: linkId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: Deleting link was successful
+      summary: Delete a link
+      tags:
+      - Links
+      x-accepts: application/json
+      x-tags:
+      - tag: Links
+    post:
+      operationId: linkElement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RQMLink'
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RQMLink'
+          description: Linking was successful
+      summary: Link two elements
+      tags:
+      - Links
+      x-contentType: application/json
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Links
+  /linkTypes:
+    get:
+      operationId: getLinkTypes
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMLinkType'
+                type: array
+          description: LinkTypes successfully fetched
+      summary: Get the link types
+      tags:
+      - Links
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Links
+  /elementTypes:
+    get:
+      operationId: getElementTypes
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/RQMElementType'
+                type: array
+          description: ElementTypes successfully fetched
+      summary: Get all element types
+      tags:
+      - Elements
+      x-accepts: '*/*'
+      x-tags:
+      - tag: Elements
+components:
+  requestBodies:
+    RQMTheme:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RQMTheme'
+      required: true
+    inline_object:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/inline_object'
+      required: true
+  schemas:
+    RQMWorkspace:
+      example:
+        documents:
+        - approverId: 9
+          confidentiality: confidentiality
+          languageId: 7
+          description: description
+          previousBaselineId: 1
+          authorId: 2
+          baselineMinor: 4
+          baselineMajor: 2
+          lastModifiedOn: 2000-01-23T04:56:07.000+00:00
+          baselineReview: 7
+          internalIdentifier: 5
+          lastModifiedById: 3
+          reviewerText: reviewerText
+          name: name
+          externalIdentifier: externalIdentifier
+          id: 1
+          shortName: shortName
+          workspaceId: 5
+        - approverId: 9
+          confidentiality: confidentiality
+          languageId: 7
+          description: description
+          previousBaselineId: 1
+          authorId: 2
+          baselineMinor: 4
+          baselineMajor: 2
+          lastModifiedOn: 2000-01-23T04:56:07.000+00:00
+          baselineReview: 7
+          internalIdentifier: 5
+          lastModifiedById: 3
+          reviewerText: reviewerText
+          name: name
+          externalIdentifier: externalIdentifier
+          id: 1
+          shortName: shortName
+          workspaceId: 5
+        name: name
+        id: 0
+        workspaces:
+        - null
+        - null
+        workspaceId: 6
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+        workspaceId:
+          format: int64
+          type: integer
+        workspaces:
+          items:
+            $ref: '#/components/schemas/RQMWorkspace'
+          type: array
+        documents:
+          items:
+            $ref: '#/components/schemas/RQMDocument'
+          type: array
+      type: object
+    RQMDocument:
+      example:
+        approverId: 9
+        confidentiality: confidentiality
+        languageId: 7
+        description: description
+        previousBaselineId: 1
+        authorId: 2
+        baselineMinor: 4
+        baselineMajor: 2
+        lastModifiedOn: 2000-01-23T04:56:07.000+00:00
+        baselineReview: 7
+        internalIdentifier: 5
+        lastModifiedById: 3
+        reviewerText: reviewerText
+        name: name
+        externalIdentifier: externalIdentifier
+        id: 1
+        shortName: shortName
+        workspaceId: 5
+      properties:
+        id:
+          format: int64
+          type: integer
+        workspaceId:
+          format: int64
+          type: integer
+        internalIdentifier:
+          format: int64
+          type: integer
+        externalIdentifier:
+          type: string
+        name:
+          type: string
+        shortName:
+          type: string
+        description:
+          type: string
+        confidentiality:
+          type: string
+        authorId:
+          format: int64
+          type: integer
+        languageId:
+          format: int64
+          type: integer
+        approverId:
+          format: int64
+          type: integer
+        reviewerText:
+          type: string
+        lastModifiedById:
+          format: int64
+          type: integer
+        lastModifiedOn:
+          format: date-time
+          type: string
+        baselineMajor:
+          format: int64
+          type: integer
+        baselineMinor:
+          format: int64
+          type: integer
+        baselineReview:
+          format: int64
+          type: integer
+        previousBaselineId:
+          format: int64
+          type: integer
+      type: object
+    RQMElement:
+      example:
+        parentElementId: 5
+        rank: rank
+        documentId: 6
+        elementTypeId: 1
+        id: 0
+        content: content
+      properties:
+        id:
+          description: When creating an element the id is ignored by the backend because
+            it generates one, when updating the element it has to be set
+          format: int64
+          type: integer
+        documentId:
+          description: When creating an element the documentId has to be set to assign
+            the requirement to the correct document, it can not be updated.
+          format: int64
+          type: integer
+        elementTypeId:
+          format: int64
+          type: integer
+        content:
+          type: string
+        rank:
+          type: string
+        parentElementId:
+          format: int64
+          type: integer
+      type: object
+    RQMLink:
+      example:
+        fromDocumentShortName: fromDocumentShortName
+        linkTypeId: 2
+        fromElementId: 6
+        toDocumentShortName: toDocumentShortName
+        toDocumentId: 5
+        id: 0
+        fromDocumentId: 1
+        toElementId: 5
+      properties:
+        id:
+          description: Id of the link
+          format: int64
+          type: integer
+        fromElementId:
+          format: int64
+          type: integer
+        fromDocumentId:
+          format: int64
+          type: integer
+        fromDocumentShortName:
+          type: string
+        toElementId:
+          format: int64
+          type: integer
+        toDocumentId:
+          format: int64
+          type: integer
+        toDocumentShortName:
+          type: string
+        linkTypeId:
+          format: int64
+          type: integer
+      type: object
+    RQMLinkType:
+      example:
+        nameTo: nameTo
+        id: 0
+        nameFrom: nameFrom
+      properties:
+        id:
+          description: Id of the link type
+          format: int64
+          type: integer
+        nameTo:
+          type: string
+        nameFrom:
+          type: string
+      type: object
+    RQMElementType:
+      example:
+        name: name
+        id: 0
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+      type: object
+    RQMTemplate:
+      example:
+        name: name
+        id: 0
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+      type: object
+    RQMTheme:
+      example:
+        linkFromHighlightColor: linkFromHighlightColor
+        linkToHighlightColor: linkToHighlightColor
+        id: 0
+      properties:
+        id:
+          format: int64
+          type: integer
+        linkFromHighlightColor:
+          type: string
+        linkToHighlightColor:
+          type: string
+      type: object
+    RQMElementTypeColor:
+      example:
+        themeId: 0
+        elementTypeId: 6
+        colorCodeHex: colorCodeHex
+      properties:
+        themeId:
+          format: int64
+          type: integer
+        elementTypeId:
+          format: int64
+          type: integer
+        colorCodeHex:
+          type: string
+      type: object
+    inline_object:
+      properties:
+        upfile:
+          description: The file to upload.
+          format: binary
+          type: string
+      required:
+      - upfile
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
