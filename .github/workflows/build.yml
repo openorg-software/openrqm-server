@@ -1,0 +1,24 @@
+# openrqm-server
+# GitHub Actions Pipeline for building the openrqm-server project
+# SPDX-License-Identifier: GPL-2.0-only
+# Copyright (C) 2022 Benjamin Schilling
+
+name: Build
+
+on: push
+
+jobs:
+  package-debian:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Prepare build
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y debhelper maven openjdk-11-jdk
+        mkdir -p debian-packaging
+        rsync -av --exclude='debian-packaging' . debian-packaging/
+    - name: Build Debian package
+      run: |
+        cd debian-packaging
+        dpkg-buildpackage -uc -us
